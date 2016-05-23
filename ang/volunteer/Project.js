@@ -70,7 +70,7 @@
   );
 
 
-  angular.module('volunteer').controller('VolunteerProject', function($scope, $location, $q, $route, crmApi, crmUiAlert, crmUiHelp, countries, project, profile_status, campaigns, relationship_data, supporting_data, location_blocks, volBackbone) {
+  angular.module('volunteer').controller('VolunteerProject', function($scope, $location, $q, $route, $injector, crmApi, crmUiAlert, crmUiHelp, countries, project, profile_status, campaigns, relationship_data, supporting_data, location_blocks, volBackbone) {
 
     /**
      * We use custom "dirty" logic rather than rely on Angular's native
@@ -92,6 +92,14 @@
     // The ts() and hs() functions help load strings for this module.
     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
     var hs = $scope.hs = crmUiHelp({file: 'CRM/Volunteer/Form/Volunteer'}); // See: templates/CRM/volunteer/Project.hlp
+
+    //Inject the crmHook service if it exists
+    var crmHook;
+    try {
+      crmHook = $injector.get('crmHook');
+    } catch(e) {
+      crmHook = false;
+    }
 
     var relationships = {};
 
@@ -320,6 +328,12 @@
 
       valid = (valid && relationshipsValid && $scope.validateProfileSelections());
 
+      if (crmHook) {
+        var args = {"scope": $scope, "valid": valid};
+        crmHook.runHook("volunteerProjectValidate", args);
+        valid = args.valid;
+      }
+
       return valid;
     };
 
@@ -450,6 +464,10 @@
       $route.reload();
     });
 
+    //Run an on-load hook
+    if (crmHook) {
+      crmHook.runHook("volunteerProjectFormLoad", $scope);
+    }
 
   });
 
