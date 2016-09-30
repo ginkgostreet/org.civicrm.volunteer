@@ -172,7 +172,7 @@ function civicrm_api3_volunteer_need_getsearchresult($params) {
     if (!array_key_exists($projectId, $projectHostCache)) {
       $projectHost = civicrm_api3('VolunteerProjectContact', 'get', array(
         'project_id' => $projectId,
-        'relationship_type_id' => "Host",
+        'relationship_type_id' => "Host Organization",
         'return' => array("contact_id.display_name", "contact_id"),
         'sequential' => 1,
       ));
