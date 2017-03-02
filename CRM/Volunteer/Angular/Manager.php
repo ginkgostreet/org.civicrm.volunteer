@@ -83,11 +83,17 @@ class VolunteerManager extends Manager {
 
       \CRM_Utils_Hook::angularModules($angularModules);
 
-      //Lets filter out unneeded modules
+      // Filter out modules which should not be loaded on Volunteer's base page
       foreach ($angularModules as $name => $module) {
-        //If the module doesn't request to be part of our page, and isn't a core module
-        // that we have included, remove it
-        if ((!array_key_exists("volunteer", $module) || !$module['volunteer']) && $module['ext'] != 'civicrm' && $module['ext'] != 'org.civicrm.angularprofiles') {
+        // Angular modules can register to be loaded by supplying a truthy
+        // property 'volunteer' as a sibling to 'ext' and 'js'
+        $moduleSelfRegisters = !empty($module['volunteer']);
+
+        // These extensions are always allowed. (Note: the modules associated
+        // with the civicrm "extension" are already filtered above.)
+        $whitelist = array('civicrm', 'org.civicrm.angularprofiles', 'org.civicrm.fieldmetadata',);
+
+        if (!$moduleSelfRegisters && !in_array($module['ext'], $whitelist)) {
           unset($angularModules[$name]);
         }
       }
