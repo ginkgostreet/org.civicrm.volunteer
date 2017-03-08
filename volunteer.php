@@ -281,20 +281,32 @@ function volunteer_civicrm_managed(&$entities) {
  * Implementation of hook_civicrm_entityTypes
  */
 function volunteer_civicrm_entityTypes(&$entityTypes) {
-  $entityTypes[] = array(
-    'name'  => 'VolunteerNeed',
-    'class' => 'CRM_Volunteer_DAO_Need',
-    'table' => 'civicrm_volunteer_need',
-  );
-  $entityTypes[] = array(
-    'name'  => 'VolunteerProject',
-    'class' => 'CRM_Volunteer_DAO_Project',
-    'table' => 'civicrm_volunteer_project',
-  );
-  $entityTypes[] = array(
-    'name'  => 'VolunteerProjectContact',
-    'class' => 'CRM_Volunteer_DAO_ProjectContact',
-    'table' => 'civicrm_volunteer_project_contact',
+  // Core ignores the keys introduced in _volunteer_get_entityTypes()
+  $entityTypes += _volunteer_get_entityTypes();
+}
+
+/**
+ * Returns an array of entityTypes introduced by CiviVolunteer.
+ *
+ * @return array
+ */
+function _volunteer_get_entityTypes() {
+  return array(
+    'VolunteerNeed' => array(
+      'name' => 'VolunteerNeed',
+      'class' => 'CRM_Volunteer_DAO_Need',
+      'table' => 'civicrm_volunteer_need',
+    ),
+    'VolunteerProject' => array(
+      'name' => 'VolunteerProject',
+      'class' => 'CRM_Volunteer_DAO_Project',
+      'table' => 'civicrm_volunteer_project',
+    ),
+    'VolunteerProjectContact' => array(
+      'name' => 'VolunteerProjectContact',
+      'class' => 'CRM_Volunteer_DAO_ProjectContact',
+      'table' => 'civicrm_volunteer_project_contact',
+    ),
   );
 }
 
@@ -648,5 +660,29 @@ function volunteer_civicrm_angularModules(&$angularModules) {
 function volunteer_civicrm_fieldOptions($entity, $field, &$options, $params) {
   if ($entity == "UFJoin" && $field == "entity_table" && $params['context'] == "validate") {
     $options[CRM_Volunteer_DAO_Project::getTableName()] = CRM_Volunteer_DAO_Project::getTableName();
+  }
+}
+
+/**
+ * Implements hook_civicrm_apiWrappers().
+ *
+ * @link https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_apiWrappers/
+ */
+function volunteer_civicrm_apiWrappers(&$wrappers, $apiRequest) {
+  $extEntities = _volunteer_get_entityTypes();
+  $extEntity = CRM_Utils_Array::value($apiRequest['entity'], $extEntities);
+
+  $entityCustomFieldSupport = FALSE;
+  // This is basically a check that the entity came from this extension.
+  if (!empty($extEntity['table'])) {
+    // Check that the entity has been registered to use custom fields.
+    $entityCustomFieldSupport = (bool) civicrm_api3('OptionValue', 'getcount', array(
+      'option_group_id' => 'cg_extend_objects',
+      'name' => $extEntity['table'],
+    ));
+  }
+
+  if ($entityCustomFieldSupport) {
+    $wrappers[] = new CRM_Volunteer_APIWrapper_CustomField();
   }
 }
