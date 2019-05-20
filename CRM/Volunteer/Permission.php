@@ -1,5 +1,6 @@
 <?php
 
+//class CRM_Volunteer_Permission extends CRM_Core_Permission {
 class CRM_Volunteer_Permission {
 
   const VIEW_ROSTER = 'volunteer_view_roster'; // A number unused by CRM_Core_Action
@@ -80,7 +81,8 @@ class CRM_Volunteer_Permission {
       }
     });
 
-    return CRM_Core_Permission::check($permissions);
+   // return parent::check($permissions);
+     return CRM_Core_Permission::check($permissions);
   }
 
   /**

@@ -449,5 +449,12 @@ function _volunteer_civix_civicrm_alterSettingsFolders(&$metaDataFolders = NULL)
  * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_entityTypes
  */
 function _volunteer_civix_civicrm_entityTypes(&$entityTypes) {
-  $entityTypes = array_merge($entityTypes, []);
+  $entityTypes = array_merge($entityTypes, array (
+    'CRM_Volunteer_DAO_VolunteerAppeal' => 
+    array (
+      'name' => 'VolunteerAppeal',
+      'class' => 'CRM_Volunteer_DAO_VolunteerAppeal',
+      'table' => 'civicrm_volunteer_appeal',
+    ),
+  ));
 }
