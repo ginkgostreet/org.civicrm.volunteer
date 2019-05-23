@@ -1,0 +1,18 @@
+<div class="crm-container">	
+  	<div crm-ui-debug="beneficiaries"></div>
+  	<div crm-ui-debug="campaigns"></div>
+  	<div crm-ui-debug="projects"></div>
+ 	<div crm-ui-debug="searchParams"></div>
+	
+	<div class="crm-form-block">
+	    <div class="crm-vol-widgets crm-vol-manage-widgets"></div>
+	    <div class="clear"></div>
+		<div>
+			<p> {{ appeal.title }} </p>
+			<p> {{ appeal.image }} </p>
+			<div ng-bind-html="appeal.location=appeal.location" > </div>
+			<p> {{ appeal.appeal_description }} </p>
+			<p> {{ appeal.hide_appeal_volunteer_button }} </p>
+		</div>
+	</div>
+</div>
