@@ -78,11 +78,11 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
   public $appeal_description;
 
   /**
-   * location
+   * loc_block_id
    *
    * @var int
    */
-  public $location;
+  public $loc_block_id;
 
   /**
    * location done anywhere
@@ -127,11 +127,11 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
   public $hide_appeal_volunteer_button;
 
   /**
-   * volunteer skill aought
+   * volunteer skill sought
    *
    * @var string
    */
-  public $volunteer_skill_aought;
+  public $volunteer_skill_sought;
 
   /**
    * custom fields
@@ -244,16 +244,16 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
           'localizable' => 0,
         ],
-        'location' => [
-          'name' => 'location',
+        'loc_block_id' => array(
+          'name' => 'loc_block_id',
           'type' => CRM_Utils_Type::T_INT,
-          'title' => CRM_Volunteer_ExtensionUtil::ts('Location'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('location'),
+          'title' => ts('Location Block ID') ,
+          'description' => 'FK to Location Block ID',
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
-          'localizable' => 0,
-        ],
+          'FKClassName' => 'CRM_Core_DAO_LocBlock',
+        ) ,
         'location_done_anywhere' => [
           'name' => 'location_done_anywhere',
           'type' => CRM_Utils_Type::T_INT,
@@ -313,11 +313,11 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
           'localizable' => 0,
         ],
-        'volunteer_skill_aought' => [
-          'name' => 'volunteer_skill_aought',
+        'volunteer_skill_sought' => [
+          'name' => 'volunteer_skill_sought',
           'type' => CRM_Utils_Type::T_STRING,
-          'title' => CRM_Volunteer_ExtensionUtil::ts('Volunteer Skill Aought'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('volunteer skill aought'),
+          'title' => CRM_Volunteer_ExtensionUtil::ts('Volunteer Skill Sought'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Volunteer Skill Sought'),
           'maxlength' => 500,
           'size' => CRM_Utils_Type::HUGE,
           'table_name' => 'civicrm_volunteer_appeal',
