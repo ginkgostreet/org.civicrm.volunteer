@@ -193,3 +193,9 @@ span.crm-button-text {
 .m-5{
       margin: 5px;
 }
+.text-limit {  
+  width: 400px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
