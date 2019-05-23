@@ -67,10 +67,19 @@
     <comment>appeal description</comment>
   </field>
   <field>
-    <name>location</name>
-    <type>int</type>
-    <comment>location</comment>
+    <name>loc_block_id</name>
+    <type>int unsigned</type>
+    <title>Location Block ID</title>
+    <comment>FK to Location Block ID</comment>
+    <add>4.5</add>
   </field>
+  <foreignKey>
+    <name>loc_block_id</name>
+    <table>civicrm_loc_block</table>
+    <key>id</key>
+    <onDelete>SET NULL</onDelete>
+    <add>4.5</add>
+  </foreignKey>
   <field>
     <name>location_done_anywhere</name>
     <type>tinyint</type>
@@ -106,10 +115,10 @@
     <comment>hide appeal volunteer button</comment>
   </field>
   <field>
-    <name>volunteer_skill_aought</name>
+    <name>volunteer_skill_sought</name>
     <type>varchar</type>
     <length>500</length>
-    <comment>volunteer skill aought</comment>
+    <comment>volunteer skill sought</comment>
   </field>
   <field>
     <name>custom_fields</name>
