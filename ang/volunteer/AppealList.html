@@ -10,7 +10,8 @@
       </tr>
    </thead>
    <tbody>
-      <tr ng-repeat="appeal in appeals track by $index" role="row"><!-- | filter : search | startFrom:currentPage*pageSize | limitTo:pageSize-->
+      <tr ng-repeat="appeal in appeals track by $index" role="row">
+
          <td class="crm-vol-manage-toggle">
             <img src="http://localhost/civicrm-volunteer/sites/default/files/civicrm/ext/org.civicrm.volunteer/img/internet.svg" alt="Smiley face" height="42" width="42">
          </td>
@@ -22,7 +23,7 @@
             {{appeal.beneficiary_display_name.split(',')[1]}}            
          </td>
          <td class="crm-vol-manage-entity">
-            {{ appeal.appeal_description }}
+          {{ appeal.appeal_description | limitTo:50 }} {{appeal.appeal_description.length > 50 ? '...' : ''}}
          </td>
          <td class="crm-vol-manage-entity" ng-bind-html="appeal.location=appeal.location" > 
           

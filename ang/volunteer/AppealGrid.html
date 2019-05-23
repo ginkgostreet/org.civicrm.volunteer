@@ -9,9 +9,7 @@
                <div class="p-l-15">
                   <h2 class="m-t-0">{{ appeal.title }}</h2>
                   <em> {{appeal.beneficiary_display_name.split(',')[1]}}<em>
-                  <p>{{ appeal.appeal_description }}</p>
-                  <!-- <span class="crm-vol-manage-project-id">{{ ts('(ID: %1)', {1: appeal.id}) }}</span> -->
-                  <!-- {{appeal.location}} -->
+                  <p class="text-limit">{{ appeal.appeal_description }}</p>                  
                </div>
             </div>
             <div class="clearfix"></div>
