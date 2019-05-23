@@ -8,7 +8,7 @@
     });
   });
 
-  angular.module('volunteer').controller('VolApplsCtrl', function ($route, $scope,crmApi) {    
+  angular.module('volunteer').controller('VolApplsCtrl', function ($route, $scope,crmApi,$window) {       
       var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
       $scope.search="";           
       $scope.currentTemplate = "~/volunteer/AppealGrid.html"; //default view is grid view
@@ -17,7 +17,7 @@
       $scope.pageSize = 2;
       $scope.options=[{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"dateS",val:"Upcoming Appeals"},{key:"dateE",val:"Overdue Appeals"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}]; 
       $scope.sortValue=$scope.sortby=$scope.order=null;
-      $scope.basepath="http://localhost/civicrm-volunteer/sites/default/files/civicrm/ext/org.civicrm.volunteer/img/";
+      $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/ext/org.civicrm.volunteer/img/";
       //Change reult view
       $scope.changeview = function(tpl){
         $scope.currentTemplate = tpl;        
@@ -87,14 +87,13 @@
       } else if ($scope.sortValue.key=="titleD"){
         sortby="title";
         orderby="DESC";
-      } /* will handle after completing api for date and beneficiary
-        else if($scope.sortValue.key=="dateS"){
+      } else if($scope.sortValue.key=="dateS"){
         sortby="active_fromdate";
         orderby="ASC";
       } else if($scope.sortValue.key=="dateE"){
         sortby="active_todate";
         orderby="DESC";
-      } else if(sortValue.key=="benfcrA"){
+      } /* will handle after completing api for date and beneficiaryelse if(sortValue.key=="benfcrA"){
          sortBy=title;
         orderby="ASC";
       } else if(sortValue.key=="benfcrD"){
