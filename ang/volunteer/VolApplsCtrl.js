@@ -11,7 +11,7 @@
   angular.module('volunteer').controller('VolApplsCtrl', function ($route, $scope,crmApi) {    
       var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
       $scope.search="";           
-      $scope.currentTemplate = "~/volunteer/AppealList.html"; //default view is list view
+      $scope.currentTemplate = "~/volunteer/AppealGrid.html"; //default view is list view
       $scope.totalRec;
       $scope.currentPage = 1;
       $scope.pageSize = 2; 
