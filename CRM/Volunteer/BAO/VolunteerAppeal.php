@@ -71,6 +71,45 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     return $result;
   }
 
+  /**
+   * Wrapper method for retrieve
+   *
+   * @param mixed $id Int or int-like string representing Appeal ID
+   * @return CRM_Volunteer_BAO_VolunteerAppeal
+   */
+  public static function retrieveByID($id) {
+    $id = (int) CRM_Utils_Type::validate($id, 'Integer');
+	// Get Appeal with location and location address based on appeal ID.
+	$api = civicrm_api3('VolunteerAppeal', 'getsingle', array(
+		'id' => $id,
+		'api.LocBlock.getsingle' => array(
+			'api.Address.getsingle' => array(),
+		),
+	));
+	if (empty($api['loc_block_id']) || empty($api['api.LocBlock.getsingle']['address_id'])) {
+		$api['location'] = "";
+    } else {
+        $address = "";
+		if ($api['api.LocBlock.getsingle']['api.Address.getsingle']['street_address']) {
+			$address .= " ".$api['api.LocBlock.getsingle']['api.Address.getsingle']['street_address'];
+		}
+		if ($api['api.LocBlock.getsingle']['api.Address.getsingle']['street_address'] && ($api['api.LocBlock.getsingle']['api.Address.getsingle']['city'] || $api['api.LocBlock.getsingle']['api.Address.getsingle']['postal_code'])) {
+			$address .= ' <br /> ';
+		}
+		if ($api['api.LocBlock.getsingle']['api.Address.getsingle']['city']) {
+			$address .= " ".$api['api.LocBlock.getsingle']['api.Address.getsingle']['city'];
+		}
+		if ($api['api.LocBlock.getsingle']['api.Address.getsingle']['city'] && $api['api.LocBlock.getsingle']['api.Address.getsingle']['postal_code']) {
+			$address .= ', '.$api['api.LocBlock.getsingle']['api.Address.getsingle']['postal_code'];
+		} else if ($api['api.LocBlock.getsingle']['api.Address.getsingle']['postal_code']) {
+			$address .= $api['api.LocBlock.getsingle']['api.Address.getsingle']['postal_code'];
+		}
+		$api['location'] = $address;
+    }
+
+	return $api;
+  }
+
 
 
 /**
@@ -111,7 +150,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 	$select = " SELECT appeal.*, addr.street_address, addr.city, addr.postal_code";
     $from = " FROM civicrm_volunteer_appeal AS appeal ";
 	$join = " LEFT JOIN civicrm_volunteer_project AS p ON (p.id = appeal.project_id) ";
-	$join .= " LEFT JOIN civicrm_loc_block AS loc ON (loc.id = p.loc_block_id) ";
+	$join .= " LEFT JOIN civicrm_loc_block AS loc ON (loc.id = appeal.loc_block_id) ";
 	$join .= " LEFT JOIN civicrm_address AS addr ON (addr.id = loc.address_id) ";
 	
 	if($show_beneficiary_at_front == 1) {
@@ -150,7 +189,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 	
 	$sql2 = $select . $from . $join . $where . $orderby;
 	$dao2 = new CRM_Core_DAO();   
-  $dao2->query($sql2);
+	$dao2->query($sql2);
 	$total_appeals = count($dao2->fetchAll());
 	$appeals = array();
 	$appeals['appeal'] = array();

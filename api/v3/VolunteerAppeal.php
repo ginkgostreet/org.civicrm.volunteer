@@ -53,6 +53,20 @@ function civicrm_api3_volunteer_appeal_get($params) {
 }
 
 /**
+ * VolunteerAppeal.getAppealData API
+ *
+ * @param array $params
+ * @return array API result descriptor
+ * @throws API_Exception
+ */
+function civicrm_api3_volunteer_appeal_getAppealData($params) {
+	$id = $params['id'];
+	$result = CRM_Volunteer_BAO_VolunteerAppeal::retrieveByID($id);
+	
+	return civicrm_api3_create_success($result, $params, 'VolunteerAppeal', 'getSingle');
+}
+
+/**
  * Returns the results of a search.
  *
  * This API is used with the volunteer appeals search UI.
