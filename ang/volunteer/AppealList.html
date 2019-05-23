@@ -20,7 +20,7 @@
             <span class="crm-vol-manage-project-id">{{ ts('(ID: %1)', {1: appeal.id}) }}</span>
          </td>
          <td class="crm-vol-manage-entity">
-            {{appeal.beneficiary_display_name.split(',')[1]}}            
+            {{appeal.beneficiary_display_name}}            
          </td>
          <td class="crm-vol-manage-entity">
           {{ appeal.appeal_description | limitTo:50 }} {{appeal.appeal_description.length > 50 ? '...' : ''}}
