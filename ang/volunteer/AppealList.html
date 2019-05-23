@@ -13,7 +13,7 @@
       <tr ng-repeat="appeal in appeals track by $index" role="row">
 
          <td class="crm-vol-manage-toggle">
-            <img src="http://localhost/civicrm-volunteer/sites/default/files/civicrm/ext/org.civicrm.volunteer/img/internet.svg" alt="Smiley face" height="42" width="42">
+            <img src={{basepath+appeal.image}} alt="Smiley face" height="42" width="42">
          </td>
          <td class="crm-vol-manage-project">
             <span class="crm-vol-manage-project-title">{{ appeal.title }}</span>
@@ -29,8 +29,8 @@
           
          </td>
          <td class="crm-vol-manage-beneficiaries"> 
-            <button><i class="fa fa-chevron-circle-right" aria-hidden="true">More Info</i></button>
-            <button><i class="fa fa-users" aria-hidden="true">Volunteer</i></button>
+            <button><i class="fa fa-chevron-circle-right" aria-hidden="true">{{ts('More Info')}}</i></button>
+            <button><i class="fa fa-users" aria-hidden="true">{{ts('Volunteer')}}</i></button>
          </td>
       </tr>
    </tbody>

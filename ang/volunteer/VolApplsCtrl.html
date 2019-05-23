@@ -15,8 +15,12 @@
                <div class="pull-right m-5">
                   <button ng-click="changeview('~/volunteer/AppealList.html')"><i class="fa fa-bars"></i></button>                     
                   <button ng-click="changeview('~/volunteer/AppealGrid.html')"><i class="fa fa-th-large"></i></button>
+                 
 
-                  <select><option>Sort</option></select><i class="fa fa-sort-amount-desc" aria-hidden="true"></i>
+                  <select ng-model="sortValue" ng-options="option.val for option in options" ng-change="sort()">
+                  </select>
+
+                  <i class="fa fa-sort-amount-desc" aria-hidden="true"></i>
 
                   <button><i class="fa fa-filter" aria-hidden="true"></i></button>             
                </div>
