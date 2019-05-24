@@ -106,6 +106,59 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 		}
 		$api['location'] = $address;
     }
+	// Get Project Details.
+	$api2 = civicrm_api3('VolunteerProject', 'getsingle', array(
+		'id' => $api['project_id'],
+		'api.LocBlock.getsingle' => array(
+			'api.Address.getsingle' => array(),
+		),
+		'api.VolunteerProjectContact.get' => array(
+          'options' => array('limit' => 0),
+          'relationship_type_id' => 'volunteer_beneficiary',
+          'api.Contact.get' => array(
+            'options' => array('limit' => 0),
+          ),
+        ),
+	));
+	$project = CRM_Volunteer_BAO_Project::retrieveByID($api['project_id']);
+	$openNeeds = $project->open_needs;
+	$project = $project->toArray();
+	foreach ($openNeeds as $key => $need) {
+		$project['available_shifts'][] = $need['display_time'];
+	}
+	if (empty($api2['loc_block_id']) || empty($api2['api.LocBlock.getsingle']['address_id'])) {
+		$api2['location'] = "";
+    } else {
+        $address = "";
+		if ($api2['api.LocBlock.getsingle']['api.Address.getsingle']['street_address']) {
+			$address .= " ".$api2['api.LocBlock.getsingle']['api.Address.getsingle']['street_address'];
+		}
+		if ($api2['api.LocBlock.getsingle']['api.Address.getsingle']['street_address'] && ($api2['api.LocBlock.getsingle']['api.Address.getsingle']['city'] || $api2['api.LocBlock.getsingle']['api.Address.getsingle']['postal_code'])) {
+			$address .= ' <br /> ';
+		}
+		if ($api2['api.LocBlock.getsingle']['api.Address.getsingle']['city']) {
+			$address .= " ".$api2['api.LocBlock.getsingle']['api.Address.getsingle']['city'];
+		}
+		if ($api2['api.LocBlock.getsingle']['api.Address.getsingle']['city'] && $api2['api.LocBlock.getsingle']['api.Address.getsingle']['postal_code']) {
+			$address .= ', '.$api2['api.LocBlock.getsingle']['api.Address.getsingle']['postal_code'];
+		} else if ($api2['api.LocBlock.getsingle']['api.Address.getsingle']['postal_code']) {
+			$address .= $api2['api.LocBlock.getsingle']['api.Address.getsingle']['postal_code'];
+		}
+		$project['project_location'] = $address;
+    }
+	foreach ($api2['api.VolunteerProjectContact.get']['values'] as $projectContact) {
+        if (!array_key_exists('beneficiaries', $project)) {
+			$project['beneficiaries'] = array();
+        }
+        $project['beneficiaries'][] = array(
+			'id' => $projectContact['contact_id'],
+			'display_name' => $projectContact['api.Contact.get']['values'][0]['display_name'],
+			'image_URL' => $projectContact['api.Contact.get']['values'][0]['image_URL'],
+			'email' => $projectContact['api.Contact.get']['values'][0]['email'],
+        );
+    }
+	
+	$api['project'] = $project;
 
 	return $api;
   }
@@ -184,6 +237,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 	$offset = ($page_no-1) * $no_of_records_per_page;
 	$limit = " LIMIT ".$offset.", ".$no_of_records_per_page;
 	$sql = $select . $from . $join . $where . $orderby . $limit;
+	
 	$dao = new CRM_Core_DAO();
     $dao->query($sql);
 	
