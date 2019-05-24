@@ -14,7 +14,7 @@
       $scope.currentTemplate = "~/volunteer/AppealGrid.html"; //default view is grid view
       $scope.totalRec;
       $scope.currentPage = 1;
-      $scope.pageSize = 2;
+      $scope.pageSize = 10;
       $scope.options=[{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"dateS",val:"Newest Appeals"},{key:"dateE",val:"Upcoming"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}]; 
       $scope.sortValue=$scope.sortby=$scope.order=null;
       $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/ext/org.civicrm.volunteer/img/";
