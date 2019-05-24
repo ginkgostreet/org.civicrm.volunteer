@@ -234,3 +234,12 @@ span.crm-button-text {
 .beneficiary-details__info-detail {
   margin-bottom: 20px;
 }
+
+.search-box{position: relative;}
+.search-box i{
+position: absolute;
+top: 50%;
+margin-top: -8px;
+right: 10px;
+opacity: 0.3;
+}
