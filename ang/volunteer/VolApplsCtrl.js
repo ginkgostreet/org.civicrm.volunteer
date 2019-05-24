@@ -15,7 +15,7 @@
       $scope.totalRec;
       $scope.currentPage = 1;
       $scope.pageSize = 2;
-      $scope.options=[{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"dateS",val:"Upcoming Appeals"},{key:"dateE",val:"Overdue Appeals"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}]; 
+      $scope.options=[{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"dateS",val:"Newest Appeals"},{key:"dateE",val:"Upcoming"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}]; 
       $scope.sortValue=$scope.sortby=$scope.order=null;
       $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/ext/org.civicrm.volunteer/img/";
       //Change reult view
@@ -93,15 +93,19 @@
       } else if($scope.sortValue.key=="dateE"){
         sortby="active_todate";
         orderby="DESC";
-      } /* will handle after completing api for date and beneficiaryelse if(sortValue.key=="benfcrA"){
-         sortBy=title;
+      }else if(sortValue.key=="benfcrA"){
+         sortBy="project_beneficiary";
         orderby="ASC";
       } else if(sortValue.key=="benfcrD"){
-         sortBy=title;
+         sortBy="project_beneficiary";
          orderby="DESC";
-      }*/
+      }
       $scope.sortby=sortby;
       $scope.order=orderby;
+     }
+
+     $scope.redirectTo=function(appealId) {      
+        $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/appeal/"+appealId;
      }
 
   });
