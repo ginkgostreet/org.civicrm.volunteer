@@ -10,7 +10,7 @@
               id: $route.current.params.appealId
             }).then(function (data) {              
               appeal = data.values;
-			  return appeal;              
+			         return appeal;              
             },function(error) {
                 if (error.is_error) {
                   CRM.alert(error.error_message, ts("Error"), "error");
@@ -24,11 +24,17 @@
     }
   );
 
-  // TODO for VOL-276: Remove reference to beneficiaries object, based on deprecated API.
-  angular.module('volunteer').controller('VolunteerAppealDetail', function ($scope,crmApi,projectAppealsData) {
+  
+  angular.module('volunteer').controller('VolunteerAppealDetail', function ($scope,crmApi,projectAppealsData,$window) {
     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
-    //var hs = $scope.hs = crmUiHelp({file: 'CRM/volunteer/Projects'}); // See: templates/CRM/volunteer/Projects.hlp
-	$scope.appeal = appeal;
+    $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/ext/org.civicrm.volunteer/img/";      
+	  $scope.appeal = appeal; 
+    $scope.showShift = parseInt(appeal.display_volunteer_shift);
+    $scope.locAny= parseInt(appeal.location_done_anywhere); 
+    $scope.showVolunteer=parseInt(appeal.hide_appeal_volunteer_button); 
+    $scope.redirectTo=function(projectId) {  
+        $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/opportunities?project="+projectId;
+    }
 	
   });
 })(angular, CRM.$, CRM._);

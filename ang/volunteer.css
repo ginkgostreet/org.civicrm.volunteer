@@ -181,8 +181,20 @@ span.crm-button-text {
 .text-right{
     text-align: right;
 }
+.text-center{
+    text-align: center;
+}
+.detail-btn {
+    margin-right: 15px;
+    height: 37px;
+    width: 132px;
+}
 .p-l-15{
     padding-left: 15px;
+}
+.loc{
+  padding-left: 15px;
+  padding-top: 15px;
 }
 .m-t-0{
     margin-top:0;
@@ -198,4 +210,27 @@ span.crm-button-text {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.detail{
+ flex-basis: auto!important;
+}
+
+.beneficiary-details {
+  display: flex;
+  flex-direction: coloumn;
+
+}
+
+.beneficiary-details__image {
+  width: 120px;
+  margin-right: 20px;
+}
+
+.beneficiary-details__image img {
+  max-width: 100%;
+  height: auto;
+}
+
+.beneficiary-details__info-detail {
+  margin-bottom: 20px;
 }
