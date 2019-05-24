@@ -8,10 +8,15 @@
       <form name="volAppSearchForm">
          <div class="crm-block ui-tabs ui-widget ui-widget-content ui-corner-all">
             <div class="crm-group">
-               <div class="pull-left">
+               <!--<div class="pull-left">
                   <input type="text" name="searchAppeal" ng-model="search"  ng-model-options='{ debounce: 1000 }'
         ng-change='searchRes()'/>
-               </div>
+               </div>-->
+               <div class="pull-left search-box">
+                <input type="text" name="searchAppeal" ng-model="search" placeholder="Search Appeal" ng-model-options='{ debounce: 1000 }'
+                ng-change='searchRes()'/>
+                <i class="fa fa-search"></i>
+                </div>
                <div class="pull-right m-5">
                   <button ng-click="changeview('~/volunteer/AppealList.html')"><i class="fa fa-bars"></i></button>                     
                   <button ng-click="changeview('~/volunteer/AppealGrid.html')"><i class="fa fa-th-large"></i></button>
