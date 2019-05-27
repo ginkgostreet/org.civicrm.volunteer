@@ -201,19 +201,22 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 	$search_appeal = $params['search_appeal'];
 	$search_appeal = trim($search_appeal);
 	$select = " SELECT appeal.*, addr.street_address, addr.city, addr.postal_code";
+	$select .= " , GROUP_CONCAT(DISTINCT need.id ) as need_id";
     $from = " FROM civicrm_volunteer_appeal AS appeal ";
 	$join = " LEFT JOIN civicrm_volunteer_project AS p ON (p.id = appeal.project_id) ";
 	$join .= " LEFT JOIN civicrm_loc_block AS loc ON (loc.id = appeal.loc_block_id) ";
 	$join .= " LEFT JOIN civicrm_address AS addr ON (addr.id = loc.address_id) ";
+	$join .= " LEFT JOIN civicrm_volunteer_need AS need ON (need.project_id = p.id) And need.is_active = 1 And need.is_flexible = 1 And need.visibility_id = 2";
 	
 	if($show_beneficiary_at_front == 1) {
 		$join .= " LEFT JOIN civicrm_volunteer_project_contact AS pc ON (pc.project_id = p.id) ";
 		$join .= " LEFT JOIN civicrm_contact AS cc ON (cc.id = pc.contact_id) ";
 		$select .= " , GROUP_CONCAT(DISTINCT cc.display_name ) as beneficiary_display_name";
     }
-	$where = " Where p.is_active = 1";
+	// Appeal should be active, Current Date between appeal date and related project should be active.
+	$where = " Where p.is_active = 1 And appeal.is_appeal_active = 1 And CURDATE() between active_fromdate and active_todate ";
 	if(isset($search_appeal) && !empty($search_appeal)) {
-		$where .= " And appeal.title Like '%".$search_appeal."%' OR appeal.appeal_description Like '%".$search_appeal."%'";
+		$where .= " And (appeal.title Like '%".$search_appeal."%' OR appeal.appeal_description Like '%".$search_appeal."%')";
 	}
 	// Order by Logic.
 	$orderByColumn = "appeal.id";
@@ -266,6 +269,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 		$appeal['display_volunteer_shift'] = $dao->display_volunteer_shift;
 		$appeal['hide_appeal_volunteer_button'] = $dao->hide_appeal_volunteer_button;
 		$appeal['beneficiary_display_name'] = $dao->beneficiary_display_name;
+		$appeal['need_id'] = $dao->need_id;
 		
 		$address = "";
 		if ($dao->street_address) {
