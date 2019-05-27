@@ -120,6 +120,19 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
           ),
         ),
 	));
+	$flexibleNeed = civicrm_api('volunteer_need', 'getvalue', array(
+        'is_active' => 1,
+        'is_flexible' => 1,
+		'visibility_id' => 1,
+        'project_id' => $api['project_id'],
+        'return' => 'id',
+        'version' => 3,
+    ));
+	if (CRM_Utils_Array::value('is_error', $flexibleNeed) == 1) {
+        $flexibleNeed = NULL;
+    } else {
+		$flexibleNeed = (int) $flexibleNeed;
+	}
 	$project = CRM_Volunteer_BAO_Project::retrieveByID($api['project_id']);
 	$openNeeds = $project->open_needs;
 	$project = $project->toArray();
@@ -159,6 +172,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     }
 	
 	$api['project'] = $project;
+	$api['project']['flexibleNeed'] = $flexibleNeed;
 
 	return $api;
   }
