@@ -89,7 +89,7 @@
         orderby="DESC";
       } else if($scope.sortValue.key=="dateS"){
         sortby="active_fromdate";
-        orderby="ASC";
+        orderby="DESC";
       } else if($scope.sortValue.key=="dateE"){
         sortby="active_todate";
         orderby="DESC";
