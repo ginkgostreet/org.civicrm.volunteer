@@ -33,7 +33,7 @@
                   <p style="min-height: 60px;">{{ appeal.appeal_description}}</p>  
                 </div>
                  <div class="p-l-15" style="margin-rigth:15px">                
-               	  <button class="detail-btn" ng-hide="showVolunteer"><i class="fa fa-users" aria-hidden="true" >{{ts('Volunteer!')}}</i></button>
+               	  <button class="detail-btn" ng-hide="showVolunteer" ng-click="volSignup(appeal.project.flexibleNeed,appeal.project_id)"><i class="fa fa-users" aria-hidden="true" >{{ts('Volunteer!')}}</i></button>
                	  <button class="detail-btn" ng-click="redirectTo(appeal.project_id)">{{ts('Search For Shifts!')}}</button>
 				</div> 
                <div class="loc">
