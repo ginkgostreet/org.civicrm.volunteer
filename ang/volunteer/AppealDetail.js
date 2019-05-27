@@ -35,6 +35,13 @@
     $scope.redirectTo=function(projectId) {  
         $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/opportunities?project="+projectId;
     }
+    $scope.volSignup= function(needId,projectId) {
+      if(needId) {
+         $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/volunteer/signup?reset=1&needs[]="+needId+"&dest=list";
+      }else {
+         $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/opportunities?project="+projectId+"&hideSearch=1";
+    }
+  }
 	
   });
 })(angular, CRM.$, CRM._);

@@ -30,7 +30,7 @@
          </td>
          <td class="crm-vol-manage-beneficiaries"> 
             <button ng-click="redirectTo(appeal.id)"><i class="fa fa-chevron-circle-right" aria-hidden="true">{{ts('More Info')}}</i></button>
-            <button><i class="fa fa-users" aria-hidden="true">{{ts('Volunteer')}}</i></button>
+            <button><i ng-click="volSignup(appeal.need_id,appeal.project_id)" class="fa fa-users" aria-hidden="true">{{ts('Volunteer')}}</i></button>
          </td>
       </tr>
    </tbody>
