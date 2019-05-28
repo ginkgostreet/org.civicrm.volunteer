@@ -5,3 +5,4 @@ bin/setup.conf
 update.sh
 .*
 /nbproject
+site/
