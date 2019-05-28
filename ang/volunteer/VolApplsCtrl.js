@@ -91,12 +91,12 @@
         sortby="active_fromdate";
         orderby="DESC";
       } else if($scope.sortValue.key=="dateE"){
-        sortby="active_todate";
+        sortby="upcoming_appeal";
         orderby="DESC";
-      }else if(sortValue.key=="benfcrA"){
+      }else if($scope.sortValue.key=="benfcrA"){
          sortBy="project_beneficiary";
         orderby="ASC";
-      } else if(sortValue.key=="benfcrD"){
+      } else if($scope.sortValue.key=="benfcrD"){
          sortBy="project_beneficiary";
          orderby="DESC";
       }
@@ -117,6 +117,58 @@
 
      }
 
+    $scope.openModal=function(){
+      $scope.modalClass="modalDialog"
+     }
+
+    $scope.closeModal=function() {
+      $scope.modalClass=null;
+    }
+
+    $scope.active = 1;
+  $scope.selectTab = function(value){
+    $scope.active = value;
+  }
+
+  $scope.isActive = function(value){
+    if($scope.active==value){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+  $scope.getPosition=function getPosition(){
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(function(position){
+                var positionInfo =  "Latitude: " + position.coords.latitude + ", " + "Longitude: " + position.coords.longitude ;
+                //document.getElementById("result").innerHTML = positionInfo;
+                $scope.latlog=positionInfo;
+            });
+        } else{
+            alert("Sorry, your browser does not support HTML5 geolocation.");
+        }
+    }
+
   });
 
 })(angular, CRM.$, CRM._);
+
+
+// function openCity(evt, cityName) {
+//   var i, tabcontent, tablinks;
+//   tabcontent = angular.element(document.querySelector(".tabcontent"));//document.getElementsByClassName("tabcontent");
+//   for (i = 0; i < tabcontent.length; i++) {
+//     tabcontent[i].style.display = "none";
+//   }
+//   tablinks = angular.element(document.querySelector(".tablinks"));//document.getElementsByClassName("tablinks");
+//   for (i = 0; i < tablinks.length; i++) {
+//     tablinks[i].className = tablinks[i].className.replace(" active", "");
+//   }
+//   document.getElementById(cityName).style.display = "block";
+//   evt.currentTarget.className += " active";
+// }
+
+// // Get the element with id="defaultOpen" and click on it
+// document.getElementById("defaultOpen").click();
