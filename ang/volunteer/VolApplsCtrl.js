@@ -91,7 +91,7 @@
         sortby="active_fromdate";
         orderby="DESC";
       } else if($scope.sortValue.key=="dateE"){
-        sortby="active_todate";
+        sortby="upcoming_appeal";
         orderby="DESC";
       }else if(sortValue.key=="benfcrA"){
          sortBy="project_beneficiary";
