@@ -291,8 +291,15 @@ opacity: 0.3;
     margin-top: 5px;
 }
 .modalDialog > div input{
-  height: 20px !important;
+  height: 20px !important; 
 }
+
+.modalDialog > div input[type="text"]
+{
+    height: 20px !important;
+   width: 128px;/*pr*/
+}
+
 .filter-model{
   padding: 15px;
 }
