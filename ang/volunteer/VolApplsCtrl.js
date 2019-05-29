@@ -139,24 +139,17 @@
     }
   }
 
-  /*$scope.openCity=function(event, cityName) {
-  var i, tabcontent, tablinks;
-  tabcontent = angular.element(document.querySelector(".tabcontent"));//document.getElementsByClassName("tabcontent"); 
-  console.log(tabcontent);
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = angular.element(document.querySelector(".tablinks"));//document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(cityName).style.display = "block";
-  $(event.target).addClass('active');
-  //evt.currentTarget.className += " active";
-}
-
-  // Get the element with id="defaultOpen" and click on it
-  document.getElementById("defaultOpen").click();*/
+  $scope.getPosition=function getPosition(){
+        if(navigator.geolocation){
+            navigator.geolocation.getCurrentPosition(function(position){
+                var positionInfo =  "Latitude: " + position.coords.latitude + ", " + "Longitude: " + position.coords.longitude ;
+                //document.getElementById("result").innerHTML = positionInfo;
+                $scope.latlog=positionInfo;
+            });
+        } else{
+            alert("Sorry, your browser does not support HTML5 geolocation.");
+        }
+    }
 
   });
 
