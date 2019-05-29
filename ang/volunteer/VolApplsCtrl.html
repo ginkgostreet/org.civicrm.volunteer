@@ -73,8 +73,18 @@
                 <option>km</option>
               </select> of postal code <input type="text" class="postal-code-input"></div>
               <br>
-              <div class="show-opp">
-                  <input type="checkbox" > Only show apportunity that can be done from anywhere</div>
+               <div >
+               Lat:  <input type="text" name="let">
+               Log:  <input type="text" name="log">
+              </div> 
+              <br>
+              <div >
+                OR <button ng-click="getPosition()">Use my location</button> <span>{{latlog}}</span>
+              </div>
+              <br>
+              <div class="show-opp pull-left">
+                  <input type="checkbox" > Only show apportunity that can be done from anywhere
+              </div>
             </div>
           </form>
           </div>
