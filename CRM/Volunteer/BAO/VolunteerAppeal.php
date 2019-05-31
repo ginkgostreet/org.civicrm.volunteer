@@ -238,10 +238,11 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 	//Advance search with date	
 	if($params["advance_search"]) {
 		//select project_id from civicrm_volunteer_need AS need_advance where need_advance.is_flexible = 0 And DATE_FORMAT(need_advance.start_time,'%Y-%m-%d') >= '2019-05-30' And DATE_FORMAT(need_advance.end_time,'%Y-%m-%d') >= '2019-05-31'
-		$where .= " And p.id In (select project_id from civicrm_volunteer_need AS need_advance where need_advance.is_flexible = 0 And DATE_FORMAT(need_advance.start_time,'%Y-%m-%d')>='".$params["advance_search"]["fromdate"]."' and  DATE_FORMAT(need_advance.end_time,'%Y-%m-%d') <= '".$params["advance_search"]["todate"]."')";
+		if($params["advance_search"]["fromdate"] AND $params["advance_search"]["todate"]) {
+			$where .= " And p.id In (select project_id from civicrm_volunteer_need AS need_advance where need_advance.is_flexible = 0 And DATE_FORMAT(need_advance.start_time,'%Y-%m-%d')>='".$params["advance_search"]["fromdate"]."' and  DATE_FORMAT(need_advance.end_time,'%Y-%m-%d') <= '".$params["advance_search"]["todate"]."')";
+		}
 		$proximityquery=CRM_Volunteer_BAO_Project::getProximity($params["advance_search"]["proximity"]);
-		$proximityquery=str_replace("civicrm_address","addr",$proximityquery);
-		//print_r($proximityquery);
+		$proximityquery=str_replace("civicrm_address","addr",$proximityquery);		
 		$where .= " And ".$proximityquery;				
 	}
 	// Order by Logic.
@@ -273,8 +274,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 	}
 	$offset = ($page_no-1) * $no_of_records_per_page;
 	$limit = " LIMIT ".$offset.", ".$no_of_records_per_page;
-	$sql = $select . $from . $join . $where . $orderby . $limit; //echo($sql);
-	
+	$sql = $select . $from . $join . $where . $orderby . $limit; 
 	$dao = new CRM_Core_DAO();
     $dao->query($sql);
 	
