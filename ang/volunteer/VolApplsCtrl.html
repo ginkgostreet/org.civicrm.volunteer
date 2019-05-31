@@ -56,26 +56,19 @@
             <form name="volOppSearchForm" crm-ui-id-scope>
              <!-- <div crm-ui-field="{name: 'volOppSearchForm.date_start', title: ts('Between')}" class="crm-vol-opp-time"> -->
              <div>
-              <label>Between</label>
-              <input crm-ui-id="volOppSearchForm.date_start" crm-ui-datepicker="{time: false}"  ng-model="date_start" />
+              <label>Between<span crm-ui-visible="crmIsRequired" class="crm-marker" title="This field is required." style="visibility: inherit;">*</span></label>
+              <input crm-ui-id="volOppSearchForm.date_start" crm-ui-datepicker="{time: false}"  ng-model="date_start" ng-required />
               <label crm-ui-for="volOppSearchForm.date_end">and</label>
               <input crm-ui-id="volOppSearchForm.date_end" crm-ui-datepicker="{time: false}"  ng-model="date_end" />
               <div class="posta-code-wrapper">
-                Within <select ng-model="radius">
-                <option value="2">2</option>
-                <option value="5">5</option>
-                <option value="10">10</option>
-                <option value="25">25</option>
-                <option value="100">100</option>
+                Within <select ng-model="radius" ng-options="option.value as option.label for option in radiusvalue" ng-init="radius = radiusvalue[0].value" >               
               </select> 
-              <select ng-model="unit">
-                <option  value="mi">mi</option>
-                <option value="km">km</option>
+              <select ng-model="unit" ng-options="option.value as option.label for option in proximityUnits" ng-init="unit = proximityUnits[1].value">              
               </select> of postal code <input type="text" class="postal-code-input" ng-model="postal_code"></div>
               <br>
                <div >
-               Lat:  <input type="text" name="let" ng-model="lat">
-               Log:  <input type="text" name="log" ng-model="log">
+               Latitude:  <input type="text" name="let" ng-model="lat">
+               Longitude:  <input type="text" name="log" ng-model="log">
               </div> 
               <br>
               <div >
@@ -109,10 +102,10 @@
 </div>
 <div class="clear"></div>
 <!-- Results -->
-<!--  <div class="crm-vol-opp-results messages status no-popup" >
+  <div class="crm-vol-opp-results messages status no-popup" ng-if="appeals.length==0">
    <div class="icon inform-icon"></div>
    {{ts('No results found. Please try different search criteria.')}}
-   </div> -->
+   </div> 
 <div ng-include="currentTemplate"></div>
 
 <div class="pull-right">            
