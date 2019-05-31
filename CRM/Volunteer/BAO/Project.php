@@ -983,4 +983,15 @@ class CRM_Volunteer_BAO_Project extends CRM_Volunteer_DAO_Project {
     return self::getFlexibleNeedID($this->id);
   }
 
+  /**
+   * Get proximity where condition
+   *
+   * @proximity array $params
+   * @return array for buildProximityWhere
+   */
+  public static function getProximity(array $proximity) {
+      $proxWhereCond=self::buildProximityWhere($proximity);
+      return $proxWhereCond;
+  }
+
 }

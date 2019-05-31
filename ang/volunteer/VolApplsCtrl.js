@@ -24,12 +24,18 @@
       }
 
       //Get appeal data with search text and/or pagination
-      getAppeals = function (currentPage,search,orderby,order) {       
+      getAppeals = function (advancedFilter,filterObj) {       
         let params={};        
         $scope.currentPage?params.page_no=$scope.currentPage:null; 
         $scope.search?params.search_appeal=$scope.search:null;
         $scope.sortby?params.orderby=$scope.sortby:null;
-        $scope.order?params.order=$scope.order:null;        
+        $scope.order?params.order=$scope.order:null; 
+        if(advancedFilter) {
+          params.advance_search={};
+          params.advance_search.fromdate=filterObj.fromdate;
+          params.advance_search.todate=filterObj.todate;
+          params.advance_search.proximity=filterObj.proximity;
+        }      
         return crmApi('VolunteerAppeal', 'getsearchresult', params)
          .then(function (data) {          
               let projectAppeals=[];              
@@ -38,7 +44,8 @@
               }            
               $scope.appeals=projectAppeals;
               $scope.totalRec=data.values.total_appeal;              
-              $scope.numberOfPages= Math.ceil($scope.totalRec/$scope.pageSize);            
+              $scope.numberOfPages= Math.ceil($scope.totalRec/$scope.pageSize);  
+              $scope.closeModal();          
             },function(error) {
                 if (error.is_error) {
                     CRM.alert(error.error_message, ts("Error"), "error");
@@ -150,6 +157,23 @@
             alert("Sorry, your browser does not support HTML5 geolocation.");
         }
     }
+
+  $scope.advanceFilter=function() {
+    if($scope.postal_code==null && ($scope.lat==null && $scope.log==null)) {
+        return false;
+    } else {
+      let params={proximity:{}};
+      $scope.date_start?params.fromdate=$scope.date_start:null;
+      $scope.date_end?params.todate=$scope.date_end:null;
+      $scope.radius?params.proximity.radius=$scope.radius:null;
+      $scope.unit?params.proximity.unit=$scope.unit:null;
+      $scope.lat?params.proximity.lat=$scope.lat:null;
+      $scope.log?params.proximity.log=$scope.log:null;
+      $scope.postal_code?params.proximity.postal_code=$scope.postal_code:null;
+      getAppeals(1,params);      
+    }
+
+  }
 
   });
 
