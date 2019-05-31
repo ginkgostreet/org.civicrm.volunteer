@@ -133,33 +133,49 @@
     }
 
     $scope.active = 1;
-  $scope.selectTab = function(value){
-    $scope.active = value;
-  }
+    $scope.selectTab = function(value){
+      $scope.active = value;
+    }
 
-  $scope.isActive = function(value){
-    if($scope.active==value){
-      return true;
+    $scope.isActive = function(value){
+      if($scope.active==value){
+        return true;
+      }
+      else{
+        return false;
+      }
     }
-    else{
-      return false;
-    }
-  }
 
-  $scope.getPosition=function getPosition(){
-        if(navigator.geolocation){
-            navigator.geolocation.getCurrentPosition(function(position){
-                var positionInfo =  "Latitude: " + position.coords.latitude + ", " + "Longitude: " + position.coords.longitude ;
-                //document.getElementById("result").innerHTML = positionInfo;
-                $scope.latlog=positionInfo;
-            });
-        } else{
-            alert("Sorry, your browser does not support HTML5 geolocation.");
-        }
-    }
+    $scope.getPosition = function (){
+          if(navigator.geolocation){
+              navigator.geolocation.getCurrentPosition(function(position){
+                  var positionInfo =  "Latitude: " + position.coords.latitude + ", " + "Longitude: " + position.coords.longitude ;
+                  //document.getElementById("result").innerHTML = positionInfo;
+                  $scope.latlog=positionInfo;
+                  $scope.lat=position.coords.latitude;
+                  $scope.log=position.coords.longitude;
+              });
+          } else{
+              alert("Sorry, your browser does not support HTML5 geolocation.");
+          }
+      }
+
+  $scope.proximityUnits = [
+      {value: 'km', label: ts('km')},
+      {value: 'miles', label: ts('miles')}
+    ];
+
+  $scope.radiusvalue = [
+      {value: 2, label: ts('2')},
+      {value: 5, label: ts('5')},
+      {value: 10, label: ts('10')},
+      {value: 25, label: ts('25')},
+      {value: 100, label: ts('100')}     
+    ];
 
   $scope.advanceFilter=function() {
     if($scope.postal_code==null && ($scope.lat==null && $scope.log==null)) {
+        CRM.alert(ts("Either Postal code or Latitude and Longitude is required"), ts("Error"), "error");
         return false;
     } else {
       let params={proximity:{}};
@@ -179,20 +195,3 @@
 
 })(angular, CRM.$, CRM._);
 
-
-// function openCity(evt, cityName) {
-//   var i, tabcontent, tablinks;
-//   tabcontent = angular.element(document.querySelector(".tabcontent"));//document.getElementsByClassName("tabcontent");
-//   for (i = 0; i < tabcontent.length; i++) {
-//     tabcontent[i].style.display = "none";
-//   }
-//   tablinks = angular.element(document.querySelector(".tablinks"));//document.getElementsByClassName("tablinks");
-//   for (i = 0; i < tablinks.length; i++) {
-//     tablinks[i].className = tablinks[i].className.replace(" active", "");
-//   }
-//   document.getElementById(cityName).style.display = "block";
-//   evt.currentTarget.className += " active";
-// }
-
-// // Get the element with id="defaultOpen" and click on it
-// document.getElementById("defaultOpen").click();
