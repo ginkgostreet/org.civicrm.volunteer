@@ -215,13 +215,13 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 	$search_appeal = $params['search_appeal'];
 	$search_appeal = trim($search_appeal);
 	$select = " SELECT appeal.*, addr.street_address, addr.city, addr.postal_code";
-	$select .= " , GROUP_CONCAT(DISTINCT need.id ) as need_id,mdt.need_start_time";
-    $from = " FROM civicrm_volunteer_appeal AS appeal ";
+	$select .= " , GROUP_CONCAT(DISTINCT need.id ) as need_id";//,mdt.need_start_time
+    $from = " FROM civicrm_volunteer_appeal AS appeal";
 	$join = " LEFT JOIN civicrm_volunteer_project AS p ON (p.id = appeal.project_id) ";
 	$join .= " LEFT JOIN civicrm_loc_block AS loc ON (loc.id = appeal.loc_block_id) ";
 	$join .= " LEFT JOIN civicrm_address AS addr ON (addr.id = loc.address_id) ";
 	$join .= " LEFT JOIN civicrm_volunteer_need AS need ON (need.project_id = p.id) And need.is_active = 1 And need.is_flexible = 1 And need.visibility_id = 1";
-	$join .= " LEFT JOIN (SELECT MIN(start_time) as need_start_time, id, project_id as need_project_id FROM civicrm_volunteer_need as need_sort Where id IS NOT NULL GROUP BY project_id) AS mdt ON (mdt.need_project_id = p.id)";
+	//$join .= " LEFT JOIN (SELECT MIN(start_time) as need_start_time, id, project_id as need_project_id FROM civicrm_volunteer_need as need_sort Where id IS NOT NULL GROUP BY project_id) AS mdt ON (mdt.need_project_id = p.id)";
 
 	
 	if($show_beneficiary_at_front == 1) {
@@ -235,6 +235,15 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 	if(isset($search_appeal) && !empty($search_appeal)) {
 		$where .= " And (appeal.title Like '%".$search_appeal."%' OR appeal.appeal_description Like '%".$search_appeal."%')";
 	}
+	//Advance search with date	
+	if($params["advance_search"]) {
+		//select project_id from civicrm_volunteer_need AS need_advance where need_advance.is_flexible = 0 And DATE_FORMAT(need_advance.start_time,'%Y-%m-%d') >= '2019-05-30' And DATE_FORMAT(need_advance.end_time,'%Y-%m-%d') >= '2019-05-31'
+		$where .= " And p.id In (select project_id from civicrm_volunteer_need AS need_advance where need_advance.is_flexible = 0 And DATE_FORMAT(need_advance.start_time,'%Y-%m-%d')>='".$params["advance_search"]["fromdate"]."' and  DATE_FORMAT(need_advance.end_time,'%Y-%m-%d') <= '".$params["advance_search"]["todate"]."')";
+		$proximityquery=CRM_Volunteer_BAO_Project::getProximity($params["advance_search"]["proximity"]);
+		$proximityquery=str_replace("civicrm_address","addr",$proximityquery);
+		//print_r($proximityquery);
+		$where .= " And ".$proximityquery;				
+	}
 	// Order by Logic.
 	$orderByColumn = "appeal.id";
 	$order = "ASC";
@@ -242,6 +251,8 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 		if($params["orderby"] == "project_beneficiary") {
 			$orderByColumn = "cc.display_name";
 		} elseif($params["orderby"] == "upcoming_appeal") {
+			$select .= ", mdt.need_start_time";
+			$join .= " LEFT JOIN (SELECT MIN(start_time) as need_start_time, id, project_id as need_project_id FROM civicrm_volunteer_need as need_sort Where id IS NOT NULL GROUP BY project_id) AS mdt ON (mdt.need_project_id = p.id)";			
 -			$orderByColumn = "mdt.need_start_time";
 		} else {
 			$orderByColumn = $params["orderby"];
@@ -262,7 +273,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 	}
 	$offset = ($page_no-1) * $no_of_records_per_page;
 	$limit = " LIMIT ".$offset.", ".$no_of_records_per_page;
-	$sql = $select . $from . $join . $where . $orderby . $limit;
+	$sql = $select . $from . $join . $where . $orderby . $limit; //echo($sql);
 	
 	$dao = new CRM_Core_DAO();
     $dao->query($sql);
@@ -289,7 +300,9 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 		$appeal['hide_appeal_volunteer_button'] = $dao->hide_appeal_volunteer_button;
 		$appeal['beneficiary_display_name'] = $dao->beneficiary_display_name;
 		$appeal['need_id'] = $dao->need_id;
-		$appeal['need_start_time'] = $dao->need_start_time;
+		if($params["orderby"] == "upcoming_appeal") {
+			$appeal['need_start_time'] = $dao->need_start_time;
+		}
 
 		
 		$address = "";
