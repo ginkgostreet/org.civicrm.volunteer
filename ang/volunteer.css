@@ -385,7 +385,7 @@ body {font-family: "Lato", sans-serif;}
   font-size: 13px  !important;
 }
 .posta-code-wrapper {
-    margin-top: 15px;
+  margin-top: 15px;
 }
 .show-opp input[type="checkbox"]{
   height: unset !important;
@@ -393,4 +393,9 @@ body {font-family: "Lato", sans-serif;}
 .modal-footer button{
   float: right;
   margin-top: 10px;
+}
+.volunteer_appeal_result_count_message {
+  vertical-align: middle;
+  margin-top: 5px;
+  margin-left: 14px;
 }

@@ -547,44 +547,44 @@ class CRM_Volunteer_BAO_Project extends CRM_Volunteer_DAO_Project {
     if (!CRM_Utils_Rule::numeric($radius)) {
       throw new Exception(ts('Radius should exist and be numeric'));
     }
+    if(!isset($lat) && !isset($lon)) {
+      if (!CRM_Utils_Rule::numeric($lat) || !CRM_Utils_Rule::numeric($lon)) {
+        // try to supply a default country if none provided
+        if (empty($country)) {
+          $settings = civicrm_api3('Setting', 'get', array(
+            "return" => array("defaultContactCountry"),
+            "sequential" => 1,
+          ));
+          $country = $settings['values'][0]['defaultContactCountry'];
+        }
+      
+        if (empty($country)) {
+          throw new Exception(ts('Either Country or both Latitude and Longitude are required'));
+        }
 
-    if (!CRM_Utils_Rule::numeric($lat) || !CRM_Utils_Rule::numeric($lon)) {
-      // try to supply a default country if none provided
-      if (empty($country)) {
-        $settings = civicrm_api3('Setting', 'get', array(
-          "return" => array("defaultContactCountry"),
-          "sequential" => 1,
-        ));
-        $country = $settings['values'][0]['defaultContactCountry'];
-      }
+        // TODO: I think CRM_Utils_Geocode_*::format should be responsible for this
+        // If/when CRM-17245 is closed, this if-block can be removed.
+        if (CRM_Utils_Type::validate($country, 'Positive', FALSE)) {
+          $params['country'] = civicrm_api3('Country', 'getvalue', array(
+            'id' => $country,
+            'return' => 'name',
+          ));
+        }
 
-      if (empty($country)) {
-        throw new Exception(ts('Either Country or both Latitude and Longitude are required'));
+        // TODO: support other geocoders
+        $geocodeSuccess = CRM_Utils_Geocode_Google::format($params);
+        if (!$geocodeSuccess) {
+          // this is intentionally a string; a query like "SELECT * FROM foo WHERE FALSE"
+          // will return an empty set, which is what we should do if the provided address
+          // can't be geocoded
+          return 'FALSE';
+        }
+        // $params is passed to the geocoder by reference; on success, these values
+        // will be available
+        $lat = $params['geo_code_1'];
+        $lon = $params['geo_code_2'];
       }
-
-      // TODO: I think CRM_Utils_Geocode_*::format should be responsible for this
-      // If/when CRM-17245 is closed, this if-block can be removed.
-      if (CRM_Utils_Type::validate($country, 'Positive', FALSE)) {
-        $params['country'] = civicrm_api3('Country', 'getvalue', array(
-          'id' => $country,
-          'return' => 'name',
-        ));
-      }
-
-      // TODO: support other geocoders
-      $geocodeSuccess = CRM_Utils_Geocode_Google::format($params);
-      if (!$geocodeSuccess) {
-        // this is intentionally a string; a query like "SELECT * FROM foo WHERE FALSE"
-        // will return an empty set, which is what we should do if the provided address
-        // can't be geocoded
-        return 'FALSE';
-      }
-      // $params is passed to the geocoder by reference; on success, these values
-      // will be available
-      $lat = $params['geo_code_1'];
-      $lon = $params['geo_code_2'];
     }
-
     $conversionFactor = ($unit == "mile") ? 1609.344 : 1000;
     //radius in meters
     $radius = $radius * $conversionFactor;
