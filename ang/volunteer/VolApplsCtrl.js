@@ -9,84 +9,92 @@
   });
 
   angular.module('volunteer').controller('VolApplsCtrl', function ($route, $scope,crmApi,$window) {       
-      var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
-      $scope.search="";           
-      $scope.currentTemplate = "~/volunteer/AppealGrid.html"; //default view is grid view
-      $scope.totalRec;
-      $scope.currentPage = 1;
-      $scope.pageSize = 10;
-      $scope.options=[{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"dateS",val:"Newest Appeals"},{key:"dateE",val:"Upcoming"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}]; 
-      $scope.sortValue=$scope.sortby=$scope.order=null;
-      $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/ext/org.civicrm.volunteer/img/";
-      //Change reult view
-      $scope.changeview = function(tpl){
-        $scope.currentTemplate = tpl;        
+    var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
+    $scope.search="";
+    $scope.currentTemplate = "~/volunteer/AppealGrid.html"; //default view is grid view
+    $scope.totalRec;
+    $scope.currentPage = 1;
+    $scope.pageSize = 10;
+    $scope.options=[{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"dateS",val:"Newest Appeals"},{key:"dateE",val:"Upcoming"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}];
+    $scope.sortValue=$scope.sortby=$scope.order=null;
+    $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/ext/org.civicrm.volunteer/img/";
+    //Change reult view
+    $scope.changeview = function(tpl){
+      $scope.currentTemplate = tpl;
+    }
+    //Get appeal data with search text and/or pagination
+    getAppeals = function (advancedFilter,filterObj) {
+      let params={};
+      $scope.currentPage?params.page_no=$scope.currentPage:null;
+      $scope.search?params.search_appeal=$scope.search:null;
+      $scope.sortby?params.orderby=$scope.sortby:null;
+      $scope.order?params.order=$scope.order:null;
+      if($scope.advance_search) {
+        // Default Proximity Object Set to empty.
+        params.advance_search={proximity:{}};
+        $scope.date_start?params.advance_search.fromdate=$scope.date_start:null;
+        $scope.date_end?params.advance_search.todate=$scope.date_end:null;
+        // If Show appeals done anywhere checkbox is disable then and then proximity set. 
+        if(!$scope.show_appeals_done_anywhere) {
+          $scope.radius?params.advance_search.proximity.radius=$scope.radius:null;
+          $scope.unit?params.advance_search.proximity.unit=$scope.unit:null;
+          if($scope.location_finder_way == "use_postal_code") {
+            $scope.postal_code?params.advance_search.proximity.postal_code=$scope.postal_code:null;
+          } else {
+            $scope.lat?params.advance_search.proximity.lat=$scope.lat:null;
+            $scope.lon?params.advance_search.proximity.lon=$scope.lon:null;
+          }
+        }
+        $scope.show_appeals_done_anywhere?params.advance_search.show_appeals_done_anywhere=$scope.show_appeals_done_anywhere:null;
       }
-
-      //Get appeal data with search text and/or pagination
-      getAppeals = function (advancedFilter,filterObj) {       
-        let params={};        
-        $scope.currentPage?params.page_no=$scope.currentPage:null; 
-        $scope.search?params.search_appeal=$scope.search:null;
-        $scope.sortby?params.orderby=$scope.sortby:null;
-        $scope.order?params.order=$scope.order:null; 
-        if(advancedFilter) {
-          params.advance_search={};
-          params.advance_search.fromdate=filterObj.fromdate;
-          params.advance_search.todate=filterObj.todate;
-          params.advance_search.proximity=filterObj.proximity;
-        }      
-        return crmApi('VolunteerAppeal', 'getsearchresult', params)
-         .then(function (data) {          
-              let projectAppeals=[];              
-              for(let key in data.values.appeal) {
-                projectAppeals.push(data.values.appeal[key]);
-              }            
-              $scope.appeals=projectAppeals;
-              $scope.totalRec=data.values.total_appeal;              
-              $scope.numberOfPages= Math.ceil($scope.totalRec/$scope.pageSize);  
-              $scope.closeModal();          
-            },function(error) {
-                if (error.is_error) {
-                    CRM.alert(error.error_message, ts("Error"), "error");
-                } else {
-                    return error;
-                }
-            }); 
-
-      }  
-
-     //Loading  list on first time
-     getAppeals();
+      return crmApi('VolunteerAppeal', 'getsearchresult', params)
+        .then(function (data) {
+          let projectAppeals=[];
+          for(let key in data.values.appeal) {
+            projectAppeals.push(data.values.appeal[key]);
+          }
+          $scope.appeals=projectAppeals;
+          $scope.totalRec=data.values.total_appeal;
+          $scope.numberOfPages= Math.ceil($scope.totalRec/$scope.pageSize);
+          $scope.closeModal();
+        },function(error) {
+          if (error.is_error) {
+            CRM.alert(error.error_message, ts("Error"), "error");
+          } else {
+            return error;
+          }
+        }); 
+    }  
+    //Loading  list on first time
+    getAppeals();
 
     //update current page to previouse and get result data
-     $scope.prevPageData=function(){
-      $scope.currentPage=$scope.currentPage-1;     
-       getAppeals();
-     }
+    $scope.prevPageData=function(){
+      $scope.currentPage=$scope.currentPage-1;
+      getAppeals();
+    }
 
     //update current page to next and get result data
-     $scope.nextPageData=function(){     
+    $scope.nextPageData=function(){
       $scope.currentPage=$scope.currentPage+1;
       getAppeals();
-     }
+    }
 
     //reset page count and search data
-     $scope.searchRes=function(){
-       $scope.currentPage = 1;
-        getAppeals();
-       //getAppeals($scope.currentPage,$scope.search);
-     }
-
-     //sort title,dates,beneficiaries by asc and desc
-     $scope.sort=function(){
+    $scope.searchRes=function(){
       $scope.currentPage = 1;
-      checkAndSetSortValue();      
       getAppeals();
-     }
+    }
 
-     //Set sort by and order by according to value selected
-     function checkAndSetSortValue() {
+    //sort title,dates,beneficiaries by asc and desc
+    $scope.sort=function(){
+      $scope.currentPage = 1;
+      checkAndSetSortValue();
+      getAppeals();
+    }
+
+    //Set sort by and order by according to value selected
+    function checkAndSetSortValue() {
       let sortby,orderby=null;
       if($scope.sortValue.key=="titleA"){
         sortby="title";
@@ -100,33 +108,32 @@
       } else if($scope.sortValue.key=="dateE"){
         sortby="upcoming_appeal";
         orderby="DESC";
-      }else if($scope.sortValue.key=="benfcrA"){
-         sortBy="project_beneficiary";
+      } else if($scope.sortValue.key=="benfcrA"){
+        sortBy="project_beneficiary";
         orderby="ASC";
       } else if($scope.sortValue.key=="benfcrD"){
-         sortBy="project_beneficiary";
-         orderby="DESC";
+        sortBy="project_beneficiary";
+        orderby="DESC";
       }
       $scope.sortby=sortby;
       $scope.order=orderby;
-     }
+    }
 
-     $scope.redirectTo=function(appealId) {      
-        $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/appeal/"+appealId;
-     }
+    $scope.redirectTo=function(appealId) {
+      $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/appeal/"+appealId;
+    }
 
-     $scope.volSignup= function(needId,projectId) {
+    $scope.volSignup= function(needId,projectId) {
       if(needId) {
-         $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/volunteer/signup?reset=1&needs[]="+needId+"&dest=list";
-      }else {
-         $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/opportunities?project="+projectId+"&hideSearch=1";
+        $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/volunteer/signup?reset=1&needs[]="+needId+"&dest=list";
+      } else {
+        $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/opportunities?project="+projectId+"&hideSearch=1";
       }
-
-     }
+    }
 
     $scope.openModal=function(){
       $scope.modalClass="modalDialog"
-     }
+    }
 
     $scope.closeModal=function() {
       $scope.modalClass=null;
@@ -141,57 +148,45 @@
       if($scope.active==value){
         return true;
       }
-      else{
+      else {
         return false;
       }
     }
 
     $scope.getPosition = function (){
-          if(navigator.geolocation){
-              navigator.geolocation.getCurrentPosition(function(position){
-                  var positionInfo =  "Latitude: " + position.coords.latitude + ", " + "Longitude: " + position.coords.longitude ;
-                  //document.getElementById("result").innerHTML = positionInfo;
-                  $scope.latlog=positionInfo;
-                  $scope.lat=position.coords.latitude;
-                  $scope.log=position.coords.longitude;
-              });
-          } else{
-              alert("Sorry, your browser does not support HTML5 geolocation.");
-          }
+      if(navigator.geolocation){
+        navigator.geolocation.getCurrentPosition(showPosition);
+      } else {
+        alert("Sorry, your browser does not support HTML5 geolocation.");
       }
+    }
+  
+    function showPosition(position) {
+      $scope.$apply(function() {
+        $scope.lat = position.coords.latitude;
+        $scope.lon= position.coords.longitude;
+      });  
+    };
 
-  $scope.proximityUnits = [
+    $scope.proximityUnits = [
       {value: 'km', label: ts('km')},
       {value: 'miles', label: ts('miles')}
     ];
 
-  $scope.radiusvalue = [
+    $scope.radiusvalue = [
       {value: 2, label: ts('2')},
       {value: 5, label: ts('5')},
       {value: 10, label: ts('10')},
       {value: 25, label: ts('25')},
-      {value: 100, label: ts('100')}     
+      {value: 100, label: ts('100')}
     ];
 
-  $scope.advanceFilter=function() {
-    if($scope.postal_code==null && ($scope.lat==null && $scope.log==null)) {
-        CRM.alert(ts("Either Postal code or Latitude and Longitude is required"), ts("Error"), "error");
-        return false;
-    } else {
+    $scope.advanceFilter=function() {
       let params={proximity:{}};
-      $scope.date_start?params.fromdate=$scope.date_start:null;
-      $scope.date_end?params.todate=$scope.date_end:null;
-      $scope.radius?params.proximity.radius=$scope.radius:null;
-      $scope.unit?params.proximity.unit=$scope.unit:null;
-      $scope.lat?params.proximity.lat=$scope.lat:null;
-      $scope.log?params.proximity.log=$scope.log:null;
-      $scope.postal_code?params.proximity.postal_code=$scope.postal_code:null;
-      getAppeals(1,params);      
+      $scope.advance_search = true;
+      $scope.currentPage = 1;
+      getAppeals();
     }
-
-  }
-
   });
 
 })(angular, CRM.$, CRM._);
-
