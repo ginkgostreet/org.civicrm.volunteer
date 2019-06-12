@@ -542,7 +542,7 @@ class CRM_Volunteer_BAO_Project extends CRM_Volunteer_DAO_Project {
    *   SQL fragment (partial where clause)
    * @throws Exception
    */
-  private static function buildProximityWhere(array $params) {
+  public static function buildProximityWhere(array $params) {
     $country = $lat = $lon = $radius = $unit = NULL;
     extract($params, EXTR_IF_EXISTS);
 
@@ -983,15 +983,5 @@ class CRM_Volunteer_BAO_Project extends CRM_Volunteer_DAO_Project {
     return self::getFlexibleNeedID($this->id);
   }
 
-  /**
-   * Get proximity where condition
-   *
-   * @proximity array $params
-   * @return array for buildProximityWhere
-   */
-  public static function getProximity(array $proximity) {
-      $proxWhereCond=self::buildProximityWhere($proximity);
-      return $proxWhereCond;
-  }
 
 }

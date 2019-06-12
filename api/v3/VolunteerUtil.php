@@ -188,6 +188,61 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
   if ($controller === 'VolOppsCtrl') {
     $results['roles'] = CRM_Core_OptionGroup::values('volunteer_role', FALSE, FALSE, TRUE);
   }
+  // Manage supporting data for VolunteerAppeal.
+  if($controller === 'VolunteerAppeal') {
+    $results['appeal_custom_field_groups'] = array();
+    // Get custom fieldset for volunteer appeal.
+    $custom_fieldset_id = CRM_Utils_Array::value('custom_fieldset_id', $params);
+    if($custom_fieldset_id) {
+      $appealCustomFieldGroupResult = civicrm_api3('CustomGroup', 'get', array(
+        'extends' => 'VolunteerAppeal',
+        'is_active' => 1,
+        'return' => array('id'),
+        'sort' => 'weight',
+        'id' => $custom_fieldset_id,
+      ));
+      foreach ($appealCustomFieldGroupResult['values'] as $v) {
+        // Get metadata of custom fieldset.
+        $meta = civicrm_api3('Fieldmetadata', 'get', array(
+          'entity' => "CustomGroup",
+          'entity_params' => array('id' => $v['id']),
+          'context' => "Angular",
+        ));
+        $results['appeal_custom_field_groups'][] = $meta['values'];
+      }
+    } else {
+      // Get the appeal ID from parameters.
+      $appeal_id = CRM_Utils_Array::value('appeal_id', $params);
+      if($appeal_id) {
+        // Get custom field set group for volunteer appeal.
+        $appealCustomFieldGroupResult = civicrm_api3('CustomGroup', 'get', array(
+          'extends' => 'VolunteerAppeal',
+          'is_active' => 1,
+          'return' => array('id'),
+          'sort' => 'weight',
+        ));
+        foreach ($appealCustomFieldGroupResult['values'] as $v) {
+          // Get custom field set metadata.
+          $meta = civicrm_api3('Fieldmetadata', 'get', array(
+            'entity' => "CustomGroup",
+            'entity_params' => array('id' => $v['id']),
+            'context' => "Angular",
+          ));
+          // Get the detail of specific appeal with custom data.
+          $appealData = civicrm_api3('VolunteerAppeal', 'getsingle', [
+            'project_id' => 1,
+            'id' => $appeal_id,
+            'return' => ['custom'],
+          ]);
+          $custom_field = key($meta['values']['fields']);
+          // Display only those metadata which were set already.
+          if($appealData[$custom_field]) {
+            $results['appeal_custom_field_groups'][] = $meta['values'];
+          }
+        }
+      }
+    }
+  }
 
   $results['use_profile_editor'] = CRM_Volunteer_Permission::check(array("access CiviCRM","profile listings and forms"));
   if (!$results['use_profile_editor']) {

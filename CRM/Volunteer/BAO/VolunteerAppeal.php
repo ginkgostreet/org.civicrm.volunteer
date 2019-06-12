@@ -4,24 +4,114 @@ use CRM_Volunteer_ExtensionUtil as E;
 class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppeal {
 
   /**
-   * Create a new VolunteerAppeal based on array-data
+   * Create a Volunteer Appeal for specific project
    *
-   * @param array $params key-value pairs
-   * @return CRM_Volunteer_DAO_VolunteerAppeal|NULL
+   * Takes an associative array and creates a Appeal object. This method is
+   * invoked from the API layer.
+   *
+   * @param array $params
+   *   an assoc array of name/value pairs
+   *
+   * @return CRM_Volunteer_BAO_VolunteerAppeal object
    */
-  public static function create($params) {
-    $className = 'CRM_Volunteer_DAO_VolunteerAppeal';
-    $entityName = 'VolunteerAppeal';
-    $hook = empty($params['id']) ? 'create' : 'edit';
+  public static function create(array $params) {
+    // Get appeal ID.
+    $appealId = CRM_Utils_Array::value('id', $params);
+    $op = empty($appealId) ? CRM_Core_Action::ADD : CRM_Core_Action::UPDATE;
 
-    CRM_Utils_Hook::pre($hook, $entityName, CRM_Utils_Array::value('id', $params), $params);
-    $instance = new $className();
-    $instance->copyValues($params);
-    $instance->save();
-    CRM_Utils_Hook::post($hook, $entityName, $instance->id, $instance);
+    if (!empty($params['check_permissions']) && !CRM_Volunteer_Permission::checkProjectPerms($op, $appealId)) {
+      CRM_Utils_System::permissionDenied();
 
-    return $instance;
-  } 
+      // FIXME: If we don't return here, the script keeps executing. This is not
+      // what I expect from CRM_Utils_System::permissionDenied().
+      return FALSE;
+    }
+    
+    // Validate create appeal form parameter.
+    $params = self::validateCreateParams($params);
+    
+   /* Set Image Path for upload image of appeal and uplaod original image and thumb
+    * image in folder.
+    * Resize image and set 150*150 for thumb image.
+    * Thumb image is used for display appeal image on search page.
+    */
+    // Get the global configuration.
+    $config = CRM_Core_Config::singleton();
+    // Convert base64 image into image file and Move Upload Image into respective folder.
+    $upload_appeal_directory = $config->imageUploadDir.'appeal/';
+    $upload_appeal_main_directory = $config->imageUploadDir.'appeal/main/';
+    $upload_appeal_thumb_directory = $config->imageUploadDir.'appeal/thumb/';
+    // If appeal folder not exist, create appeal folder on civicrm.files folder.
+    if (!file_exists($upload_appeal_directory)) {
+      mkdir($upload_appeal_directory, 0777, TRUE);
+    }
+    // If main image folder not exist, create main folder under appeal folder on civicrm.files folder.
+    if (!file_exists($upload_appeal_main_directory)) {
+      mkdir($upload_appeal_main_directory, 0777, TRUE);
+    }
+    // If thumb image folder not exist, create thumb folder under appeal folder on civicrm.files folder.
+    if (!file_exists($upload_appeal_thumb_directory)) {
+      mkdir($upload_appeal_thumb_directory, 0777, TRUE);
+    }
+    // If new image is updated then resize that image and move that into folder.
+    if(isset($params['image_data'])) {
+      $image_parts = explode(";base64,", $params['image_data']);
+      $image_base64 = base64_decode($image_parts[1]);
+      $current_time = time();
+      $file = $upload_appeal_main_directory . $current_time."_".$params['image'];
+      file_put_contents($file, $image_base64);
+      
+      // Resize Image with 150*150 and save into destination folder. 
+      $source_path = $upload_appeal_main_directory . $current_time."_".$params['image'];
+      $destination_path = $upload_appeal_thumb_directory . $current_time."_".$params['image'];
+      $imgSmall = image_load($source_path);
+      image_resize($imgSmall, 150, 150);
+      image_save($imgSmall, $destination_path);
+    }
+    // If image is not updated on edit page, save old image name in database.
+    if($params['image'] == $params['old_image']) {
+      $params['image'] = $params['old_image'];
+    } else {
+      $params['image'] = $current_time."_".$params['image'];
+    }
+
+    $appeal = new CRM_Volunteer_BAO_VolunteerAppeal();
+    $appeal->copyValues($params);
+    $appeal->save();
+
+    // Custom data saved in database for appeal if user has set any.
+    $customData = CRM_Core_BAO_CustomField::postProcess($params, $appeal->id, 'VolunteerAppeal');
+    if (!empty($customData)) {
+      CRM_Core_BAO_CustomValueTable::store($customData, 'civicrm_volunteer_appeal', $appeal->id);
+    }
+
+    return $appeal;
+  }
+
+  /**
+   * Strips invalid params, throws exception in case of unusable params.
+   *
+   * @param array $params
+   *   Params for self::create().
+   * @return array
+   *   Filtered params.
+   *
+   * @throws Exception
+   *   Via delegate.
+   */
+  private static function validateCreateParams(array $params) {
+    if (empty($params['id']) && empty($params['title'])) {
+      CRM_Core_Error::fatal('Title field is required for appeal creation.');
+    }
+    if (empty($params['image']) && empty($params['image'])) {
+      CRM_Core_Error::fatal('Image field is required for appeal creation.');
+    }
+    if (empty($params['appeal_description']) && empty($params['appeal_description'])) {
+      CRM_Core_Error::fatal('Appeal Description field is required for appeal creation.');
+    }
+
+    return $params;
+  }
 
   /**
    * Get a list of Project Appeal matching the params.
@@ -175,7 +265,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
   }
 
 
-/**
+  /**
    * @inheritDoc This override adds a little data massaging prior to calling its
    * parent.
    *
@@ -237,7 +327,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
         $where .= " And appeal.location_done_anywhere = 1 ";
       } else {
       if(isset($params["advance_search"]["proximity"]['postal_code']) || (isset($params["advance_search"]["proximity"]['lat']) && isset($params["advance_search"]["proximity"]['lon']))) {
-          $proximityquery = CRM_Volunteer_BAO_Project::getProximity($params["advance_search"]["proximity"]);
+          $proximityquery = CRM_Volunteer_BAO_Project::buildProximityWhere($params["advance_search"]["proximity"]);
           $proximityquery = str_replace("civicrm_address", "addr", $proximityquery);
           $where .= " And ".$proximityquery;
         }

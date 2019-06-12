@@ -399,3 +399,36 @@ body {font-family: "Lato", sans-serif;}
   margin-top: 5px;
   margin-left: 14px;
 }
+.manage_appeal_form .display_volunteer_note {
+  margin-left: 10px;
+  font-size: 0.8em;
+  font-weight: normal;
+  white-space: normal;
+  color: #696969;
+}
+.manage_appeal_form .location_done_anywhere {
+  margin-left: 30px;  
+}
+.custom_fieldset_link .custom-fieldset-text {
+  color: #fff;
+  text-decoration: none;
+}
+.custom_fieldset_link {
+  margin-left: 10px;
+  cursor: pointer;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  background: #70716B url(../i/crm-button-bg.gif) repeat-x top left;
+  display: inline-block;
+  width: 20%;
+  padding: 5px;
+  border-radius: 5px;
+}
+.custom_fieldgroup_dropdown {
+  display: inline-block;
+  height: 35px;
+}
+.crm-button-remove-custom-group {
+  float: right;
+  margin-right: 20px;
+}

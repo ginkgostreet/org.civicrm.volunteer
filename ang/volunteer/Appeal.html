@@ -1,5 +1,5 @@
-<div class="crm-vol-project" crm-vol-perm-to-class>
-  <div crm-ui-debug="project"></div>
+<div class="crm-vol-appeal" crm-vol-perm-to-class>
+  <div crm-ui-debug="appeal"></div>
   <div crm-ui-debug="relationships"></div>
   <div crm-ui-debug="profiles"></div>
   <div crm-ui-debug="locBlock"></div>
@@ -9,54 +9,61 @@
   <div crm-ui-debug="relationships"></div>
   <div id="backboneIncludes"></div>
 
-  <div class="help" ng-show="supporting_data.volunteer_general_project_settings_help_text"
-       ng-bind-html="supporting_data.volunteer_general_project_settings_help_text"></div>
-  <form class="crm-form-block" name="AppealForm" crm-ui-id-scope>
-
-    <fieldset class="crm-vol-project-settings" crm-ui-id-scope>
+  <div class="help" ng-show="supporting_data.volunteer_general_appeal_settings_help_text"
+       ng-bind-html="supporting_data.volunteer_general_appeal_settings_help_text"></div>
+  <form id="DynamicValueAssignedHere" class="crm-form-block manage_appeal_form" name="AppealForm" crm-ui-id-scope>
+    <h3>{{appeal.action}} {{ts(" Appeal for")}} {{project.title}}</h3>
+    <fieldset class="crm-vol-appeal-settings" crm-ui-id-scope>
       <legend>{{ts("Appeal Settings")}}</legend>
       <div class="crm-vol-title" crm-ui-field="{name: 'AppealForm.title', title: ts('Title')}">
         <input class="big crm-form-text" crm-ui-id="AppealForm.title" ng-model="appeal.title" ng-required="true" />
       </div>
+      <div class="crm-vol-image" crm-ui-field="{name: 'AppealForm.image', title: ts('Image')}">
+        <input type="file" class="big crm-form-image" crm-ui-id="AppealForm.image" ng-model="appeal.image" onchange="angular.element(this).scope().uploadFile(event)" ng-required="true" />
+        <span>{{appeal.image?(appeal.image):"" }}</span>
+      </div>
+      <div class="crm-vol-appeal_teaser" crm-ui-field="{name: 'AppealForm.appeal_teaser', title: ts('Appeal Teaser')}">
+        <textarea class="big crm-form-textarea" crm-ui-id="AppealForm.appeal_teaser" ng-model="appeal.appeal_teaser" ></textarea>
+      </div>
 
-      <div class="crm-vol-description" crm-ui-field="{name: 'AppealForm.description', title: ts('Project Description')}">
+      <div class="crm-vol-appeal_description" crm-ui-field="{name: 'AppealForm.appeal_description', title: ts('Appeal Description')}">
         <p>
-          <span class="crm-button crm-icon-button crm-vol-button crm-vol-preview-description crm-vol-project-preview-description" ng-click="previewDescription()">
+          <span class="crm-button crm-icon-button crm-vol-button crm-vol-preview-appeal_description crm-vol-appeal-preview-appeal_description" ng-click="previewDescription()">
             <span class="crm-button-icon ui-icon-comment"> </span>
             <span class="crm-button-text">{{ts('Preview Description')}}</span>
           </span>
         </p>
         <div id=crm-vol-form-textarea-wrapper>
-          <textarea crm-ui-richtext class="big crm-form-textarea" crm-ui-id="AppealForm.description" ng-model="project.description"></textarea>
+          <textarea crm-ui-richtext class="big crm-form-textarea" crm-ui-id="AppealForm.appeal_description" ng-model="appeal.appeal_description" ng-required="true"></textarea>
         </div>
       </div>
 
       <div class="crm-vol-location" crm-ui-field='{name: "AppealForm.locBlock", title: ts("Location")}'>
-        <select class="big crm-form-select crm-vol-location-block-id"
+        <select ng-disabled="appeal.location_done_anywhere" class="big crm-form-select crm-vol-location-block-id"
                 crm-ui-select="{placeholder: '', allowClear:true}"
-                ng-options="key as value for (key , value) in locationBlocks track by key" ng-model="project.loc_block_id">
+                ng-options="key as value for (key , value) in locationBlocks track by key" ng-model="appeal.loc_block_id">
           <option />
         </select>
-        <div id="crm-vol-location-block" class="crm-vol-extra-top" crm-ui-accordion="{title: ts('Edit Location'), collapsed: project.loc_block_id !==0}" ng-hide="!project.loc_block_id">
-          <div class="status" ng-show="locBlock.count_loc_used > 0">{{ts("This location is used by other events/projects. Modifying location information will change values for all events/projects")}}</div>
+        <div id="crm-vol-location-block" class="crm-vol-extra-top" crm-ui-accordion="{title: ts('Edit Location'), collapsed: appeal.loc_block_id !==0}" ng-hide="!appeal.loc_block_id">
+          <div class="status" ng-show="locBlock.count_loc_used > 0">{{ts("This location is used by other events/appeals. Modifying location information will change values for all events/appeals")}}</div>
           <fieldset class="crm-vol-location-address">
             <legend>{{ts("Address")}}</legend>
             <div class="crm-vol-location-street" crm-ui-field='{name: "AppealForm.locBlock.street_address", title: ts("Street Address")}'>
-              <input size="30" crm-ui-id="AppealForm.locBlock.street_address"  ng-model="locBlock.address.street_address" />
+              <input ng-disabled="appeal.location_done_anywhere" size="30" crm-ui-id="AppealForm.locBlock.street_address"  ng-model="locBlock.address.street_address" />
             </div>
             <div class="crm-vol-location-sup1" crm-ui-field='{name: "AppealForm.locBlock.supplemental_address_1", title: ts("Supplemental Address 1")}'>
-              <input size="30" crm-ui-id="AppealForm.locBlock.supplemental_address_1" ng-model="locBlock.address.supplemental_address_1" />
+              <input ng-disabled="appeal.location_done_anywhere" size="30" crm-ui-id="AppealForm.locBlock.supplemental_address_1" ng-model="locBlock.address.supplemental_address_1" />
             </div>
             <div class="crm-vol-location-sup2" crm-ui-field='{name: "AppealForm.locBlock.supplemental_address_2", title: ts("Supplemental Address 2")}'>
-              <input size="30" crm-ui-id="AppealForm.locBlock.supplemental_address_2" ng-model="locBlock.address.supplemental_address_2" />
+              <input ng-disabled="appeal.location_done_anywhere" size="30" crm-ui-id="AppealForm.locBlock.supplemental_address_2" ng-model="locBlock.address.supplemental_address_2" />
             </div>
             <div class="crm-vol-location-city" crm-ui-field='{name: "AppealForm.locBlock.city", title: ts("City")}'>
-              <input crm-ui-id="AppealForm.locBlock.city" ng-model="locBlock.address.city" />
+              <input ng-disabled="appeal.location_done_anywhere" crm-ui-id="AppealForm.locBlock.city" ng-model="locBlock.address.city" />
             </div>
             <div class="crm-vol-location-postal" crm-ui-field='{name: "AppealForm.locBlock.postal", title: ts("Postal Code - Suffix")}'>
-              <input size="9" crm-ui-id="AppealForm.locBlock.postal" ng-model="locBlock.address.postal_code" />
+              <input ng-disabled="appeal.location_done_anywhere" size="9" crm-ui-id="AppealForm.locBlock.postal" ng-model="locBlock.address.postal_code" />
               -
-              <input size="5" crm-ui-id="AppealForm.locBlock.postal_code_suffix" ng-model="locBlock.address.postal_code_suffix" />
+              <input ng-disabled="appeal.location_done_anywhere" size="5" crm-ui-id="AppealForm.locBlock.postal_code_suffix" ng-model="locBlock.address.postal_code_suffix" />
             </div>
             <div class="crm-vol-location-country_id" crm-ui-field="{name: 'AppealForm.locBlock.country_id', title: ts('Country')}">
               <select
@@ -65,6 +72,7 @@
                 crm-ui-select="{allowClear: false}"
                 ng-change="locBlockDirty()"
                 ng-model="locBlock.address.country_id"
+                ng-disabled="appeal.location_done_anywhere"
                 ng-options="k as v.name for (k, v) in countries track by k">
               </select>
             </div>
@@ -72,17 +80,17 @@
           <fieldset class="crm-vol-location-phone">
             <legend>{{ts("Phone")}}</legend>
             <div class="crm-vol-location-phone1" crm-ui-field='{name: "AppealForm.locBlock.phone1", title: ts("Phone 1")}'>
-              <input crm-ui-id="AppealForm.locBlock.phone1"  ng-model="locBlock.phone.phone" />
-              {{ts("ext.")}} <input size="5"  ng-model="locBlock.phone.phone_ext" />
-              <select crm-ui-select="{width: '100', allowClear: true}" ng-model="locBlock.phone.phone_type_id">
+              <input ng-disabled="appeal.location_done_anywhere" crm-ui-id="AppealForm.locBlock.phone1"  ng-model="locBlock.phone.phone" />
+              {{ts("ext.")}} <input ng-disabled="appeal.location_done_anywhere" size="5"  ng-model="locBlock.phone.phone_ext" />
+              <select ng-disabled="appeal.location_done_anywhere"  crm-ui-select="{width: '100', allowClear: true}" ng-model="locBlock.phone.phone_type_id">
                 <option />
                 <option ng-repeat="(pTypeId, pType) in phone_types" value="{{pTypeId}}">{{pType}}</option>
               </select>
             </div>
             <div class="crm-vol-location-phone2" crm-ui-field='{name: "AppealForm.locBlock.phone2", title: ts("Phone 2")}'>
-              <input crm-ui-id="AppealForm.locBlock.phone2" ng-model="locBlock.phone_2.phone" />
-              {{ts("ext.")}} <input size="5" ng-model="locBlock.phone_2.phone_ext" />
-              <select crm-ui-select="{width: '100', allowClear: true}" ng-model="locBlock.phone_2.phone_type_id">
+              <input ng-disabled="appeal.location_done_anywhere"  crm-ui-id="AppealForm.locBlock.phone2" ng-model="locBlock.phone_2.phone" />
+              {{ts("ext.")}} <input ng-disabled="appeal.location_done_anywhere"  size="5" ng-model="locBlock.phone_2.phone_ext" />
+              <select ng-disabled="appeal.location_done_anywhere" crm-ui-select="{width: '100', allowClear: true}" ng-model="locBlock.phone_2.phone_type_id">
                 <option />
                 <option ng-repeat="(pTypeId, pType) in phone_types" value="{{pTypeId}}">{{pType}}</option>
               </select>
@@ -91,31 +99,54 @@
           <fieldset class="crm-vol-location-email">
             <legend>{{ts("Email")}}</legend>
             <div class="crm-vol-location-email1" crm-ui-field='{name: "AppealForm.locBlock.email1", title: ts("Email 1")}'>
-              <input size="30" type="email" crm-ui-id="AppealForm.locBlock.email1" ng-model="locBlock.email.email" />
+              <input ng-disabled="appeal.location_done_anywhere"  size="30" type="email" crm-ui-id="AppealForm.locBlock.email1" ng-model="locBlock.email.email" />
             </div>
             <div class="crm-vol-location-email2" crm-ui-field='{name: "AppealForm.locBlock.email2", title: ts("Email 2")}'>
-              <input size="30" type="email" crm-ui-id="AppealForm.locBlock.email2" ng-model="locBlock.email_2.email" />
+              <input ng-disabled="appeal.location_done_anywhere" size="30" type="email" crm-ui-id="AppealForm.locBlock.email2" ng-model="locBlock.email_2.email" />
             </div>
           </fieldset>
         </div>
+        <input ng-checked="appeal.location_done_anywhere==1" class="location_done_anywhere" type="checkbox" crm-ui-id="AppealForm.location_done_anywhere" ng-model="appeal.location_done_anywhere" />
+        <label crm-ui-for="AppealForm.location_done_anywhere">This can be done from anywhere</label>
       </div>
-
-
-      <div class="crm-vol-is_active" crm-ui-field="{name: 'AppealForm.is_active', title: ts('Is this Project Active?')}">
-        <input type="checkbox" crm-ui-id="AppealForm.is_active" ng-model="project.is_active" />
+      <div class="crm-vol-is_appeal_active" crm-ui-field="{name: 'AppealForm.is_appeal_active', title: ts('Is this Appeal Active?')}">
+        <input type="checkbox" crm-ui-id="AppealForm.is_appeal_active" ng-model="appeal.is_appeal_active" />
+      </div>
+      <div class="crm-vol-active_fromdate" crm-ui-field="{name: 'AppealForm.active_fromdate', title: ts('Active From :')}">
+        <input crm-ui-id="AppealForm.active_fromdate" crm-ui-datepicker="{time: false}"  ng-model="appeal.active_fromdate" />
+        <label crm-ui-for="AppealForm.active_todate">to</label>
+        <input crm-ui-id="AppealForm.active_todate" crm-ui-datepicker="{time: false}"  ng-model="appeal.active_todate"  />
+      </div>
+      <div class="crm-vol-display_volunteer_shift" crm-ui-field="{name: 'AppealForm.display_volunteer_shift', title: ts('Display Volunteer Shifts?')}">
+        <input ng-checked="appeal.display_volunteer_shift==1" type="checkbox" crm-ui-id="AppealForm.display_volunteer_shift" ng-model="appeal.display_volunteer_shift" />
+        <span class="display_volunteer_note">Check this box if you want volunteers to be able to sign up for shifts for your volunteer project</span>
+      </div>
+      <div class="crm-vol-hide_appeal_volunteer_button" crm-ui-field="{name: 'AppealForm.hide_appeal_volunteer_button', title: ts('Hide this Appeals Volunteer button')}">
+        <input ng-checked="appeal.hide_appeal_volunteer_button==1" type="checkbox" crm-ui-id="AppealForm.hide_appeal_volunteer_button" ng-model="appeal.hide_appeal_volunteer_button" />
+        <span class="display_volunteer_note">Checking this box hides this Appeal's "Volunteer" button on the appeal detail view. Useful when Display Volunteer Shift is enabled and you wish for volunteers to signup for specific shifts.</span>
       </div>
     </fieldset>
 
-    <div class="crm-submit-buttons crm-vol-project-submit-buttons">
-      <span class="crm-button crm-icon-button crm-vol-button crm-vol-save-next crm-vol-project-save-next" ng-click="saveAndNext()">
+    <fieldset ng-repeat="customFieldGroup in supporting_data.appeal_custom_field_groups" crm-render-field-collection="customFieldGroup" model="appeal"></fieldset>
+
+    <div class="custom_fieldset_selector">
+      <select class="custom_fieldgroup_dropdown" ng-model="customFieldSetSelected" ng-options="customFieldSetSelected as customFieldSetSelected.title for customFieldSetSelected in custom_fieldset_group">
+        <option value="">-- Add Custom FieldSet --</option>
+      </select>
+      <div class="custom_fieldset_link" ng-click="customFieldSetDisplay()">
+        <a class="custom-fieldset-text" id="custom-fieldset-text">Add Custom Fieldset</a>
+      </div>
+    </div>
+    <div class="crm-submit-buttons crm-vol-appeal-submit-buttons">
+      <span class="crm-button crm-icon-button crm-vol-button crm-vol-save-next crm-vol-appeal-save-next" ng-click="saveAndNext()">
         <span class="crm-button-icon ui-icon-triangle-1-e"> </span>
         <span class="crm-button-text">{{saveAndNextLabel}}</span>
       </span>
-      <span ng-show="formContext === 'standAlone'" class="crm-button crm-icon-button crm-vol-button crm-vol-save-done crm-vol-project-save-done" ng-click="saveAndDone()">
+      <span ng-show="formContext === 'standAlone'" class="crm-button crm-icon-button crm-vol-button crm-vol-save-done crm-vol-appeal-save-done" ng-click="saveAndDone()">
         <span class="crm-button-icon ui-icon-circle-check"> </span>
         <span class="crm-button-text">{{ts('Save and Done')}}</span>
       </span>
-      <span class="crm-button crm-icon-button crm-button-type-cancel crm-vol-button crm-vol-cancel crm-vol-project-cancel" ng-click="cancel()">
+      <span class="crm-button crm-icon-button crm-button-type-cancel crm-vol-button crm-vol-cancel crm-vol-appeal-cancel" ng-click="cancel()">
         <span class="crm-button-icon ui-icon-close"> </span>
         <span class="crm-button-text">{{ts('Cancel')}}</span>
       </span>
