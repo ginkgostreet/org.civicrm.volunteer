@@ -79,12 +79,6 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     $appeal->copyValues($params);
     $appeal->save();
 
-    // Custom data saved in database for appeal if user has set any.
-    $customData = CRM_Core_BAO_CustomField::postProcess($params, $appeal->id, 'VolunteerAppeal');
-    if (!empty($customData)) {
-      CRM_Core_BAO_CustomValueTable::store($customData, 'civicrm_volunteer_appeal', $appeal->id);
-    }
-
     return $appeal;
   }
 
