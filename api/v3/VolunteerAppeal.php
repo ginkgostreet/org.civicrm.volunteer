@@ -14,14 +14,21 @@ function _civicrm_api3_volunteer_appeal_create_spec(&$spec) {
 }
 
 /**
- * VolunteerAppeal.create API
+ * Create or update a appeal
  *
- * @param array $params
- * @return array API result descriptor
- * @throws API_Exception
+ * @param array $params  Associative array of property
+ *                       name/value pairs to insert in new 'appeal'
+ * @example
+ *
+ * @return array api result array
+ * {@getfields volunteer_appeal_create}
+ * @access public
  */
 function civicrm_api3_volunteer_appeal_create($params) {
-  return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
+  
+  $appeal = CRM_Volunteer_BAO_VolunteerAppeal::create($params);
+  
+  return civicrm_api3_create_success($appeal->toArray(), $params, 'VolunteerAppeal', 'create');
 }
 
 /**
