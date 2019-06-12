@@ -16,7 +16,7 @@
                 id: 0
               };
             } else {
-              return crmApi('VolunteerAppeal', 'getsingle', {
+              return crmApi('VolunteerAppeal', 'getSingle', {
                 id: $route.current.params.appealId,
                 projectId: $route.current.params.projectId,
                 return: ['custom']
@@ -51,15 +51,9 @@
               }
             );
           },
-          supporting_data: function(crmApi, $route) {
+          supporting_data: function(crmApi) {
             return crmApi('VolunteerUtil', 'getsupportingdata', {
-              controller: 'VolunteerAppeal',
-              appeal_id: $route.current.params.appealId
-            });
-          },
-          custom_fieldset_volunteer: function(crmApi) {
-            return crmApi('VolunteerAppeal', 'getCustomFieldsetVolunteer', {
-              controller: 'VolunteerAppeal'
+              controller: 'VolunteerProject'
             });
           },
           location_blocks: function(crmApi) {
@@ -70,7 +64,8 @@
     }
   );
 
-  angular.module('volunteer').controller('VolunteerCreateAppeal', function($scope, $sce, $location, $q, $route, crmApi, crmUiAlert, crmUiHelp, countries, appeal, project, supporting_data, location_blocks, volBackbone, custom_fieldset_volunteer, $compile) {
+
+  angular.module('volunteer').controller('VolunteerCreateAppeal', function($scope, $sce, $location, $q, $route, crmApi, crmUiAlert, crmUiHelp, countries, appeal, project, supporting_data, location_blocks, volBackbone) {
 
     /**
      * We use custom "dirty" logic rather than rely on Angular's native
@@ -93,9 +88,6 @@
     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
     var hs = $scope.hs = crmUiHelp({file: 'CRM/Volunteer/Form/Volunteer'}); // See: templates/CRM/volunteer/Project.hlp
 
-    /**
-     * Set form default value when create appeal or edit appeal page is open.
-     */
     setFormDefaults = function() {
       if(appeal.id == 0) {
         // In Create Appeal form Appeal location value should be project location.
@@ -139,12 +131,9 @@
     appeal.is_appeal_active = (appeal.is_appeal_active == "1");
     appeal.display_volunteer_shift = (appeal.display_volunteer_shift == "1");
     appeal.hide_appeal_volunteer_button = (appeal.hide_appeal_volunteer_button == "1");
-    $scope.custom_fieldset_group = custom_fieldset_volunteer.values;
-    $scope.supporting_data = supporting_data.values;
     // Manage action of appeal form.
     if(appeal.id == 0) {
       appeal.action = "Create";
-      $scope.supporting_data.appeal_custom_field_groups = [];
     } else {
       appeal.action = "Edit";
       if(appeal.location_done_anywhere == 1) {
@@ -154,65 +143,10 @@
       }
       delete appeal.contact_id;
       appeal.old_image = appeal.image;
-
-      /*
-       * Set default value of custom group dropdown when edit appeal page open.
-       * remove custom group from dropdown if user have already set any custom group.
-       */
-      setTimeout(function() {
-        var available_custom_fieldsets = [];
-        for (var key in supporting_data.values.appeal_custom_field_groups) {
-          var group_id = supporting_data.values.appeal_custom_field_groups[key].collectionId;
-          available_custom_fieldsets['custom_'+group_id] = group_id;
-          // Manage delete icon for specific custom field group.
-          var group_name = supporting_data.values.appeal_custom_field_groups[key].name;
-          var group_title = supporting_data.values.appeal_custom_field_groups[key].title;
-          // Prepare delete icon for added custom group.
-          var deleteCustomGroupHtml = '<a id="customGroupId_'+group_id+'" class="crm-hover-button crm-button-remove-profile crm-button-remove-custom-group"><span data-grouptitle="'+group_title+'" data-group="'+group_id+'" class="icon ui-icon-circle-close"></span></a>';
-          var compiledHtml = $compile(deleteCustomGroupHtml)($scope);
-          angular.element(document.getElementsByClassName('crmRenderFieldCollection-'+group_name)).prepend(compiledHtml);
-          // Add Click Eventlistner for delete icon of custom group and apply that in DOM.
-          document.getElementById("customGroupId_"+group_id).addEventListener('click', function(event) {
-            $scope.$apply(function() {
-              var targetElement = event.target || event.srcElement;
-              // Add deleted custom field group in dropdown for adding again.
-              var custom_group_id = CRM.$(targetElement).data("group");
-              var grouptitle = CRM.$(targetElement).data("grouptitle");
-              if(grouptitle && custom_group_id) {
-                $scope.custom_fieldset_group[custom_group_id] = {id:custom_group_id, title:grouptitle};  
-              }
-              // Remove custom field group from UI.
-              for (var key in $scope.supporting_data.appeal_custom_field_groups) {
-                // check if the property/key is defined in the object itself, not in parent
-                if ($scope.supporting_data.appeal_custom_field_groups.hasOwnProperty(key)) {
-                  if(custom_group_id == $scope.supporting_data.appeal_custom_field_groups[key].collectionId) {
-                    // Unset selected field when delete group called.
-                    var custom_field_selected_keys = Object.keys($scope.supporting_data.appeal_custom_field_groups[key].fields);
-                    for (var obj_key in custom_field_selected_keys) {
-                      var custom_field_value = custom_field_selected_keys[obj_key];
-                      // Unset data for that value when delete group icon clicked.
-                      $scope.appeal[custom_field_value] = "";
-                    }
-                    // Remove custom field group from UI.
-                    $scope.supporting_data.appeal_custom_field_groups.splice(key, 1);
-                  }
-                }
-              }
-            });
-          });
-        }
-        // Remove custom field set from dropdown which were set already.
-        for (var key in custom_fieldset_volunteer.values) {
-          var custom_field_id_exist = custom_fieldset_volunteer.values[key].id;
-          if(available_custom_fieldsets['custom_'+custom_field_id_exist]) {
-            delete $scope.custom_fieldset_group[custom_field_id_exist];
-          }
-        }
-        $scope.$digest();
-      }, 1000);
     }
     $scope.relationship_types = supporting_data.values.relationship_types;
     $scope.phone_types = supporting_data.values.phone_types;
+    $scope.supporting_data = supporting_data.values;
     $scope.appeal = appeal;
     $scope.showProfileBlock = CRM.checkPerm('edit volunteer registration profiles');
     $scope.showRelationshipBlock = CRM.checkPerm('edit volunteer project relationships');
@@ -445,88 +379,13 @@
       var file = e.target.files[0];
       var reader  = new FileReader();
       reader.onloadend = function () {
-        $scope.appeal.image_data = reader.result;
+          $scope.appeal.image_data = reader.result;
       }
       reader.readAsDataURL(file);
       $scope.appeal.image = "";
       if(e.target.files[0]) {
         var file_name = e.target.files[0].name;
         $scope.appeal.image = file_name;
-      }
-    };
-
-    /*
-     * This function is used for display selected custom group.
-     * Makes an API request.
-     * add that group in appeal_custom_field_groups object.
-     */
-    $scope.customFieldSetDisplay = function() {
-      let item = $scope.customFieldSetSelected;
-      if(item) {
-        // Get the custom group id and title.
-        var custom_fieldset_id = item.id;
-        var custom_fieldset_title = item.title;
-        // Fetch new custom group detail based on that ID and display in UI.
-        crmApi("VolunteerUtil", "getsupportingdata", {
-          controller: 'VolunteerAppeal',
-          custom_fieldset_id : custom_fieldset_id
-        }).then(function(result) {
-          if(!result.is_error) {
-            // Add New Customfield group in UI.
-            $scope.customFieldSetData = result.values.appeal_custom_field_groups;
-            if(result.values.appeal_custom_field_groups[0]) {
-
-              $scope.supporting_data.appeal_custom_field_groups.push(result.values.appeal_custom_field_groups[0]);
-
-              // Delete selected custom group from dropdown.
-              delete $scope.custom_fieldset_group[custom_fieldset_id];
-
-              // Add Delete Icon for remove selected custom group and manage delete action for that.
-              setTimeout(function() {
-                // Manage delete icon for specific custom field group.
-                var group_name = result.values.appeal_custom_field_groups[0].name;
-                var group_title = result.values.appeal_custom_field_groups[0].title;
-                // Prepare delete icon for added custom group.
-                var deleteCustomGroupHtml = '<a id="customGroupId_'+custom_fieldset_id+'" class="crm-hover-button crm-button-remove-profile crm-button-remove-custom-group"><span data-grouptitle="'+group_title+'" data-group="'+custom_fieldset_id+'" class="icon ui-icon-circle-close"></span></a>';
-                var compiledHtml = $compile(deleteCustomGroupHtml)($scope);
-                angular.element(document.getElementsByClassName('crmRenderFieldCollection-'+group_name)).prepend(compiledHtml);
-
-                // Add Click Eventlistner for delete icon of custom group and apply that in DOM.
-                document.getElementById("customGroupId_"+custom_fieldset_id).addEventListener('click', function(event) {
-                  $scope.$apply(function() {
-                    var targetElement = event.target || event.srcElement;
-                    // Add deleted custom field group in dropdown for adding again.
-                    var custom_group_id = CRM.$(targetElement).data("group");
-                    var grouptitle = CRM.$(targetElement).data("grouptitle");
-                    if(custom_group_id && grouptitle) {
-                      $scope.custom_fieldset_group[custom_group_id] = {id:custom_group_id, title:grouptitle};
-                    }
-                    // Remove custom field group from UI.
-                    for (var key in $scope.supporting_data.appeal_custom_field_groups) {
-                      // check if the property/key is defined in the object itself, not in parent
-                      if ($scope.supporting_data.appeal_custom_field_groups.hasOwnProperty(key)) {
-                        if(custom_group_id == $scope.supporting_data.appeal_custom_field_groups[key].collectionId) {
-                          var custom_field_selected_keys = Object.keys($scope.supporting_data.appeal_custom_field_groups[key].fields);
-                          // Unset data for that value when delete group icon clicked.
-                          for (var obj_key in custom_field_selected_keys) {
-                            var custom_field_value = custom_field_selected_keys[obj_key];
-                            // Unset data for that value when delete group icon clicked.
-                            $scope.appeal[custom_field_value] = "";
-                          }
-                          // Remove custom field group from UI.
-                          $scope.supporting_data.appeal_custom_field_groups.splice(key, 1);
-                        }
-                      }
-                    }
-                  });
-                });
-                $scope.$digest();
-              }, 1000);
-            }
-          } else {
-            CRM.alert(result.error);
-          }
-        });
       }
     };
   });

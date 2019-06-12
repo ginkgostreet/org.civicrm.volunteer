@@ -11,7 +11,7 @@
 
   <div class="help" ng-show="supporting_data.volunteer_general_appeal_settings_help_text"
        ng-bind-html="supporting_data.volunteer_general_appeal_settings_help_text"></div>
-  <form id="DynamicValueAssignedHere" class="crm-form-block manage_appeal_form" name="AppealForm" crm-ui-id-scope>
+  <form class="crm-form-block manage_appeal_form" name="AppealForm" crm-ui-id-scope>
     <h3>{{appeal.action}} {{ts(" Appeal for")}} {{project.title}}</h3>
     <fieldset class="crm-vol-appeal-settings" crm-ui-id-scope>
       <legend>{{ts("Appeal Settings")}}</legend>
@@ -125,18 +125,9 @@
         <input ng-checked="appeal.hide_appeal_volunteer_button==1" type="checkbox" crm-ui-id="AppealForm.hide_appeal_volunteer_button" ng-model="appeal.hide_appeal_volunteer_button" />
         <span class="display_volunteer_note">Checking this box hides this Appeal's "Volunteer" button on the appeal detail view. Useful when Display Volunteer Shift is enabled and you wish for volunteers to signup for specific shifts.</span>
       </div>
+
     </fieldset>
 
-    <fieldset ng-repeat="customFieldGroup in supporting_data.appeal_custom_field_groups" crm-render-field-collection="customFieldGroup" model="appeal"></fieldset>
-
-    <div class="custom_fieldset_selector">
-      <select class="custom_fieldgroup_dropdown" ng-model="customFieldSetSelected" ng-options="customFieldSetSelected as customFieldSetSelected.title for customFieldSetSelected in custom_fieldset_group">
-        <option value="">-- Add Custom FieldSet --</option>
-      </select>
-      <div class="custom_fieldset_link" ng-click="customFieldSetDisplay()">
-        <a class="custom-fieldset-text" id="custom-fieldset-text">Add Custom Fieldset</a>
-      </div>
-    </div>
     <div class="crm-submit-buttons crm-vol-appeal-submit-buttons">
       <span class="crm-button crm-icon-button crm-vol-button crm-vol-save-next crm-vol-appeal-save-next" ng-click="saveAndNext()">
         <span class="crm-button-icon ui-icon-triangle-1-e"> </span>
