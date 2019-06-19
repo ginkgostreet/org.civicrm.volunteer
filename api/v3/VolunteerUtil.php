@@ -191,7 +191,6 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
   // Manage supporting data for VolunteerAppeal.
   if($controller === 'VolunteerAppeal') {
     $results['appeal_custom_field_groups'] = array();
-    // Get custom fieldset for volunteer appeal.
     $custom_fieldset_id = CRM_Utils_Array::value('custom_fieldset_id', $params);
     if($custom_fieldset_id) {
       $appealCustomFieldGroupResult = civicrm_api3('CustomGroup', 'get', array(
@@ -202,7 +201,6 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
         'id' => $custom_fieldset_id,
       ));
       foreach ($appealCustomFieldGroupResult['values'] as $v) {
-        // Get metadata of custom fieldset.
         $meta = civicrm_api3('Fieldmetadata', 'get', array(
           'entity' => "CustomGroup",
           'entity_params' => array('id' => $v['id']),
@@ -211,10 +209,8 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
         $results['appeal_custom_field_groups'][] = $meta['values'];
       }
     } else {
-      // Get the appeal ID from parameters.
       $appeal_id = CRM_Utils_Array::value('appeal_id', $params);
       if($appeal_id) {
-        // Get custom field set group for volunteer appeal.
         $appealCustomFieldGroupResult = civicrm_api3('CustomGroup', 'get', array(
           'extends' => 'VolunteerAppeal',
           'is_active' => 1,
@@ -222,20 +218,17 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
           'sort' => 'weight',
         ));
         foreach ($appealCustomFieldGroupResult['values'] as $v) {
-          // Get custom field set metadata.
           $meta = civicrm_api3('Fieldmetadata', 'get', array(
             'entity' => "CustomGroup",
             'entity_params' => array('id' => $v['id']),
             'context' => "Angular",
           ));
-          // Get the detail of specific appeal with custom data.
           $appealData = civicrm_api3('VolunteerAppeal', 'getsingle', [
             'project_id' => 1,
             'id' => $appeal_id,
             'return' => ['custom'],
           ]);
           $custom_field = key($meta['values']['fields']);
-          // Display only those metadata which were set already.
           if($appealData[$custom_field]) {
             $results['appeal_custom_field_groups'][] = $meta['values'];
           }
@@ -255,6 +248,31 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
   $results['volunteer_status'] = CRM_Activity_BAO_Activity::buildOptions('status_id', 'validate');
 
   return civicrm_api3_create_success($results, "VolunteerUtil", "getsupportingdata", $params);
+}
+
+/**
+ * This function returns custom field sets for volunteer appeal for various JavaScript-driven interfaces.
+ *
+ * The purpose of this API is to provide limited access to general-use APIs to
+ * facilitate building user interfaces without having to grant users access to
+ * APIs they otherwise shouldn't be able to access.
+ *
+ * @param array $params
+ * @return array
+ */
+function civicrm_api3_volunteer_util_getCustomFieldsetVolunteer($params) {
+  $results = array();
+  $controller = CRM_Utils_Array::value('controller', $params);
+  $results['project_custom_field_groups'] = array();
+  $results = civicrm_api3('CustomGroup', 'get', array(
+    'extends' => $controller,
+    'is_active' => 1,
+    'return' => array('id', 'title'),
+    'sort' => 'weight',
+  ));
+  $new_results = $results['values'];
+
+  return civicrm_api3_create_success($new_results, "VolunteerUtil", "getCustomFieldsetVolunteer", $params);
 }
 
 /**
