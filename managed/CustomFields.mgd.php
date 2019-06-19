@@ -23,4 +23,16 @@ return array(
       'name' => 'civicrm_volunteer_project',
     ),
   ),
+  array(
+    'module' => 'org.civicrm.volunteer',
+    'name' => 'CiviVolunteer - Volunteer Project Appeal Extensibility Registration',
+    'entity' => 'OptionValue',
+    'params' => array(
+      'version' => 3,
+      'option_group_id' => 'cg_extend_objects',
+      'label' => 'Volunteer Appeal',
+      'value' => 'VolunteerAppeal',
+      'name' => 'civicrm_volunteer_appeal',
+    ),
+  ),
 );

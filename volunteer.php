@@ -703,7 +703,7 @@ function volunteer_civicrm_fieldOptions($entity, $field, &$options, $params) {
  * @link https://docs.civicrm.org/dev/en/master/hooks/hook_civicrm_apiWrappers/
  */
 function volunteer_civicrm_apiWrappers(&$wrappers, $apiRequest) {
-  if ($apiRequest['entity'] === 'VolunteerProject') {
+  if ($apiRequest['entity'] === 'VolunteerProject' || $apiRequest['entity'] === 'VolunteerAppeal') {
     $wrappers[] = new CRM_Volunteer_APIWrapper_CustomField();
   }
 }
