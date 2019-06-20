@@ -58,7 +58,7 @@
             });
           },
           custom_fieldset_volunteer: function(crmApi) {
-            return crmApi('VolunteerUtil', 'getCustomFieldsetVolunteer', {
+            return crmApi('VolunteerAppeal', 'getCustomFieldsetVolunteer', {
               controller: 'VolunteerAppeal'
             });
           },

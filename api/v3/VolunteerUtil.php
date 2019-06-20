@@ -258,31 +258,6 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
 }
 
 /**
- * This function returns custom field sets for volunteer appeal for various JavaScript-driven interfaces.
- *
- * The purpose of this API is to provide limited access to general-use APIs to
- * facilitate building user interfaces without having to grant users access to
- * APIs they otherwise shouldn't be able to access.
- *
- * @param array $params
- * @return array
- */
-function civicrm_api3_volunteer_util_getCustomFieldsetVolunteer($params) {
-  $results = array();
-  $controller = CRM_Utils_Array::value('controller', $params);
-  $results['project_custom_field_groups'] = array();
-  $results = civicrm_api3('CustomGroup', 'get', array(
-    'extends' => $controller,
-    'is_active' => 1,
-    'return' => array('id', 'title'),
-    'sort' => 'weight',
-  ));
-  $new_results = $results['values'];
-
-  return civicrm_api3_create_success($new_results, "VolunteerUtil", "getCustomFieldsetVolunteer", $params);
-}
-
-/**
  * This method returns a list of beneficiaries
  *
  * @deprecated since version 2.3
