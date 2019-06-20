@@ -178,8 +178,9 @@
               // Add deleted custom field group in dropdown for adding again.
               var custom_group_id = CRM.$(targetElement).data("group");
               var grouptitle = CRM.$(targetElement).data("grouptitle");
-              $scope.custom_fieldset_group[custom_group_id] = {id:custom_group_id, title:grouptitle};
-
+              if(grouptitle && custom_group_id) {
+                $scope.custom_fieldset_group[custom_group_id] = {id:custom_group_id, title:grouptitle};  
+              }
               // Remove custom field group from UI.
               for (var key in $scope.supporting_data.appeal_custom_field_groups) {
                 // check if the property/key is defined in the object itself, not in parent
@@ -207,6 +208,7 @@
             delete $scope.custom_fieldset_group[custom_field_id_exist];
           }
         }
+        $scope.$digest();
       }, 1000);
     }
     $scope.relationship_types = supporting_data.values.relationship_types;
@@ -496,8 +498,9 @@
                     // Add deleted custom field group in dropdown for adding again.
                     var custom_group_id = CRM.$(targetElement).data("group");
                     var grouptitle = CRM.$(targetElement).data("grouptitle");
-                    $scope.custom_fieldset_group[custom_group_id] = {id:custom_group_id, title:grouptitle};
-
+                    if(custom_group_id && grouptitle) {
+                      $scope.custom_fieldset_group[custom_group_id] = {id:custom_group_id, title:grouptitle};
+                    }
                     // Remove custom field group from UI.
                     for (var key in $scope.supporting_data.appeal_custom_field_groups) {
                       // check if the property/key is defined in the object itself, not in parent
@@ -517,6 +520,7 @@
                     }
                   });
                 });
+                $scope.$digest();
               }, 1000);
             }
           } else {
