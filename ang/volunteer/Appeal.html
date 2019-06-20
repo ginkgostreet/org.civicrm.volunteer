@@ -130,8 +130,8 @@
     <fieldset ng-repeat="customFieldGroup in supporting_data.appeal_custom_field_groups" crm-render-field-collection="customFieldGroup" model="appeal"></fieldset>
 
     <div class="custom_fieldset_selector">
-      <select class="custom_fieldgroup_dropdown" ng-model="customFieldSetSelected" ng-options="costomFieldGroup as costomFieldGroup.title for costomFieldGroup in custom_fieldset_group">
-          <option value="">-- Add Custom FieldSet --</option>
+      <select class="custom_fieldgroup_dropdown" ng-model="customFieldSetSelected" ng-options="customFieldSetSelected as customFieldSetSelected.title for customFieldSetSelected in custom_fieldset_group">
+        <option value="">-- Add Custom FieldSet --</option>
       </select>
       <div class="custom_fieldset_link" ng-click="customFieldSetDisplay()">
         <a class="custom-fieldset-text" id="custom-fieldset-text">Add Custom Fieldset</a>
