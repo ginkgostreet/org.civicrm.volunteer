@@ -237,7 +237,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
         $where .= " And appeal.location_done_anywhere = 1 ";
       } else {
       if(isset($params["advance_search"]["proximity"]['postal_code']) || (isset($params["advance_search"]["proximity"]['lat']) && isset($params["advance_search"]["proximity"]['lon']))) {
-          $proximityquery = CRM_Volunteer_BAO_Project::getProximity($params["advance_search"]["proximity"]);
+          $proximityquery = CRM_Volunteer_BAO_Project::buildProximityWhere($params["advance_search"]["proximity"]);
           $proximityquery = str_replace("civicrm_address", "addr", $proximityquery);
           $where .= " And ".$proximityquery;
         }
