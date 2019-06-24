@@ -224,7 +224,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
 	$join .= " LEFT JOIN (SELECT MIN(start_time) as need_start_time, id, project_id as need_project_id FROM civicrm_volunteer_need as need_sort Where id IS NOT NULL GROUP BY project_id) AS mdt ON (mdt.need_project_id = p.id)";
 	
 	if($show_beneficiary_at_front == 1) {
-		$join .= " LEFT JOIN civicrm_volunteer_project_contact AS pc ON (pc.project_id = p.id) ";
+		$join .= " LEFT JOIN civicrm_volunteer_project_contact AS pc ON (pc.project_id = p.id AND pc.relationship_type_id = 3) ";
 		$join .= " LEFT JOIN civicrm_contact AS cc ON (cc.id = pc.contact_id) ";
 		$select .= " , GROUP_CONCAT(DISTINCT cc.display_name ) as beneficiary_display_name";
     }
