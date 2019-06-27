@@ -1,24 +1,13 @@
 (function(angular, $, _) {
 
   angular.module('volunteer').config(function($routeProvider) {
-      $routeProvider.when('/volunteer/manage_appeals', {
+      $routeProvider.when('/volunteer/project_appeals/:projectId', {
         controller: 'VolunteerAppeal',
         templateUrl: '~/volunteer/Appeals.html',
-         resolve: {
-            beneficiaries: function (crmApi) {
-              return crmApi('VolunteerUtil', 'getbeneficiaries').then(function(data) {
-                return data.values;
-              }, function(error) {
-                if (error.is_error) {
-                  CRM.alert(error.error_message, ts("Error"), "error");
-                } else {
-                  return error;
-                }
-              });
-            },
-            projectAppealsData: function(crmApi) {
+        resolve: {
+          projectAppealsData: function(crmApi, $route) {
             return crmApi('VolunteerAppeal', 'get', {
-              //id:1
+              project_id: $route.current.params.projectId,
             }).then(function (data) {              
               let projectAppeals=[];              
               for(let key in data.values) {
@@ -26,121 +15,101 @@
               }
               return projectAppeals;              
             },function(error) {
-                if (error.is_error) {
-                  CRM.alert(error.error_message, ts("Error"), "error");
-                } else {
-                  return error;
-                }
-            });
-          },
-          projectData: function(crmApi) {
-            return crmApi('VolunteerProject', 'get', {
-              sequential: 1,
-              context: 'edit',
-              'api.VolunteerProjectContact.get': {
-                relationship_type_id: "volunteer_beneficiary"
-              },
-              'api.VolunteerProject.getlocblockdata': {
-                id: '$value.loc_block_id',
-                options: {limit: 0},
-                return: 'all',
-                sequential: 1
+              if (error.is_error) {
+                CRM.alert(error.error_message, ts("Error"), "error");
+              } else {
+                return error;
               }
-            }).then(function (data) {
-              // make the beneficiary IDs readily available for the live filter
-              return _.each(data.values, function (element, index, list) {
-                var beneficiaryIds = [];
-                _.each(element['api.VolunteerProjectContact.get']['values'], function (el) {
-                  beneficiaryIds.push(el.contact_id);
-                });
-                list[index].beneficiaries = beneficiaryIds;
-              });
             });
           }
-
-         }
+        }
       });
     }
   );
 
-  // TODO for VOL-276: Remove reference to beneficiaries object, based on deprecated API.
-  angular.module('volunteer').controller('VolunteerAppeal', function ($scope,crmApi,projectData,projectAppealsData,beneficiaries) {
-     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
-    //var hs = $scope.hs = crmUiHelp({file: 'CRM/volunteer/Projects'}); // See: templates/CRM/volunteer/Projects.hlp
+  angular.module('volunteer').controller('VolunteerAppeal', function ($scope,crmApi,crmUiAlert,$route, projectAppealsData) {
+    var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
+    //assign project id from url.
+    $scope.projectId = $route.current.params.projectId;
+    // Get current date for filter data for expired appeal and active appeal.
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear();
+    // today_date contains date with 2019-06-13 format.
+    $scope.today_date = yyyy + '-' + mm + '-' + dd;
 
-     $scope.abc="pqr";
-     $scope.appeals = projectAppealsData;
-     $scope.beneficiaries = beneficiaries;
-     $scope.projects= projectData;
-    
-     //$scope.projects.indexOf(createItem.artNr)
-         /**
-     * Utility for stringifying locations which may have varying levels of detail.
-     *
-     * @param array project
-     *   An item from the projectData provider.
-     * @return string
-     *   With HTML tags.
-     */
-    $scope.formatLocation = function (project) {
-      var projDetails;
-      angular.forEach($scope.projects, function (obj, key) {                
-               if(obj.id==project){
-                projDetails=$scope.projects[key];
-               }
-      }); 
-      project= projDetails;      
-      var result = '';
+    /*
+    * Manage code for Active appeal table.
+    **/
+    $scope.propertyName = 'active_todate';
+    $scope.reverse = false;
+    $scope.appeals = projectAppealsData;
 
-      var locBlockData = project['api.VolunteerProject.getlocblockdata'].values;
-      if (_.isEmpty(locBlockData)) {
-        return result;
-      }
-
-      var address = locBlockData[0].address;
-      if (_.isEmpty(address)) {
-        return result;
-      }
-
-      if (address.street_address) {
-        result += address.street_address;
-      }
-
-      if (address.street_address && (address.city || address.postal_code)) {
-        result += '<br />';
-      }
-
-      if (address.city) {
-        result += address.city;
-      }
-
-      if (address.city && address.postal_code) {
-        result += ', ' + address.postal_code;
-      } else if (address.postal_code) {
-        result += address.postal_code;
-      }      
-      return result;
+    // Sort function for active appeal table.
+    $scope.sortBy = function(propertyName) {
+      $scope.reverse = ($scope.propertyName === propertyName) ? !$scope.reverse : false;
+      $scope.propertyName = propertyName;
     };
 
-    // TODO for VOL-276: Replace or obviate the need for this method. This is
-    // the blocker to removing the deprecated api.VolunteerUtil.getbeneficiaries.
-    // Other related changes are trivial.
-    $scope.formatBeneficiaries = function (project) {
-      var projDetails;
-      angular.forEach($scope.projects, function (obj, key) {
-               if(obj.id==project){
-                projDetails=$scope.projects[key];
-               }
-      });
-      project=projDetails;
-      var displayNames = [];
+    /*
+    * Manage code for expired appeal table.
+    **/
+    $scope.propertyNameExpiredTable = 'active_todate';
+    $scope.reverseExpiredTable = false;
+    $scope.expired_appeals = projectAppealsData;
 
-      _.each(project.beneficiaries, function (item) {
-        displayNames.push($scope.beneficiaries[item].display_name);
-      });
-
-      return displayNames.sort().join('<br />');
+    // Sort function for expired appeal table.
+    $scope.sortByExpiredTable = function(propertyNameExpiredTable) {
+      $scope.reverseExpiredTable = ($scope.propertyNameExpiredTable === propertyNameExpiredTable) ? !$scope.reverseExpiredTable : false;
+      $scope.propertyNameExpiredTable = propertyNameExpiredTable;
     };
 
+    /*
+    * Update Appeal status.
+    * Set appeal status like is active or not.
+    *
+    **/
+    $scope.updateAppeal = function ($event, id) {
+      var checkbox = $event.target;
+      var appeal = {};
+      appeal.id = id;
+      if(checkbox.checked) {
+        appeal.is_appeal_active = 1;
+      } else {
+        appeal.is_appeal_active = 0;
+      }
+      var appealId = crmApi('VolunteerAppeal', 'create', appeal).then(
+        function(success) {
+          return success.values.id;
+        },
+        function(fail) {
+          var text = ts('Your submission was not saved. Resubmitting the form is unlikely to resolve this problem. Please contact a system administrator.');
+          var title = ts('A technical problem has occurred');
+          crmUiAlert({text: text, title: title, type: 'error'});
+        }
+      );
+      if (appealId) {
+        crmUiAlert({text: ts('Appeal Updated successfully'), title: ts('Updated'), type: 'success'});
+      }
+    };
+
+    /*
+    * This function is used for delete appeal.
+    * Pass appeal Id in function.
+    * Using delete API for delete appeal.
+    * Remove that element from table.
+    **/
+    $scope.deleteAppeal = function (id) {
+      CRM.confirm({message: ts("Are you sure you want to Delete the Appeal?")}).on('crmConfirm:yes', function() {
+        crmApi("VolunteerAppeal", "delete", {id: id}, true).then(function() {
+          let appeals_details = $scope.appeals;
+          // Remove that element from table based on id without page load.
+          $scope.appeals = appeals_details.filter(function( obj ) {
+            return obj.id !== id;
+          });
+        });
+      });
+    };
   });
 })(angular, CRM.$, CRM._);
