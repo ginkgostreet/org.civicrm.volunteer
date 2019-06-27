@@ -405,7 +405,7 @@
       doSave().then(function (appealId) {
         if (appealId) {
           crmUiAlert({text: ts('Changes saved successfully'), title: ts('Saved'), type: 'success'});
-          $location.path("/volunteer/manage_appeals");
+          $location.path("/volunteer/project_appeals/"+$scope.appeal.project_id);
         }
       });
     };
