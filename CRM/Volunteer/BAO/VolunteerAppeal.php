@@ -103,10 +103,10 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     if (empty($params['id']) && empty($params['title'])) {
       CRM_Core_Error::fatal('Title field is required for appeal creation.');
     }
-    if (empty($params['image']) && empty($params['image'])) {
+    if (empty($params['id']) && empty($params['image'])) {
       CRM_Core_Error::fatal('Image field is required for appeal creation.');
     }
-    if (empty($params['appeal_description']) && empty($params['appeal_description'])) {
+    if (empty($params['id']) && empty($params['appeal_description'])) {
       CRM_Core_Error::fatal('Appeal Description field is required for appeal creation.');
     }
 
@@ -364,7 +364,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     $limit = " LIMIT ".$offset.", ".$no_of_records_per_page;
     $sql = $select . $from . $join . $where . $orderby . $limit; 
     $dao = new CRM_Core_DAO();
-      $dao->query($sql);
+    $dao->query($sql);
     
     $sql2 = $select . $from . $join . $where . $orderby;
     $dao2 = new CRM_Core_DAO();   
