@@ -26,6 +26,21 @@ class CRM_Volunteer_Angular {
 
     $loader = Civi::service('angularjs.loader');
     $loader->addModules(['volunteer']);
+
+    // Check if fieldmeta extension is installed or not.
+    // If installed then add crmFieldMetadata module.
+    $result = civicrm_api3('Extension', 'get', [
+      'sequential' => 1,
+      'full_name' => "org.civicrm.fieldmetadata",
+      'status' => "installed",
+    ]);
+
+    if($result['count']) {
+      $loader->setModules(array('volunteer', 'crmFieldMetadata'));
+    } else {
+      $loader->setModules(array('volunteer'));
+    }
+
     $loader->setPageName('civicrm/vol');
     \Civi::resources()->addSetting([
       'crmApp' => [
