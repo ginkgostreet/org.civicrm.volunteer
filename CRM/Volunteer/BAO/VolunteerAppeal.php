@@ -297,6 +297,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
   public static function doSearch($params) {
     
     $show_beneficiary_at_front = 1;
+    $seperator = CRM_CORE_DAO::VALUE_SEPARATOR;
     
     $search_appeal = $params['search_appeal'];
     $search_appeal = trim($search_appeal);
@@ -318,18 +319,55 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     if(isset($search_appeal) && !empty($search_appeal)) {
       $where .= " And (appeal.title Like '%".$search_appeal."%' OR appeal.appeal_description Like '%".$search_appeal."%')";
     }
-    //Advance search with date  
+    //Advance search parameter.
     if($params["advance_search"]) {
+      // If start date and end date filter passed on advance search.
       if($params["advance_search"]["fromdate"] && $params["advance_search"]["todate"]) {
         $where .= " And p.id In (select project_id from civicrm_volunteer_need AS need_advance where need_advance.is_flexible = 0 And DATE_FORMAT(need_advance.start_time,'%Y-%m-%d')>='".$params["advance_search"]["fromdate"]."' and  DATE_FORMAT(need_advance.end_time,'%Y-%m-%d') <= '".$params["advance_search"]["todate"]."')";
       }
+      // If show appeals done anywhere passed on advance search.
       if(isset($params["advance_search"]["show_appeals_done_anywhere"]) && $params["advance_search"]["show_appeals_done_anywhere"] == true ) {
         $where .= " And appeal.location_done_anywhere = 1 ";
       } else {
-      if(isset($params["advance_search"]["proximity"]['postal_code']) || (isset($params["advance_search"]["proximity"]['lat']) && isset($params["advance_search"]["proximity"]['lon']))) {
+        // If show appeal is not set then check postal code, radius and proximity.
+        if(isset($params["advance_search"]["proximity"]['postal_code']) || (isset($params["advance_search"]["proximity"]['lat']) && isset($params["advance_search"]["proximity"]['lon']))) {
           $proximityquery = CRM_Volunteer_BAO_Project::buildProximityWhere($params["advance_search"]["proximity"]);
           $proximityquery = str_replace("civicrm_address", "addr", $proximityquery);
           $where .= " And ".$proximityquery;
+        }
+      }
+      // If custom field pass from advance search filter.
+      if(isset($params["advance_search"]["appealCustomFieldData"])) {
+        // Get all custom field database tables which are assoicated with Volunteer Appeal.
+        $sql_query = "SELECT cg.table_name, cg.id as groupID, cg.is_multiple, cf.column_name, cf.id as fieldID, cf.data_type as fieldDataType FROM   civicrm_custom_group cg, civicrm_custom_field cf WHERE  cf.custom_group_id = cg.id AND    cg.is_active = 1 AND    cf.is_active = 1 AND  cg.extends IN ( 'VolunteerAppeal' )";
+        $dao10 = CRM_Core_DAO::executeQuery($sql_query);
+        // Join all custom field tables with appeal data which are assoicated with VolunteerAppeal.
+        while ($dao10->fetch()) {
+          $table_name = $dao10->table_name;
+          $column_name = $dao10->column_name;
+          $fieldID = $dao10->fieldID;
+          $table_alias = "table_".$fieldID;
+          // Join all custom field tables.
+          $join .= " LEFT JOIN $table_name $table_alias ON appeal.id = $table_alias.entity_id";
+          $select .= ", ".$table_alias.".".$column_name;
+          foreach ($params["advance_search"]["appealCustomFieldData"] as $key => $field_data) {
+            if(isset($field_data) && !empty($field_data)) {
+              $custom_field_array = explode("_", $key);
+              if(isset($custom_field_array) && isset($custom_field_array[1])) {
+                $custom_field_id = $custom_field_array[1];
+                if($custom_field_id == $fieldID) {
+                  // If value is in array then implode with Pipe first and then add in where condition.
+                  if(is_array($field_data)) {
+                    $field_data_string = implode("|", $field_data);
+                    $where .= " AND CONCAT(',', $table_alias.$column_name, ',') REGEXP '$seperator($field_data_string)$seperator'";
+                  } else {
+                    // Otherwise add with like query.
+                    $where .= " AND $table_alias.$column_name Like'%$field_data%'";
+                  }
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -350,7 +388,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     if(!empty($params["order"])) {
       $order = $params["order"];
     }
-    
+    // prepare orderby query.
     $orderby = " GROUP By appeal.id ORDER BY " . $orderByColumn . " " . $order;
     
     // Pagination Logic.
@@ -362,10 +400,10 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     }
     $offset = ($page_no-1) * $no_of_records_per_page;
     $limit = " LIMIT ".$offset.", ".$no_of_records_per_page;
-    $sql = $select . $from . $join . $where . $orderby . $limit; 
+    $sql = $select . $from . $join . $where . $orderby . $limit;
     $dao = new CRM_Core_DAO();
     $dao->query($sql);
-    
+
     $sql2 = $select . $from . $join . $where . $orderby;
     $dao2 = new CRM_Core_DAO();   
     $dao2->query($sql2);
@@ -373,6 +411,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     $appeals = array();
     $appeals['appeal'] = array();
     $appeal = [];
+    // Prepare appeal details array with proper format.
     while ($dao->fetch()) {
       $appeal['id'] = $dao->id;
       $appeal['project_id'] = $dao->project_id;
@@ -391,7 +430,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       if($params["orderby"] == "upcoming_appeal") {
         $appeal['need_start_time'] = $dao->need_start_time;
       }
-
+      // Prepare whole address of appeal in array.
       $address = "";
       if ($dao->street_address) {
         $address .= " ".$dao->street_address;
@@ -411,7 +450,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $appeals['appeal'][] = $appeal;
     }
     $appeals['total_appeal'] = $total_appeals;
-      
+
     return $appeals;
   }
 

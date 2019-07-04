@@ -111,5 +111,59 @@ function civicrm_api3_volunteer_appeal_getCustomFieldsetVolunteer($params) {
   ));
   $new_results = $results['values'];
 
-  return civicrm_api3_create_success($new_results, "VolunteerUtil", "getCustomFieldsetVolunteer", $params);
+  return civicrm_api3_create_success($new_results, "VolunteerAppeal", "getCustomFieldsetVolunteer", $params);
+}
+
+/**
+ * This function returns custom field sets with meta data for volunteer appeal for various JavaScript-driven interfaces.
+ *
+ * The purpose of this API is to provide limited access to general-use APIs to
+ * facilitate building user interfaces without having to grant users access to
+ * APIs they otherwise shouldn't be able to access.
+ *
+ * @param array $params
+ * @return array
+ */
+function civicrm_api3_volunteer_appeal_getCustomFieldsetWithMetaVolunteerAppeal($params) {
+  $results = array();
+  $controller = CRM_Utils_Array::value('controller', $params);
+
+  // Get all custom group which are related to "Volunteer Appeal".
+  $projectCustomFieldGroupResult = civicrm_api3('CustomGroup', 'get', array(
+    'extends' => $controller,
+    'is_active' => 1,
+    'return' => array('id', 'title'),
+    'sort' => 'weight',
+  ));
+
+  /*
+   * Fetch all custom field for that group.
+   * Prepare array based on requirement.
+   * Set default value to null for all custom fields.
+   */
+  foreach ($projectCustomFieldGroupResult['values'] as $key=>$v) {
+    $meta = civicrm_api3('Fieldmetadata', 'get', array(
+      'entity' => "CustomGroup",
+      'entity_params' => array('id' => $v['id']),
+      'context' => "Angular",
+      'is_searchable' => 1,
+    ));
+    // Set default value to Null for all custom field for search appeal box.
+    if(isset($meta['values']['fields']) && !empty($meta['values']['fields'])) {
+      foreach ($meta['values']['fields'] as $field_name => $field_data) {
+        $meta['values']['fields'][$field_name]['default'] = "";
+        $meta['values']['fields'][$field_name]['defaultValue'] = "";
+        if(isset($field_data['options']) && !empty($field_data['options'])) {
+          foreach ($field_data['options'] as  $option_key=>$optionData) {
+            $meta['values']['fields'][$field_name]['options'][$option_key]['default'] = "";
+          }
+        }
+      }
+    }
+    $results[$key]['id'] = $v['id'];
+    $results[$key]['title'] = $v['title'];
+    $results[$key]['appeal_custom_field_groups'] = $meta['values'];
+  }
+
+  return civicrm_api3_create_success($results, "VolunteerAppeal", "getCustomFieldsetWithMetaVolunteerAppeal", $params);
 }
