@@ -35,6 +35,23 @@ class CRM_Volunteer_APIWrapper_CustomField implements API_Wrapper {
         $customData = CRM_Core_BAO_CustomValueTable::getEntityValues($item['id'], $apiRequest['entity']);
         foreach ($customData as $customFieldId => $customFieldValue) {
           $key = 'custom_' . $customFieldId;
+          // If custom field have set value.
+          if($customFieldValue) {
+            // Explode with seperator.
+            $seperator = CRM_CORE_DAO::VALUE_SEPARATOR;
+            $newCustomFieldValue = explode($seperator, $customFieldValue);
+            // If multiple value then prepare associative array for that custom field.
+            // Set value under key.
+            if(count($newCustomFieldValue) > 1) {
+              $customFieldValueArray = array();
+              foreach ($newCustomFieldValue as $new_key => $value) {
+                if($value) {
+                  $customFieldValueArray[$value] = $value;
+                }
+              }
+              $customFieldValue = $customFieldValueArray;
+            }
+          }
           $item[$key] = $customFieldValue;
         }
       }
