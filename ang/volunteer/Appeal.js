@@ -54,7 +54,8 @@
           supporting_data: function(crmApi, $route) {
             return crmApi('VolunteerUtil', 'getsupportingdata', {
               controller: 'VolunteerAppeal',
-              appeal_id: $route.current.params.appealId
+              appeal_id: $route.current.params.appealId,
+              project_id: $route.current.params.projectId
             });
           },
           custom_fieldset_volunteer: function(crmApi) {

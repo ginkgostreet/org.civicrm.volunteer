@@ -30,7 +30,7 @@
             <div class="pull-right w-70">
                <div class="p-l-15">
                   <h2 class="m-t-0">{{ appeal.title }}</h2>                  
-                  <p style="min-height: 60px;">{{ appeal.appeal_description}}</p>  
+                  <p style="min-height: 60px;">{{ appeal.appeal_description | plainText}}</p>
                 </div>
                  <div class="p-l-15" style="margin-rigth:15px">                
                	  <button class="detail-btn" ng-hide="showVolunteer" ng-click="volSignup(appeal.project.flexibleNeed,appeal.project_id)"><i class="fa fa-users" aria-hidden="true" >{{ts('Volunteer!')}}</i></button>
