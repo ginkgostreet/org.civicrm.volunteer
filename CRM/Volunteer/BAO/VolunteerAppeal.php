@@ -418,7 +418,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $appeal['title'] = $dao->title;
       $appeal['image'] = $dao->image;
       $appeal['appeal_teaser'] = $dao->appeal_teaser;
-      $appeal['appeal_description'] = $dao->appeal_description;
+      $appeal['appeal_description'] = htmlspecialchars_decode($dao->appeal_description);
       $appeal['location_done_anywhere'] = $dao->location_done_anywhere;
       $appeal['is_appeal_active'] = $dao->is_appeal_active;
       $appeal['active_fromdate'] = $dao->active_fromdate;
