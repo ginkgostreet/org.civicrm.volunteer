@@ -213,6 +213,7 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
     } else {
       // Get the appeal ID from parameters.
       $appeal_id = CRM_Utils_Array::value('appeal_id', $params);
+      $project_id = CRM_Utils_Array::value('project_id', $params);
       if($appeal_id) {
         // Get custom field set group for volunteer appeal.
         $appealCustomFieldGroupResult = civicrm_api3('CustomGroup', 'get', array(
@@ -230,7 +231,7 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
           ));
           // Get the detail of specific appeal with custom data.
           $appealData = civicrm_api3('VolunteerAppeal', 'getsingle', [
-            'project_id' => 1,
+            'project_id' => $project_id,
             'id' => $appeal_id,
             'return' => ['custom'],
           ]);
