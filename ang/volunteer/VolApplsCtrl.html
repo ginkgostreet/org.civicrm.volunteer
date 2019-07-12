@@ -39,8 +39,7 @@
       <div class="filter-model">
         <div class="tab"> 
           <button class="tablinks"  ng-click="selectTab(1)" ng-class="{active:isActive(1)}"><i class="fa fa-caret-right" aria-hidden="true">   Date and Location</i></button>
-          <button class="tablinks"   ng-click="selectTab(2)" ng-class="{active:isActive(2)}"><i class="fa fa-caret-right" aria-hidden="true">   Volunteer Skills Sought</i></button>
-          <button class="tablinks"   ng-click="selectTab(3)" ng-class="{active:isActive(3)}"><i class="fa fa-caret-right" aria-hidden="true">   Availability By Day</i></button>
+          <button ng-repeat="customFieldGroup in custom_fieldset_volunteer" class="tablinks"   ng-click="selectTab(customFieldGroup.id)" ng-class="{active:isActive(customFieldGroup.id)}"><i class="fa fa-caret-right" aria-hidden="true">   {{customFieldGroup.title}}</i></button>
         </div>
         <div id="London" class="tabcontent" ng-show="isActive(1)">
           <form name="volOppSearchForm" crm-ui-id-scope>
@@ -77,13 +76,12 @@
             </div>
           </form>
         </div>
-        <div class="tabcontent" ng-show="isActive(2)">
-          <p>Volunteer skill sought.</p>
+        <div ng-repeat="customFieldGroup in custom_fieldset_volunteer" class="tabcontent" ng-show="isActive({{customFieldGroup.id}})">
+          <form name="volAppealCustomFieldSearch" crm-ui-id-scope>
+            <fieldset crm-render-field-collection="customFieldGroup.appeal_custom_field_groups" model="appealCustomFieldData"></fieldset>
+          </form>
         </div>
-        <div class="tabcontent" ng-show="isActive(3)">
-          <p>availability by day.</p>
-        </div>
-        <br>    
+        <br>
         <div class="modal-footer">
           <button type="submit" ng-click="advanceFilter()">Done</button>  
         </div>
