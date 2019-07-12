@@ -4,17 +4,25 @@
     $routeProvider.when('/volunteer/appeals', {
       controller: 'VolApplsCtrl',
       // update the search params in the URL without reloading the route     
-      templateUrl: '~/volunteer/VolApplsCtrl.html'
+      templateUrl: '~/volunteer/VolApplsCtrl.html',
+      resolve: {
+        custom_fieldset_volunteer: function(crmApi) {
+          return crmApi('VolunteerAppeal', 'getCustomFieldsetWithMetaVolunteerAppeal', {
+            controller: 'VolunteerAppeal'
+          });
+        }
+      }
     });
   });
 
-  angular.module('volunteer').controller('VolApplsCtrl', function ($route, $scope,crmApi,$window) {       
+  angular.module('volunteer').controller('VolApplsCtrl', function ($route, $scope,crmApi,$window, custom_fieldset_volunteer) {
     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
     $scope.search="";
     $scope.currentTemplate = "~/volunteer/AppealGrid.html"; //default view is grid view
     $scope.totalRec;
     $scope.currentPage = 1;
     $scope.pageSize = 10;
+    $scope.appealCustomFieldData = {};
     $scope.options=[{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"dateS",val:"Newest Appeals"},{key:"dateE",val:"Upcoming"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}];
     $scope.sortValue=$scope.sortby=$scope.order=null;
     $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/persist/contribute/appeal/thumb/";
@@ -22,6 +30,9 @@
     $scope.changeview = function(tpl){
       $scope.currentTemplate = tpl;
     }
+    // Assign custom field set values.
+    $scope.custom_fieldset_volunteer = custom_fieldset_volunteer.values;
+
     //Get appeal data with search text and/or pagination
     getAppeals = function (advancedFilter,filterObj) {
       let params={};
@@ -46,6 +57,8 @@
           }
         }
         $scope.show_appeals_done_anywhere?params.advance_search.show_appeals_done_anywhere=$scope.show_appeals_done_anywhere:null;
+        // Pass custom field data from advance search to API.
+        params.advance_search.appealCustomFieldData = $scope.appealCustomFieldData;
       }
       return crmApi('VolunteerAppeal', 'getsearchresult', params)
         .then(function (data) {
