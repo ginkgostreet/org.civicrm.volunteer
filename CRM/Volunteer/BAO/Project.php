@@ -469,8 +469,17 @@ class CRM_Volunteer_BAO_Project extends CRM_Volunteer_DAO_Project {
     $project = new CRM_Volunteer_BAO_Project($params);
     foreach ($project->fields() as $field) {
       $fieldName = $field['name'];
+      // Check any field parameter set with array or not.
+      // If array then use comparator from key. Otheriwse use "=" comparator.
       if (!empty($project->$fieldName)) {
-        $query->where('!column = @value', array(
+        if(isset($project->$fieldName) && !empty($project->$fieldName) && is_array($project->$fieldName)) {
+          // Key contains comparator value. eg. "Like, Not Like etc"
+          $comparator = key($project->$fieldName);
+        } else {
+          $comparator = "=";
+        }
+        // Use dynamic comparator based on passed parameter.
+        $query->where('!column '.$comparator.' @value', array(
           'column' => $fieldName,
           'value' => $project->$fieldName,
         ));
