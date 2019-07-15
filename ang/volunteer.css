@@ -412,21 +412,21 @@ body {font-family: "Lato", sans-serif;}
 .custom_fieldset_link .custom-fieldset-text {
   color: #fff;
   text-decoration: none;
+  margin-left: 5px;
 }
 .custom_fieldset_link {
-  margin-left: 10px;
-  cursor: pointer;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  background: #70716B url(../i/crm-button-bg.gif) repeat-x top left;
   display: inline-block;
-  width: 20%;
-  padding: 5px;
-  border-radius: 5px;
+  width: 15%;
+  text-align: center;
+  margin-left: 10px !important;
 }
 .custom_fieldgroup_dropdown {
   display: inline-block;
-  height: 35px;
+  height: 30px;
+  margin-left: 14px;
+  font-size: 14px !important;
+  padding: 2px !important;
+  cursor: pointer;
 }
 .crm-button-remove-custom-group {
   float: right;
@@ -445,4 +445,8 @@ body {font-family: "Lato", sans-serif;}
 }
 .delete_appeal, .edit_appeal {
   cursor: pointer;
+}
+.custom_fieldset_selector .custom_hr {
+  border: 1px lightgrey;
+  margin: 20px;
 }
