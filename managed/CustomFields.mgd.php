@@ -25,7 +25,7 @@ return array(
   ),
   array(
     'module' => 'org.civicrm.volunteer',
-    'name' => 'CiviVolunteer - Volunteer Project Appeal Extensibility Registration',
+    'name' => 'CiviVolunteer - Volunteer Project Appeal Extensibility',
     'entity' => 'OptionValue',
     'params' => array(
       'version' => 3,

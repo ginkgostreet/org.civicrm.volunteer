@@ -4,38 +4,27 @@
   <base>CRM/Volunteer</base>
   <class>VolunteerAppeal</class>
   <name>civicrm_volunteer_appeal</name>
-  <comment>FIXME</comment>
+  <comment>VOLUNTEERAPPEAL</comment>
+  <add>4.4</add>
   <log>true</log>
-
   <field>
     <name>id</name>
+    <title>CiviVolunteer Appeal ID</title>
     <type>int unsigned</type>
     <required>true</required>
-    <comment>Unique VolunteerAppeal ID</comment>
+    <comment>Unique Volunteer Appeal ID</comment>
+    <add>4.4</add>
   </field>
   <primaryKey>
     <name>id</name>
     <autoincrement>true</autoincrement>
   </primaryKey>
-
   <field>
-    <name>contact_id</name>
-    <type>int unsigned</type>
-    <comment>FK to Contact</comment>
-  </field>
-  <foreignKey>
-    <name>contact_id</name>
-    <table>civicrm_contact</table>
-    <key>id</key>
-    <onDelete>CASCADE</onDelete>
-  </foreignKey>
-
-
-
-   <field>
     <name>project_id</name>
+    <title>CiviVolunteer Project ID</title>
     <type>int unsigned</type>
-    <comment>Project Id</comment>
+    <required>true</required>
+    <comment>Foreign key to the Volunteer Project for this record</comment>
   </field>
   <foreignKey>
     <name>project_id</name>
@@ -45,87 +34,89 @@
   </foreignKey>
   <field>
     <name>title</name>
+    <title>Appeal Title</title>
     <type>varchar</type>
     <length>255</length>
-    <comment>title</comment>
+    <required>true</required>
+    <comment>The title of the Volunteer Appeal</comment>
   </field>
-
   <field>
     <name>image</name>
+    <title>Appeal Image</title>
     <type>varchar</type>
     <length>255</length>
-    <comment>image url</comment>
+    <comment>The Image of the Volunteer Appeal.</comment>
   </field>
   <field>
     <name>appeal_teaser</name>
-    <type>text</type>    
-    <comment>appeal teaser</comment>
+    <title>Appeal Teaser</title>
+    <type>text</type>
+    <required>false</required>
+    <comment>Appeal Teaser</comment>
   </field>
   <field>
     <name>appeal_description</name>
+    <title>Appeal Description</title>
     <type>text</type>
-    <comment>appeal description</comment>
+    <required>false</required>
+    <comment>Full description of the Volunteer Appeal. Text and HTML allowed.</comment>
+    <html>
+      <type>RichTextEditor</type>
+      <rows>8</rows>
+      <cols>60</cols>
+    </html>
   </field>
   <field>
     <name>loc_block_id</name>
     <type>int unsigned</type>
     <title>Location Block ID</title>
     <comment>FK to Location Block ID</comment>
-    <add>4.5</add>
   </field>
   <foreignKey>
     <name>loc_block_id</name>
     <table>civicrm_loc_block</table>
     <key>id</key>
     <onDelete>SET NULL</onDelete>
-    <add>4.5</add>
   </foreignKey>
   <field>
     <name>location_done_anywhere</name>
-    <type>tinyint</type>
+    <title>Set Location done anywhere parameter for Volunteer Appeal.</title>
+    <type>int</type>
     <length>1</length>
-    <comment>location done anywhere</comment>
+    <comment>Location Done Anywhere "1" Means Location Done Anywhere True and "0" Means not true.</comment>
   </field>
   <field>
     <name>is_appeal_active</name>
-    <type>tinyint</type>
+    <title>Volunteer Appeal Active Or Not</title>
+    <type>int</type>
     <length>1</length>
-    <comment>is appeal active</comment>
+    <comment>Volunteer Appeal is Active or not. "1" Means "Active" and "0" Means Not Active.</comment>
+    <add>4.4</add>
   </field>
   <field>
     <name>active_fromdate</name>
+    <title>Active From Date of Appeal</title>
     <type>date</type>
-    <comment>active fromdate</comment>
+    <comment>Active From Date of Appeal</comment>
   </field>
   <field>
     <name>active_todate</name>
+    <title>Active To Date of Appeal</title>
     <type>date</type>
-    <comment>active todate</comment>
+    <comment>Active To Date of Appeal</comment>
   </field>
   <field>
     <name>display_volunteer_shift</name>
-    <type>tinyint</type>
+    <title>Display Volunteer Shift or not.</title>
+    <type>int</type>
     <length>1</length>
-    <comment>display volunteer shift</comment>
+    <comment>Display Volunteer Shift or not.</comment>
   </field>
   <field>
     <name>hide_appeal_volunteer_button</name>
-    <type>tinyint</type>
+    <title>Hide Volunteer Appeal Button or not.</title>
+    <type>int</type>
     <length>1</length>
-    <comment>hide appeal volunteer button</comment>
+    <comment>Hide Volunteer Appeal Button or not. "1" means Hide and "0" means Not Hide.</comment>
   </field>
-  <field>
-    <name>volunteer_skill_sought</name>
-    <type>varchar</type>
-    <length>500</length>
-    <comment>volunteer skill sought</comment>
-  </field>
-  <field>
-    <name>custom_fields</name>
-    <type>varchar</type>
-    <length>500</length>
-    <comment>custom fields</comment>
-  </field>
- 
-
 </table>
