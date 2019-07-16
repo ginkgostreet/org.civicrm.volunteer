@@ -29,116 +29,95 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
   public static $_log = TRUE;
 
   /**
-   * Unique VolunteerAppeal ID
+   * Unique Volunteer Appeal ID
    *
    * @var int unsigned
    */
   public $id;
 
   /**
-   * FK to Contact
-   *
-   * @var int unsigned
-   */
-  public $contact_id;
-
-  /**
-   * Project Id
+   * The Foreign key to the Volunteer Project for this record.
    *
    * @var int unsigned
    */
   public $project_id;
 
   /**
-   * title
+   * The title of the Volunteer Appeal
    *
    * @var string
    */
   public $title;
 
   /**
-   * image url
+   * The Image of the Volunteer Appeal.
    *
    * @var string
    */
   public $image;
 
   /**
-   * appeal teaser
+   * Appeal Teaser
    *
    * @var text
    */
   public $appeal_teaser;
 
   /**
-   * appeal description
+   * Appeal Description
    *
    * @var text
    */
   public $appeal_description;
 
   /**
-   * loc_block_id
+   * FK to Location Block ID
    *
-   * @var int
+   * @var int unsigned
    */
   public $loc_block_id;
 
   /**
-   * location done anywhere
+   * Location Done Anywhere "1" Means Location Done Anywhere True and "0" Means not true.
    *
-   * @var tinyint
+   * @var int
    */
   public $location_done_anywhere;
 
   /**
-   * is appeal active
+   * Volunteer Appeal is Active or not. "1" Means "Active" and "0" Means Not Active.
    *
-   * @var tinyint
+   * @var int
    */
   public $is_appeal_active;
 
   /**
-   * active fromdate
+   * Active From Date of Appeal
    *
    * @var date
    */
   public $active_fromdate;
 
   /**
-   * active todate
+   * Active To Date of Appeal
    *
    * @var date
    */
   public $active_todate;
 
   /**
-   * display volunteer shift
+   * Display Volunteer Shift or not.
    *
-   * @var tinyint
+   * @var int
    */
   public $display_volunteer_shift;
 
   /**
-   * hide appeal volunteer button
+   * Hide Volunteer Appeal Button or not. "1" means Hide and "0" means Not Hide.
    *
-   * @var tinyint
+   * @var int
    */
   public $hide_appeal_volunteer_button;
-
-  /**
-   * volunteer skill sought
-   *
-   * @var string
-   */
-  public $volunteer_skill_sought;
-
-  /**
-   * custom fields
-   *
-   * @var string
-   */
-  public $custom_fields;
 
   /**
    * Class constructor.
@@ -157,8 +136,8 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
   public static function getReferenceColumns() {
     if (!isset(Civi::$statics[__CLASS__]['links'])) {
       Civi::$statics[__CLASS__]['links'] = static ::createReferenceColumns(__CLASS__);
-      Civi::$statics[__CLASS__]['links'][] = new CRM_Core_Reference_Basic(self::getTableName(), 'contact_id', 'civicrm_contact', 'id');
       Civi::$statics[__CLASS__]['links'][] = new CRM_Core_Reference_Basic(self::getTableName(), 'project_id', 'civicrm_volunteer_project', 'id');
+      Civi::$statics[__CLASS__]['links'][] = new CRM_Core_Reference_Basic(self::getTableName() , 'loc_block_id', 'civicrm_loc_block', 'id');
       CRM_Core_DAO_AllCoreTables::invoke(__CLASS__, 'links_callback', Civi::$statics[__CLASS__]['links']);
     }
     return Civi::$statics[__CLASS__]['links'];
@@ -175,17 +154,9 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
         'id' => [
           'name' => 'id',
           'type' => CRM_Utils_Type::T_INT,
-          'description' => CRM_Volunteer_ExtensionUtil::ts('Unique VolunteerAppeal ID'),
+          'title' => ts('CiviVolunteer Appeal ID', array('domain' => 'org.civicrm.volunteer')) ,
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Unique Volunteer Appeal ID'),
           'required' => TRUE,
-          'table_name' => 'civicrm_volunteer_appeal',
-          'entity' => 'VolunteerAppeal',
-          'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
-          'localizable' => 0,
-        ],
-        'contact_id' => [
-          'name' => 'contact_id',
-          'type' => CRM_Utils_Type::T_INT,
-          'description' => CRM_Volunteer_ExtensionUtil::ts('FK to Contact'),
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
@@ -194,17 +165,21 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
         'project_id' => [
           'name' => 'project_id',
           'type' => CRM_Utils_Type::T_INT,
-          'description' => CRM_Volunteer_ExtensionUtil::ts('Project Id'),
+          'title' => ts('CiviVolunteer Project ID') ,
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Foreign key to the Volunteer Project for this record'),
+          'required' => true,
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
+          'FKClassName' => 'CRM_Volunteer_DAO_Project',
           'localizable' => 0,
         ],
         'title' => [
           'name' => 'title',
           'type' => CRM_Utils_Type::T_STRING,
-          'title' => CRM_Volunteer_ExtensionUtil::ts('Title'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('title'),
+          'title' => CRM_Volunteer_ExtensionUtil::ts('Appeal Title'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('The title of the Volunteer Appeal'),
+          'required' => true,
           'maxlength' => 255,
           'size' => CRM_Utils_Type::HUGE,
           'table_name' => 'civicrm_volunteer_appeal',
@@ -215,8 +190,8 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
         'image' => [
           'name' => 'image',
           'type' => CRM_Utils_Type::T_STRING,
-          'title' => CRM_Volunteer_ExtensionUtil::ts('Image'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('image url'),
+          'title' => CRM_Volunteer_ExtensionUtil::ts('Appeal Image'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('The Image of the Volunteer Appeal.'),
           'maxlength' => 255,
           'size' => CRM_Utils_Type::HUGE,
           'table_name' => 'civicrm_volunteer_appeal',
@@ -228,7 +203,8 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
           'name' => 'appeal_teaser',
           'type' => CRM_Utils_Type::T_TEXT,
           'title' => CRM_Volunteer_ExtensionUtil::ts('Appeal Teaser'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('appeal teaser'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Appeal Teaser'),
+          'required' => false,
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
@@ -238,10 +214,16 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
           'name' => 'appeal_description',
           'type' => CRM_Utils_Type::T_TEXT,
           'title' => CRM_Volunteer_ExtensionUtil::ts('Appeal Description'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('appeal description'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Full description of the Volunteer Appeal. Text and HTML allowed.'),
+          'required' => false,
+          'rows' => 8,
+          'cols' => 60,
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
+          'html' => array(
+            'type' => 'RichTextEditor',
+          ),
           'localizable' => 0,
         ],
         'loc_block_id' => array(
@@ -253,12 +235,12 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
           'FKClassName' => 'CRM_Core_DAO_LocBlock',
-        ) ,
+        ),
         'location_done_anywhere' => [
           'name' => 'location_done_anywhere',
           'type' => CRM_Utils_Type::T_INT,
-          'title' => CRM_Volunteer_ExtensionUtil::ts('Location Done Anywhere'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('location done anywhere'),
+          'title' => CRM_Volunteer_ExtensionUtil::ts('Set Location done anywhere parameter for Volunteer Appeal.'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Location Done Anywhere "1" Means Location Done Anywhere True and "0" Means not true.'),
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
@@ -267,7 +249,8 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
         'is_appeal_active' => [
           'name' => 'is_appeal_active',
           'type' => CRM_Utils_Type::T_INT,
-          'description' => CRM_Volunteer_ExtensionUtil::ts('is appeal active'),
+          'title' => CRM_Volunteer_ExtensionUtil::ts('Volunteer Appeal Active Or Not'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Volunteer Appeal is Active or not. "1" Means "Active" and "0" Means Not Active.'),
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
@@ -276,8 +259,8 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
         'active_fromdate' => [
           'name' => 'active_fromdate',
           'type' => CRM_Utils_Type::T_DATE,
-          'title' => CRM_Volunteer_ExtensionUtil::ts('Active Fromdate'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('active fromdate'),
+          'title' => CRM_Volunteer_ExtensionUtil::ts('Active From Date of Appeal'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Active From Date of Appeal'),
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
@@ -286,8 +269,8 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
         'active_todate' => [
           'name' => 'active_todate',
           'type' => CRM_Utils_Type::T_DATE,
-          'title' => CRM_Volunteer_ExtensionUtil::ts('Active Todate'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('active todate'),
+          'title' => CRM_Volunteer_ExtensionUtil::ts('Active To Date of Appeal'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Active To Date of Appeal'),
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
@@ -296,8 +279,8 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
         'display_volunteer_shift' => [
           'name' => 'display_volunteer_shift',
           'type' => CRM_Utils_Type::T_INT,
-          'title' => CRM_Volunteer_ExtensionUtil::ts('Display Volunteer Shift'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('display volunteer shift'),
+          'title' => CRM_Volunteer_ExtensionUtil::ts('Display Volunteer Shift or not.'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Display Volunteer Shift or not.'),
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
@@ -306,32 +289,8 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
         'hide_appeal_volunteer_button' => [
           'name' => 'hide_appeal_volunteer_button',
           'type' => CRM_Utils_Type::T_INT,
-          'title' => CRM_Volunteer_ExtensionUtil::ts('Hide Appeal Volunteer Button'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('hide appeal volunteer button'),
-          'table_name' => 'civicrm_volunteer_appeal',
-          'entity' => 'VolunteerAppeal',
-          'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
-          'localizable' => 0,
-        ],
-        'volunteer_skill_sought' => [
-          'name' => 'volunteer_skill_sought',
-          'type' => CRM_Utils_Type::T_STRING,
-          'title' => CRM_Volunteer_ExtensionUtil::ts('Volunteer Skill Sought'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('Volunteer Skill Sought'),
-          'maxlength' => 500,
-          'size' => CRM_Utils_Type::HUGE,
-          'table_name' => 'civicrm_volunteer_appeal',
-          'entity' => 'VolunteerAppeal',
-          'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
-          'localizable' => 0,
-        ],
-        'custom_fields' => [
-          'name' => 'custom_fields',
-          'type' => CRM_Utils_Type::T_STRING,
-          'title' => CRM_Volunteer_ExtensionUtil::ts('Custom Fields'),
-          'description' => CRM_Volunteer_ExtensionUtil::ts('custom fields'),
-          'maxlength' => 500,
-          'size' => CRM_Utils_Type::HUGE,
+          'title' => CRM_Volunteer_ExtensionUtil::ts('Hide Volunteer Appeal Button or not.'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Hide Volunteer Appeal Button or not. "1" means Hide and "0" means Not Hide.'),
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',

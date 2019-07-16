@@ -139,7 +139,14 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $fieldName = $field['name'];
 
       if (!empty($appeal->$fieldName)) {
-        $query->where('!column = @value', array(
+        if(isset($appeal->$fieldName) && !empty($appeal->$fieldName) && is_array($appeal->$fieldName)) {
+          // Key contains comparator value. eg. "Like, Not Like etc"
+          $comparator = key($appeal->$fieldName);
+        } else {
+          $comparator = "=";
+        }
+        // Use dynamic comparator based on passed parameter.
+        $query->where('!column '.$comparator.' @value', array(
           'column' => $fieldName,
           'value' => $appeal->$fieldName,
         ));
