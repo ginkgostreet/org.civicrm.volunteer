@@ -317,7 +317,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     // Appeal should be active, Current Date between appeal date and related project should be active.
     $where = " Where p.is_active = 1 And appeal.is_appeal_active = 1 And CURDATE() between appeal.active_fromdate and appeal.active_todate ";
     if(isset($search_appeal) && !empty($search_appeal)) {
-      $where .= " And (appeal.title Like '%".$search_appeal."%' OR appeal.appeal_description Like '%".$search_appeal."%')";
+      $where .= " And (appeal.title Like '%".$search_appeal."%' OR appeal.appeal_description Like '%".$search_appeal."%' OR cc.display_name LIKE '%".$search_appeal."%')";
     }
     //Advance search parameter.
     if($params["advance_search"]) {
