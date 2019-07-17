@@ -20,6 +20,7 @@
 -->
 
 <div class="crm-container">
+<button ng-click="backToSearchAppeal()">Back To Search Appeal</button>
 <div class="grid">
    <div class="grid2x2">
       <div class="box detail"  role="row">
@@ -28,18 +29,19 @@
                <img src={{basepath+appeal.image}} alt="Project Image">
             </div>
             <div class="pull-right w-70">
-               <div class="p-l-15">
-                  <h2 class="m-t-0">{{ appeal.title }}</h2>                  
-                  <p style="min-height: 60px;">{{ appeal.appeal_description | plainText}}</p>
+                <div class="p-l-15">
+                  <h2 class="m-t-0">{{ appeal.title }}</h2>
+                  <div style="min-height: 40px;">
+                    <p ng-if="appeal.appeal_description != 'null'" ng-bind-html="appeal.appeal_description"></p>
+                  </div>
                 </div>
                  <div class="p-l-15" style="margin-rigth:15px">                
                	  <button class="detail-btn" ng-hide="showVolunteer" ng-click="volSignup(appeal.project.flexibleNeed,appeal.project_id)"><i class="fa fa-users" aria-hidden="true" >{{ts('Volunteer!')}}</i></button>
-               	  <button class="detail-btn" ng-click="redirectTo(appeal.project_id)">{{ts('Search For Shifts!')}}</button>
-				</div> 
+                  <button ng-show="showShift" class="detail-btn" ng-click="redirectTo(appeal.project_id)">{{ts('Search For Shifts!')}}</button>
+                </div>
                <div class="loc">
-                  <h2 class="m-t-0">Location</h2>                  
-                  <p ng-hide="locAny" ng-bind-html="appeal.location" ></p>
-                  <p ng-show="locAny"> {{ts('This volunteer opportunity can be done from anywhere')}}</p>                  
+                  <h2 ng-if="!locAny" class="m-t-0">Location</h2>
+                  <p ng-if="!locAny" ng-bind-html="appeal.location" ></p>
                </div>
                	<div class="p-l-15" ng-show="showShift"> 
                   <h2 class="m-t-0">Available Shifts</h2>
@@ -49,12 +51,13 @@
         		  </a>
         		  <em> 
 				  <div class="text-center">
-				  <button><i class="fa fa-chevron-circle-right" aria-hidden="true" ng-click="redirectTo(appeal.project_id)">{{ts('More Info')}}</i></button>
+				  <button><i class="fa fa-chevron-circle-right" aria-hidden="true" ng-click="redirectTo(appeal.project_id)">{{ts('More Shifts')}}</i></button>
 				  </div>
 			   	</div>
 			   <div class="p-l-15">			   	  
-                  <h2 class="m-t-0">{{appeal.project.title}}</h2>
-                  <p ng-bind-html="appeal.project.description"></p>
+                  <br /><br />
+                  <h2 ng-if="appeal.project.description != 'null'" class="m-t-0">{{appeal.project.title}}</h2>
+                  <p ng-if="appeal.project.description != 'null'" ng-bind-html="appeal.project.description"></p>
                   <div class="beneficiary-details" ng-repeat="beneficiary in appeal.project.beneficiaries">
                   	<div class="beneficiary-details__image">
                   		<img src={{beneficiary.image_URL}}>

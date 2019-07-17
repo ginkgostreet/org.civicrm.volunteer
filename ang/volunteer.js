@@ -33,6 +33,15 @@
         return angular.element(textish).text();
       };
     })
+    .filter('textShortenerFilter', function() {
+      return function(text, length) {
+        if (text.length > length) {
+          text = text ? String(text).replace(/<[^>]+>/gm, '') : '';
+          return text.substr(0, length) + "...";
+        }
+        return text;
+      }
+    })
 
     .factory('volOppSearch', ['crmApi', '$location', '$route', function(crmApi, $location, $route) {
       //Search params and results are stored here and assigned by reference to the form

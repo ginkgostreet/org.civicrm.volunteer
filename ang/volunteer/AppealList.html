@@ -23,7 +23,8 @@
             {{appeal.beneficiary_display_name}}
          </td>
          <td class="crm-vol-manage-entity">
-          {{ appeal.appeal_description | plainText | limitTo:50 }} {{appeal.appeal_description.length > 50 ? '...' : ''}}
+            <p ng-if="appeal.appeal_teaser">{{ appeal.appeal_teaser }}</p>
+            <p ng-if="!appeal.appeal_teaser" ng-bind-html="appeal.appeal_description | textShortenerFilter:50"></p>
          </td>
          <td class="crm-vol-manage-entity" ng-bind-html="appeal.location=appeal.location" > 
           

@@ -9,7 +9,8 @@
                <div class="p-l-15">
                   <h2 class="m-t-0">{{ appeal.title }}</h2>
                   <em> {{appeal.beneficiary_display_name}}<em>
-                  <p>{{ appeal.appeal_description | plainText | limitTo:50 }} {{appeal.appeal_description.length > 50 ? '...' : '' }}</p>
+                  <p ng-if="appeal.appeal_teaser">{{ appeal.appeal_teaser }}</p>
+                  <p ng-if="!appeal.appeal_teaser" ng-bind-html="appeal.appeal_description | textShortenerFilter:50"></p>
                </div>
             </div>
             <div class="clearfix"></div>
