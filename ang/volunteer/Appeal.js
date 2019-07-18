@@ -227,7 +227,7 @@
      * @see $scope.locBlockSkipDirtyCheck
      */
     $scope.refreshLocBlock = function() {
-      if (!!$scope.appeal.loc_block_id) {
+      if (Boolean($scope.appeal.loc_block_id)) {
         crmApi("VolunteerProject", "getlocblockdata", {
           "return": "all",
           "sequential": 1,

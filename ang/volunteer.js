@@ -351,18 +351,18 @@
       // TODO: Figure out a more authoritative way to check this, rather than
       // simply setting and checking a flag.
       function verifyScripts() {
-        return !!CRM.volunteerBackboneScripts;
+        return Boolean(CRM.volunteerBackboneScripts);
       }
       function verifyTemplates() {
         return (angular.element("#volunteer_backbone_templates div").length > 0);
       }
       function verifySettings() {
-        return !!CRM.volunteerBackboneSettings;
+        return Boolean(CRM.volunteerBackboneSettings);
       }
 
       return {
         verify: function() {
-          return (!!window.Backbone && verifyScripts() && verifySettings() && verifyTemplates());
+          return (Boolean(window.Backbone) && verifyScripts() && verifySettings() && verifyTemplates());
         },
         load: function() {
           var deferred = $q.defer();

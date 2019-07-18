@@ -111,7 +111,7 @@
         if ( key === "unit") {
           return previous;
         } else {
-          return (previous || !!value);
+          return (previous || Boolean(value));
         }
         //Initial Value
       }, false);
