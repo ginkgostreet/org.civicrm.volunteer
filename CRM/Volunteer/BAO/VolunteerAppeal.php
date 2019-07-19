@@ -374,6 +374,10 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     // Order by Logic.
     $orderByColumn = "appeal.id";
     $order = "ASC";
+    if(empty($params["orderby"])) {
+      $params["orderby"] = "upcoming_appeal";
+      $params["order"] = "DESC";
+    }
     if(!empty($params["orderby"])) {
       if($params["orderby"] == "project_beneficiary") {
         $orderByColumn = "cc.display_name";

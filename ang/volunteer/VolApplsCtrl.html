@@ -4,29 +4,29 @@
   <div crm-ui-debug="proximityUnits"></div>
   <div crm-ui-debug="countries"></div>
   <div class="crm-vol-opp-search">
-    <form name="volAppSearchForm">
-      <div class="crm-block ui-tabs ui-widget ui-widget-content ui-corner-all">
-        <div class="crm-group">
-          <div class="pull-left search-box">
-            <input type="text" name="searchAppeal" ng-model="search" placeholder="Search Appeal" ng-model-options='{ debounce: 1000 }'
-               ng-change='searchRes()'/>
-            <i class="fa fa-search"></i>
-          </div>
-          <div class="pull-left">
-            <div class="volunteer_appeal_result_count_message">{{totalRec}} Volunteer appeal found</div>
-          </div>
-          <div class="pull-right m-5">
-            <button ng-click="changeview('~/volunteer/AppealList.html')"><i class="fa fa-bars"></i></button>                     
-            <button ng-click="changeview('~/volunteer/AppealGrid.html')"><i class="fa fa-th-large"></i></button>
-            <select ng-model="sortValue" ng-options="option.val for option in options" ng-change="sort()">
-            </select>
-            <i class="fa fa-sort-amount-desc" aria-hidden="true"></i>
+    <div class="crm-block ui-tabs ui-widget ui-widget-content ui-corner-all">
+      <div class="crm-group">
+        <div class="pull-left search-box">
+          <input type="text" name="searchAppeal" ng-model="search" placeholder="Search Appeal" ng-model-options='{ debounce: 1000 }'
+             ng-change='searchRes()'/>
+          <i class="fa fa-search"></i>
+        </div>
+        <div class="pull-left m-5">
+          <div class="volunteer_appeal_result_count_message">{{totalRec}} Appeals</div>
+          <div class="advance_filter_wrapper">
             <button ng-click="openModal()"><i class="fa fa-filter" aria-hidden="true"></i></button>
           </div>
-          <div class="clearfix"></div>
         </div>
+        <div class="pull-right m-5">
+          <button class="grid_view_button" ng-class="{grid_active : activeGrid === 'list_view'}" ng-click="changeview('~/volunteer/AppealList.html', 'list_view')"><i class="fa fa-bars"></i></button>
+          <button class="grid_view_button" ng-class="{grid_active : activeGrid === 'grid_view'}" ng-click="changeview('~/volunteer/AppealGrid.html', 'grid_view')"><i class="fa fa-th-large"></i></button>
+          <select ng-model="sortValue" ng-options="option.val for option in options" ng-change="sort()">
+          </select>
+          <i class="fa fa-sort-amount-desc" aria-hidden="true"></i>
+        </div>
+        <div class="clearfix"></div>
       </div>
-    </form>
+    </div>
   </div>
   <!--Modal-->
   <div id="openModal" ng-class="modalClass" ng-hide="!modalClass">
@@ -36,56 +36,59 @@
         <button><i class="fa fa-expand" aria-hidden="true"></i></button>
         <h2>Filter / Advanced Search</h2>
       </div>
-      <div class="filter-model">
-        <div class="tab"> 
-          <button class="tablinks"  ng-click="selectTab(1)" ng-class="{active:isActive(1)}"><i class="fa fa-caret-right" aria-hidden="true">   Date and Location</i></button>
-          <button ng-repeat="customFieldGroup in custom_fieldset_volunteer" class="tablinks"   ng-click="selectTab(customFieldGroup.id)" ng-class="{active:isActive(customFieldGroup.id)}"><i class="fa fa-caret-right" aria-hidden="true">   {{customFieldGroup.title}}</i></button>
-        </div>
-        <div id="London" class="tabcontent" ng-show="isActive(1)">
-          <form name="volOppSearchForm" crm-ui-id-scope>
-            <div>
-              <label>Between<span crm-ui-visible="crmIsRequired" class="crm-marker" title="This field is required." style="visibility: inherit;">*</span></label>
-              <input crm-ui-id="volOppSearchForm.date_start" crm-ui-datepicker="{time: false}"  ng-model="date_start" ng-required />
-              <label crm-ui-for="volOppSearchForm.date_end">and</label>
-              <input crm-ui-id="volOppSearchForm.date_end" crm-ui-datepicker="{time: false}"  ng-model="date_end" />
-              <div class="posta-code-wrapper"> Within 
-                <select ng-disabled="show_appeals_done_anywhere" ng-model="radius" ng-options="option.value as option.label for option in radiusvalue" ng-init="radius = radiusvalue[0].value" >               
-                </select> 
-                <select ng-disabled="show_appeals_done_anywhere" ng-model="unit" ng-options="option.value as option.label for option in proximityUnits" ng-init="unit = proximityUnits[1].value">              
-                </select> of
-                <div class="location_finder_wrapper">
-                  <div class="location_postal_code">
-                    <input type="radio" ng-model="location_finder_way" value="use_postal_code" [name="use_postal_code"]> <label for="postal_code">Postal Code</label>
-                    <div class="postal_code_field">
-                      <input placeholder="Postal Code" ng-disabled="show_appeals_done_anywhere" ng-show="location_finder_way == 'use_postal_code'" type="text" class="postal-code-input" ng-model="postal_code">
+      <div class="modal-body advance_filter_body">
+        <div class="filter-model">
+          <div class="tab"> 
+            <button class="tablinks"  ng-click="selectTab(1)" ng-class="{active:isActive(1)}"><i class="fa fa-caret-right" aria-hidden="true">   Date and Location</i></button>
+            <button ng-repeat="customFieldGroup in custom_fieldset_volunteer" class="tablinks"   ng-click="selectTab(customFieldGroup.id)" ng-class="{active:isActive(customFieldGroup.id)}"><i class="fa fa-caret-right" aria-hidden="true">   {{customFieldGroup.title}}</i></button>
+          </div>
+          <div id="London" class="tabcontent" ng-show="isActive(1)">
+            <form name="volOppSearchForm" crm-ui-id-scope>
+              <div>
+                <label>Between<span crm-ui-visible="crmIsRequired" class="crm-marker" title="This field is required." style="visibility: inherit;">*</span></label>
+                <input crm-ui-id="volOppSearchForm.date_start" crm-ui-datepicker="{time: false}"  ng-model="date_start" ng-required />
+                <label crm-ui-for="volOppSearchForm.date_end">and</label>
+                <input crm-ui-id="volOppSearchForm.date_end" crm-ui-datepicker="{time: false}"  ng-model="date_end" />
+                <div class="posta-code-wrapper"> Within 
+                  <select ng-disabled="show_appeals_done_anywhere" ng-model="radius" ng-options="option.value as option.label for option in radiusvalue" ng-init="radius = radiusvalue[0].value" >
+                  </select>
+                  <select ng-disabled="show_appeals_done_anywhere" ng-model="unit" ng-options="option.value as option.label for option in proximityUnits" ng-init="unit = proximityUnits[1].value">
+                  </select> of
+                  <div class="location_finder_wrapper">
+                    <div class="location_postal_code">
+                      <input type="radio" ng-model="location_finder_way" value="use_postal_code" [name="use_postal_code"]> <label for="postal_code">Postal Code</label>
+                      <div class="postal_code_field">
+                        <input placeholder="Postal Code" ng-disabled="show_appeals_done_anywhere" ng-show="location_finder_way == 'use_postal_code'" type="text" class="postal-code-input" ng-model="postal_code">
+                      </div>
                     </div>
-                  </div>
-                  <div class="location_my_location">
-                    <input type="radio" ng-model="location_finder_way" value="use_my_location" ng-click="getPosition()" [name="use_my_location"]> <label for="my_location">Use My Location</label>
-                    <div ng-show="location_finder_way == 'use_my_location'" class="lat_long_wrapper">
-                      Latitude:  <input ng-disabled="show_appeals_done_anywhere" type="text" name="let" ng-model="lat">
-                      Longitude:  <input ng-disabled="show_appeals_done_anywhere" type="text" name="lon" ng-model="lon">
+                    <div class="location_my_location">
+                      <input type="radio" ng-model="location_finder_way" value="use_my_location" ng-click="getPosition()" [name="use_my_location"]> <label for="my_location">Use My Location</label>
+                      <div ng-show="location_finder_way == 'use_my_location'" class="lat_long_wrapper">
+                        Latitude:  <input ng-disabled="show_appeals_done_anywhere" type="text" name="let" ng-model="lat">
+                        Longitude:  <input ng-disabled="show_appeals_done_anywhere" type="text" name="lon" ng-model="lon">
+                      </div>
                     </div>
+                    <a ng-if="location_finder_way" ng-click="clear()" class="crm-hover-button crm-clear-link ng-scope" title=""><i class="crm-i fa-times"></i></a>
                   </div>
                 </div>
+                <br>
+                <div class="show-opp pull-left">
+                  <input ng-model="show_appeals_done_anywhere" type="checkbox" value="show_appeals_done_anywhere" name="show_appeals_done_anywhere" > Only show appeals that can be done from anywhere
+                </div>
               </div>
-              <br>
-              <div class="show-opp pull-left">
-                <input ng-model="show_appeals_done_anywhere" type="checkbox" value="show_appeals_done_anywhere" name="show_appeals_done_anywhere" > Only show appeals that can be done from anywhere
-              </div>
-            </div>
-          </form>
-        </div>
-        <div ng-repeat="customFieldGroup in custom_fieldset_volunteer" class="tabcontent" ng-show="isActive({{customFieldGroup.id}})">
-          <form name="volAppealCustomFieldSearch" crm-ui-id-scope>
-            <fieldset crm-render-field-collection="customFieldGroup.appeal_custom_field_groups" model="appealCustomFieldData"></fieldset>
-          </form>
-        </div>
-        <br>
-        <div class="modal-footer">
-          <button type="submit" ng-click="advanceFilter()">Done</button>  
+            </form>
+          </div>
+          <div ng-repeat="customFieldGroup in custom_fieldset_volunteer" class="tabcontent" ng-show="isActive({{customFieldGroup.id}})">
+            <form name="volAppealCustomFieldSearch" crm-ui-id-scope>
+              <fieldset crm-render-field-collection="customFieldGroup.appeal_custom_field_groups" model="appealCustomFieldData"></fieldset>
+            </form>
+          </div>
+          <br>
         </div>
       </div>
+      <div class="modal-footer clearfix advance_filter_footer">
+          <button type="submit" ng-click="advanceFilter()">Search</button>
+        </div>
     </div>
   </div>
   <!--end modal-->

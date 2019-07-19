@@ -23,18 +23,30 @@
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     $scope.appealCustomFieldData = {};
-    $scope.options=[{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"dateS",val:"Newest Appeals"},{key:"dateE",val:"Upcoming"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}];
-    $scope.sortValue=$scope.sortby=$scope.order=null;
+    $scope.options=[{key:"dateE",val:"Upcoming"},{key:"dateS",val:"Newest Appeals"},{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}];
+    $scope.sortValue = $scope.options[0];
+    $scope.sortby=$scope.order=null;
     $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/persist/contribute/appeal/thumb/";
+    $scope.activeGrid = "grid_view";
+
     //Change reult view
-    $scope.changeview = function(tpl){
+    $scope.changeview = function(tpl, type){
+      $scope.activeGrid = type;
       $scope.currentTemplate = tpl;
     }
+    // Clear checkbox selection in Date and Location Filter.
+    $scope.clear = function clear() {
+      $scope.location_finder_way = null;
+      $scope.lat = null;
+      $scope.lon = null;
+      $scope.postal_code = null;
+    };
     // Assign custom field set values.
     $scope.custom_fieldset_volunteer = custom_fieldset_volunteer.values;
 
     //Get appeal data with search text and/or pagination
     getAppeals = function (advancedFilter,filterObj) {
+      CRM.$('#crm-main-content-wrapper').block();
       let params={};
       $scope.currentPage?params.page_no=$scope.currentPage:null;
       $scope.search?params.search_appeal=$scope.search:null;
@@ -70,7 +82,9 @@
           $scope.totalRec=data.values.total_appeal;
           $scope.numberOfPages= Math.ceil($scope.totalRec/$scope.pageSize);
           $scope.closeModal();
+          CRM.$('#crm-main-content-wrapper').unblock();
         },function(error) {
+          CRM.$('#crm-main-content-wrapper').unblock();
           if (error.is_error) {
             CRM.alert(error.error_message, ts("Error"), "error");
           } else {
@@ -108,6 +122,7 @@
 
     //Set sort by and order by according to value selected
     function checkAndSetSortValue() {
+      console.log($scope.sortValue.key);
       let sortby,orderby=null;
       if($scope.sortValue.key=="titleA"){
         sortby="title";
@@ -122,10 +137,10 @@
         sortby="upcoming_appeal";
         orderby="DESC";
       } else if($scope.sortValue.key=="benfcrA"){
-        sortBy="project_beneficiary";
+        sortby="project_beneficiary";
         orderby="ASC";
       } else if($scope.sortValue.key=="benfcrD"){
-        sortBy="project_beneficiary";
+        sortby="project_beneficiary";
         orderby="DESC";
       }
       $scope.sortby=sortby;
