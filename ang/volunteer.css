@@ -273,6 +273,7 @@ opacity: 0.3;
   border: black solid 1px;
   background: #fff;
   overflow: hidden;
+  overflow: auto;
 }
 
 .modal-header {
@@ -335,7 +336,7 @@ body {font-family: "Lato", sans-serif;}
   border: 1px solid #ccc;
   background-color: #f1f1f1;
   width: 30%;
-  height: 350px;
+  height: 300px;
   padding: 15px 10px;
   overflow: auto;
 }
@@ -373,7 +374,8 @@ body {font-family: "Lato", sans-serif;}
   padding: 15px;
   border: 1px solid #989393;/*#ccc;*/
   width: 70%;
-  border-left: none;  
+  border-left: none;
+  height: 300px;
 }
 .postal-code-input{
   width: 124px;
@@ -468,5 +470,7 @@ body {font-family: "Lato", sans-serif;}
 }
 .advance_filter_body {
   height: 420px;
+}
+.custom_fied_content {
   overflow: auto;
 }

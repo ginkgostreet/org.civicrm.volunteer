@@ -78,7 +78,7 @@
               </div>
             </form>
           </div>
-          <div ng-repeat="customFieldGroup in custom_fieldset_volunteer" class="tabcontent" ng-show="isActive({{customFieldGroup.id}})">
+          <div ng-repeat="customFieldGroup in custom_fieldset_volunteer" class="tabcontent custom_fied_content" ng-show="isActive({{customFieldGroup.id}})">
             <form name="volAppealCustomFieldSearch" crm-ui-id-scope>
               <fieldset crm-render-field-collection="customFieldGroup.appeal_custom_field_groups" model="appealCustomFieldData"></fieldset>
             </form>
