@@ -309,7 +309,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     $join .= " LEFT JOIN civicrm_address AS addr ON (addr.id = loc.address_id) ";
     $join .= " LEFT JOIN civicrm_volunteer_need AS need ON (need.project_id = p.id) And need.is_active = 1 And need.is_flexible = 1 And need.visibility_id = 1";
     if($show_beneficiary_at_front == 1) {
-      $beneficiary_rel_no=CRM_Core_OptionGroup::getValue('volunteer_project_relationship', 'volunteer_beneficiary', 'name');    
+      $beneficiary_rel_no = CRM_Core_PseudoConstant::getKey("CRM_Volunteer_BAO_ProjectContact", 'relationship_type_id', 'volunteer_beneficiary');
       $join .= " LEFT JOIN civicrm_volunteer_project_contact AS pc ON (pc.project_id = p.id And pc.relationship_type_id='".$beneficiary_rel_no."') ";
       $join .= " LEFT JOIN civicrm_contact AS cc ON (cc.id = pc.contact_id) ";
       $select .= " , GROUP_CONCAT(DISTINCT cc.display_name ) as beneficiary_display_name";
