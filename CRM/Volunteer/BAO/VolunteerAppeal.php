@@ -101,13 +101,13 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
    */
   private static function validateCreateParams(array $params) {
     if (empty($params['id']) && empty($params['title'])) {
-      CRM_Core_Error::fatal('Title field is required for appeal creation.');
+      CRM_Core_Error::fatal(ts('Title field is required for Appeal creation.'));
     }
     if (empty($params['id']) && empty($params['image'])) {
-      CRM_Core_Error::fatal('Image field is required for appeal creation.');
+      CRM_Core_Error::fatal(ts('Image field is required for Appeal creation.'));
     }
     if (empty($params['id']) && empty($params['appeal_description'])) {
-      CRM_Core_Error::fatal('Appeal Description field is required for appeal creation.');
+      CRM_Core_Error::fatal(ts('Appeal Description field is required for Appeal creation.'));
     }
 
     return $params;
