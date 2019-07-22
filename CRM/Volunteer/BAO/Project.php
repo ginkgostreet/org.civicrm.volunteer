@@ -463,17 +463,28 @@ class CRM_Volunteer_BAO_Project extends CRM_Volunteer_DAO_Project {
 
     foreach ($project->fields() as $field) {
       $fieldName = $field['name'];
+      // default sqlExpr: see CRM_Utils_SQL_BaseParamQuery::interpolate()
+      $comparator = "=";
+      $sqlExpr = '!column '.$comparator.' @value';
       // Check any field parameter set with array or not.
       // If array then use comparator from key. Otheriwse use "=" comparator.
       if (!empty($project->$fieldName)) {
         if(isset($project->$fieldName) && !empty($project->$fieldName) && is_array($project->$fieldName)) {
           // Key contains comparator value. eg. "Like, Not Like etc"
           $comparator = key($project->$fieldName);
-        } else {
-          $comparator = "=";
-        }
+          if ($comparator == "IN") {
+            if (is_array($project->$fieldName)) {
+              $project->$fieldName = '('. implode(",",current($project->$fieldName )) .')';
+            }
+            // disable escaping: "!value"
+            $sqlExpr = '!column '.$comparator.' !value';
+          } else {
+            $sqlExpr = '!column '.$comparator.' @value';
+          }
+        } 
+
         // Use dynamic comparator based on passed parameter.
-        $query->where('!column '.$comparator.' @value', array(
+        $query->where($sqlExpr, array(
           'column' => $fieldName,
           'value' => $project->$fieldName,
         ));
