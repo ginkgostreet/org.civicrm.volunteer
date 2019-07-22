@@ -3,4 +3,5 @@
   <xi:include href="Project.xml" parse="xml" />
   <xi:include href="ProjectContact.xml" parse="xml" />
   <xi:include href="Need.xml"   parse="xml" />
+  <xi:include href="VolunteerAppeal.xml"   parse="xml" />
 </tables>

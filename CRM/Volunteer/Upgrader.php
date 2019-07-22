@@ -61,6 +61,9 @@ class CRM_Volunteer_Upgrader extends CRM_Volunteer_Upgrader_Base {
 
     $this->installNeedMetaDateFields();
 
+    // Volunteer Appeal table and relevant DB changes.
+    $this->schemaUpgradeVolunteerAppeal();
+
     // uncomment the next line to insert sample data
     // $this->executeSqlFile('sql/volunteer_sample.mysql');
   }
@@ -885,4 +888,25 @@ class CRM_Volunteer_Upgrader extends CRM_Volunteer_Upgrader_Base {
     }
     return $unmet;
   }
+
+  /**
+   * CiviVolunteer 2302 update introduces Volunteer Appeal Functionality.
+   *
+   * @return boolean TRUE on success
+   */
+  public function upgrade_2302() {
+    $this->ctx->log->info('Applying update 2302 - CiviVolunteer Volunteer Appeal Enhancement');
+    $this->schemaUpgradeVolunteerAppeal();
+
+    return TRUE;
+  }
+
+  /**
+   * Volunteer Appeal Functionality Integrated.
+   * Execute sql queries for relevant volunteer appeal functionality.
+   */
+  public function schemaUpgradeVolunteerAppeal() {
+    $this->executeSqlFile('sql/volunteer_upgrade_with_appeal_2.1.sql');
+  }
+
 }
