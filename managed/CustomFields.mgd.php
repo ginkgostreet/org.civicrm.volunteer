@@ -30,7 +30,7 @@ return array(
     'params' => array(
       'version' => 3,
       'option_group_id' => 'cg_extend_objects',
-      'label' => 'Volunteer Appeal',
+      'label' => ts('Volunteer Appeal'),
       'value' => 'VolunteerAppeal',
       'name' => 'civicrm_volunteer_appeal',
     ),
