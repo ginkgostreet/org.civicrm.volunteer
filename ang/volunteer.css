@@ -338,6 +338,7 @@ body {font-family: "Lato", sans-serif;}
   width: 30%;
   height: 300px;
   padding: 15px 10px;
+  overflow: auto;
 }
 
 /* Style the buttons inside the tab */
@@ -395,9 +396,9 @@ body {font-family: "Lato", sans-serif;}
   margin-top: 10px;
 }
 .volunteer_appeal_result_count_message {
-  vertical-align: middle;
-  margin-top: 5px;
+  margin-right: 10px;
   margin-left: 14px;
+  display: inline-block;
 }
 .manage_appeal_form .display_volunteer_note {
   margin-left: 10px;
@@ -449,4 +450,27 @@ body {font-family: "Lato", sans-serif;}
 .custom_fieldset_selector .custom_hr {
   border: 1px lightgrey;
   margin: 20px;
+}
+.grid_active {
+  background: #878484;
+  border: 1px solid #878484;
+}
+.advance_filter_wrapper {
+  display: inline-block;
+}
+
+.advance_filter_footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #fff;
+  left: 0;
+  box-shadow: 4px -1px 6px 0px rgba(0, 0, 0, 0.3);
+  padding: 5px 15px 15px 10px;
+}
+.advance_filter_body {
+  height: 420px;
+}
+.custom_fied_content {
+  overflow: auto;
 }

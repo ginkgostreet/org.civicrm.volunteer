@@ -2,7 +2,7 @@
    <thead>
       <tr role="row">
          <th class="ui-state-default crm-vol-manage-beneficiaries"> {{ts("Image")}} </th>
-         <th class="ui-state-default crm-vol-manage-beneficiaries">{{ts("Project Appeal")}}</th>
+         <th class="ui-state-default crm-vol-manage-beneficiaries">{{ts("Title")}}</th>
          <th class="ui-state-default crm-vol-manage-beneficiaries">{{ts("Beneficiaries")}}</th>
          <th class="ui-state-default crm-vol-manage-location">{{ts("Description")}}</th>
          <th class="ui-state-default crm-vol-manage-location">{{ts("Location")}}</th>
@@ -17,7 +17,6 @@
          </td>
          <td class="crm-vol-manage-project">
             <span class="crm-vol-manage-project-title">{{ appeal.title }}</span>
-            <span class="crm-vol-manage-project-id">{{ ts('(ID: %1)', {1: appeal.id}) }}</span>
          </td>
          <td class="crm-vol-manage-entity">
             {{appeal.beneficiary_display_name}}
