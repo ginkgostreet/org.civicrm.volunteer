@@ -235,7 +235,7 @@
       }
     };
     $scope.runBatch = function() {
-      if(!!$scope.batchAction) {
+      if(Boolean($scope.batchAction)) {
         $scope.batchActions[$scope.batchAction].run();
       }
     };
