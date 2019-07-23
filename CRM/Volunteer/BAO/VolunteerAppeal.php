@@ -328,24 +328,24 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $where .= " And (appeal.title Like '%".$search_appeal."%' OR appeal.appeal_description Like '%".$search_appeal."%' OR cc.display_name LIKE '%".$search_appeal."%')";
     }
     //Advance search parameter.
-    if(isset($params["advance_search"])) {
+    if(isset($params["advanced_search"])) {
       // If start date and end date filter passed on advance search.
-      if($params["advance_search"]["fromdate"] && $params["advance_search"]["todate"]) {
-        $where .= " And p.id In (select project_id from civicrm_volunteer_need AS need_advance where need_advance.is_flexible = 0 And DATE_FORMAT(need_advance.start_time,'%Y-%m-%d')>='".$params["advance_search"]["fromdate"]."' and  DATE_FORMAT(need_advance.end_time,'%Y-%m-%d') <= '".$params["advance_search"]["todate"]."')";
+      if($params["advanced_search"]["fromdate"] && $params["advanced_search"]["todate"]) {
+        $where .= " And p.id In (select project_id from civicrm_volunteer_need AS need_advance where need_advance.is_flexible = 0 And DATE_FORMAT(need_advance.start_time,'%Y-%m-%d')>='".$params["advanced_search"]["fromdate"]."' and  DATE_FORMAT(need_advance.end_time,'%Y-%m-%d') <= '".$params["advanced_search"]["todate"]."')";
       }
       // If show appeals done anywhere passed on advance search.
-      if(isset($params["advance_search"]["show_appeals_done_anywhere"]) && $params["advance_search"]["show_appeals_done_anywhere"] == true ) {
+      if(isset($params["advanced_search"]["show_appeals_done_anywhere"]) && $params["advanced_search"]["show_appeals_done_anywhere"] == true ) {
         $where .= " And appeal.location_done_anywhere = 1 ";
       } else {
         // If show appeal is not set then check postal code, radius and proximity.
-        if(isset($params["advance_search"]["proximity"]['postal_code']) || (isset($params["advance_search"]["proximity"]['lat']) && isset($params["advance_search"]["proximity"]['lon']))) {
-          $proximityquery = CRM_Volunteer_BAO_Project::buildProximityWhere($params["advance_search"]["proximity"]);
+        if(isset($params["advanced_search"]["proximity"]['postal_code']) || (isset($params["advanced_search"]["proximity"]['lat']) && isset($params["advanced_search"]["proximity"]['lon']))) {
+          $proximityquery = CRM_Volunteer_BAO_Project::buildProximityWhere($params["advanced_search"]["proximity"]);
           $proximityquery = str_replace("civicrm_address", "addr", $proximityquery);
           $where .= " And ".$proximityquery;
         }
       }
       // If custom field pass from advance search filter.
-      if(isset($params["advance_search"]["appealCustomFieldData"])) {
+      if(isset($params["advanced_search"]["appealCustomFieldData"])) {
         // Get all custom field database tables which are assoicated with Volunteer Appeal.
         $sql_query = "SELECT cg.table_name, cg.id as groupID, cg.is_multiple, cf.column_name, cf.id as fieldID, cf.data_type as fieldDataType FROM   civicrm_custom_group cg, civicrm_custom_field cf WHERE  cf.custom_group_id = cg.id AND    cg.is_active = 1 AND    cf.is_active = 1 AND  cg.extends IN ( 'VolunteerAppeal' )";
         $dao10 = CRM_Core_DAO::executeQuery($sql_query);
@@ -358,7 +358,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
           // Join all custom field tables.
           $join .= " LEFT JOIN $table_name $table_alias ON appeal.id = $table_alias.entity_id";
           $select .= ", ".$table_alias.".".$column_name;
-          foreach ($params["advance_search"]["appealCustomFieldData"] as $key => $field_data) {
+          foreach ($params["advanced_search"]["appealCustomFieldData"] as $key => $field_data) {
             if(isset($field_data) && !empty($field_data)) {
               $custom_field_array = explode("_", $key);
               if(isset($custom_field_array) && isset($custom_field_array[1])) {
