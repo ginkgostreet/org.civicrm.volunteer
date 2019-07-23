@@ -23,7 +23,7 @@
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     $scope.appealCustomFieldData = {};
-    $scope.options=[{key:"dateE",val:"Upcoming"},{key:"dateS",val:ts('Newest Appeals')},{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}];
+    $scope.options=[{key:"dateE",val:"Upcoming"},{key:"dateS",val:ts('Newest Opportunities')},{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}];
     $scope.sortValue = $scope.options[0];
     $scope.sortby=$scope.order=null;
     $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/persist/contribute/appeal/thumb/";
