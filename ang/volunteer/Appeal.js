@@ -128,7 +128,7 @@
 
       default:
         var cancelCallback = function (projectId) {
-          $location.path("/volunteer/manage");
+          $location.path("/volunteer/project_appeals/"+$scope.appeal.project_id);
         };
         $scope.saveAndNextLabel = ts('Save and Add Another Appeal');
     }
