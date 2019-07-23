@@ -52,25 +52,25 @@
       $scope.search?params.search_appeal=$scope.search:null;
       $scope.sortby?params.orderby=$scope.sortby:null;
       $scope.order?params.order=$scope.order:null;
-      if($scope.advance_search) {
+      if($scope.advanced_search) {
         // Default Proximity Object Set to empty.
-        params.advance_search={proximity:{}};
-        $scope.date_start?params.advance_search.fromdate=$scope.date_start:null;
-        $scope.date_end?params.advance_search.todate=$scope.date_end:null;
+        params.advanced_search={proximity:{}};
+        $scope.date_start?params.advanced_search.fromdate=$scope.date_start:null;
+        $scope.date_end?params.advanced_search.todate=$scope.date_end:null;
         // If Show appeals done anywhere checkbox is disable then and then proximity set. 
         if(!$scope.show_appeals_done_anywhere) {
-          $scope.radius?params.advance_search.proximity.radius=$scope.radius:null;
-          $scope.unit?params.advance_search.proximity.unit=$scope.unit:null;
+          $scope.radius?params.advanced_search.proximity.radius=$scope.radius:null;
+          $scope.unit?params.advanced_search.proximity.unit=$scope.unit:null;
           if($scope.location_finder_way == "use_postal_code") {
-            $scope.postal_code?params.advance_search.proximity.postal_code=$scope.postal_code:null;
+            $scope.postal_code?params.advanced_search.proximity.postal_code=$scope.postal_code:null;
           } else {
-            $scope.lat?params.advance_search.proximity.lat=$scope.lat:null;
-            $scope.lon?params.advance_search.proximity.lon=$scope.lon:null;
+            $scope.lat?params.advanced_search.proximity.lat=$scope.lat:null;
+            $scope.lon?params.advanced_search.proximity.lon=$scope.lon:null;
           }
         }
-        $scope.show_appeals_done_anywhere?params.advance_search.show_appeals_done_anywhere=$scope.show_appeals_done_anywhere:null;
+        $scope.show_appeals_done_anywhere?params.advanced_search.show_appeals_done_anywhere=$scope.show_appeals_done_anywhere:null;
         // Pass custom field data from advance search to API.
-        params.advance_search.appealCustomFieldData = $scope.appealCustomFieldData;
+        params.advanced_search.appealCustomFieldData = $scope.appealCustomFieldData;
       }
       return crmApi('VolunteerAppeal', 'getsearchresult', params)
         .then(function (data) {
@@ -211,7 +211,7 @@
 
     $scope.advanceFilter=function() {
       let params={proximity:{}};
-      $scope.advance_search = true;
+      $scope.advanced_search = true;
       $scope.currentPage = 1;
       getAppeals();
     }
