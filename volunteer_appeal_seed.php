@@ -20,7 +20,9 @@ foreach($project_records as $project) {
     // Get project details based on project id.
     $project_detail_query = db_query("SELECT * FROM leaderce_varldev_civicrm.civicrm_volunteer_project WHERE id = ".$project['project_id']);
     $project_details = (array) $project_detail_query->fetchObject();
-    $project_details_array[] = $project_details;
+    if($project_details['is_active'] == "1") {
+        $project_details_array[] = $project_details;
+    }
 }
 // Check needs of that project and create relevant appeal based on that need for that project.
 foreach ($project_details_array as $key => $project) {
