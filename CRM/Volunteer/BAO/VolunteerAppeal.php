@@ -305,9 +305,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     
     $show_beneficiary_at_front = 1;
     $seperator = CRM_CORE_DAO::VALUE_SEPARATOR;
-    
-    $search_appeal = $params['search_appeal'];
-    $search_appeal = trim($search_appeal);
+
     $select = " SELECT appeal.*, addr.street_address, addr.city, addr.postal_code";
     $select .= " , GROUP_CONCAT(DISTINCT need.id ) as need_id";//,mdt.need_start_time
     $from = " FROM civicrm_volunteer_appeal AS appeal";
@@ -323,11 +321,14 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     }
     // Appeal should be active, Current Date between appeal date and related project should be active.
     $where = " Where p.is_active = 1 And appeal.is_appeal_active = 1 And CURDATE() between appeal.active_fromdate and appeal.active_todate ";
-    if(isset($search_appeal) && !empty($search_appeal)) {
+
+    if(isset($params['search_appeal'])) {
+      $search_appeal = $params['search_appeal'];
+      $search_appeal = trim($search_appeal);
       $where .= " And (appeal.title Like '%".$search_appeal."%' OR appeal.appeal_description Like '%".$search_appeal."%' OR cc.display_name LIKE '%".$search_appeal."%')";
     }
     //Advance search parameter.
-    if($params["advance_search"]) {
+    if(isset($params["advance_search"])) {
       // If start date and end date filter passed on advance search.
       if($params["advance_search"]["fromdate"] && $params["advance_search"]["todate"]) {
         $where .= " And p.id In (select project_id from civicrm_volunteer_need AS need_advance where need_advance.is_flexible = 0 And DATE_FORMAT(need_advance.start_time,'%Y-%m-%d')>='".$params["advance_search"]["fromdate"]."' and  DATE_FORMAT(need_advance.end_time,'%Y-%m-%d') <= '".$params["advance_search"]["todate"]."')";
