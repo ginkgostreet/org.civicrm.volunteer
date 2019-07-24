@@ -16,6 +16,9 @@
           <div class="advance_filter_wrapper">
             <button ng-click="openModal()"><i class="fa fa-filter" aria-hidden="true"></i></button>
           </div>
+          <div class="reset_filter">
+              <button ng-click="resetFilter()">Reset Filters</button>
+          </div>
         </div>
         <div class="pull-right m-5">
           <button class="grid_view_button" ng-class="{grid_active : activeGrid === 'list_view'}" ng-click="changeview('~/volunteer/AppealList.html', 'list_view')"><i class="fa fa-bars"></i></button>
