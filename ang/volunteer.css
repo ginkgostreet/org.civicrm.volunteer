@@ -469,8 +469,11 @@ body {font-family: "Lato", sans-serif;}
   padding: 5px 15px 15px 10px;
 }
 .advance_filter_body {
-  height: 420px;
+  height: 150px;
 }
 .custom_fied_content {
   overflow: auto;
+}
+.reset_filter {
+  display: inline-block;
 }

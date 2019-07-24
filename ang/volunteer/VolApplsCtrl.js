@@ -45,9 +45,40 @@
     $scope.custom_fieldset_volunteer = custom_fieldset_volunteer.values;
 
     //Get appeal data with search text and/or pagination
-    getAppeals = function (advancedFilter,filterObj) {
+    getAppeals = function (advancedFilter,filterObj, firstTime=false) {
       CRM.$('#crm-main-content-wrapper').block();
       let params={};
+      if($window.localStorage.getItem("search_params") && firstTime == true) {
+        params = JSON.parse($window.localStorage.getItem("search_params"));
+        params.page_no ? $scope.currentPage=params.page_no : null;
+        params.search_appeal ? $scope.search=params.search_appeal : null;
+        params.orderby ? $scope.sortby=params.orderby : null;
+        params.order ? $scope.order=params.order : null;
+        params.sortOption ? $scope.sortValue=$scope.options[params.sortOption] : 0;
+        params.advanced_search_option ? $scope.advanced_search=params.advanced_search_option : false;
+        if(params.advanced_search_option) {
+          params.advanced_search.fromdate ? $scope.date_start=params.advanced_search.fromdate : null;
+          params.advanced_search.todate ? $scope.date_end=params.advanced_search.todate : null;
+
+          if(params.advanced_search.show_appeals_done_anywhere) {
+            params.advanced_search.show_appeals_done_anywhere ? $scope.show_appeals_done_anywhere=params.advanced_search.show_appeals_done_anywhere : null;
+          } else {
+            if(params.advanced_search.proximity) {
+              params.advanced_search.proximity.radius ? $scope.radius=params.advanced_search.proximity.radius : null;
+              params.advanced_search.proximity.unit ? $scope.unit=params.advanced_search.proximity.unit : null;
+            }
+            params.location_finder_way ? $scope.location_finder_way=params.location_finder_way : null;
+            if(params.location_finder_way == "use_postal_code") {
+              params.advanced_search.proximity.postal_code ? $scope.postal_code=params.advanced_search.proximity.postal_code : null;
+            }
+            if(params.location_finder_way == "use_my_location") {
+              params.advanced_search.proximity.lat ? $scope.lat=params.advanced_search.proximity.lat : null;
+              params.advanced_search.proximity.lon ? $scope.lon=params.advanced_search.proximity.lon : null;
+            }
+          }
+          params.advanced_search.appealCustomFieldData ? $scope.appealCustomFieldData=params.advanced_search.appealCustomFieldData : null;
+        }
+      }
       $scope.currentPage?params.page_no=$scope.currentPage:null;
       $scope.search?params.search_appeal=$scope.search:null;
       $scope.sortby?params.orderby=$scope.sortby:null;
@@ -83,6 +114,16 @@
           $scope.numberOfPages= Math.ceil($scope.totalRec/$scope.pageSize);
           $scope.closeModal();
           CRM.$('#crm-main-content-wrapper').unblock();
+
+          var sortOption = $scope.options.findIndex(function(option) {
+            return option.key == $scope.sortValue.key;
+          });
+          params.sortOptionKey = $scope.sortValue.key;
+          params.sortOption = sortOption;
+          params.location_finder_way = $scope.location_finder_way;
+          params.advanced_search_option = $scope.advanced_search;
+
+          $window.localStorage.setItem("search_params", JSON.stringify(params));
         },function(error) {
           CRM.$('#crm-main-content-wrapper').unblock();
           if (error.is_error) {
@@ -93,7 +134,7 @@
         }); 
     }  
     //Loading  list on first time
-    getAppeals();
+    getAppeals('','',true);
 
     //update current page to previouse and get result data
     $scope.prevPageData=function(){
@@ -220,6 +261,12 @@
       $scope.currentPage = 1;
       getAppeals();
     }
+
+    $scope.resetFilter=function() {
+      $window.localStorage.removeItem("search_params");
+      $route.reload();
+    }
+
   });
 
 })(angular, CRM.$, CRM._);
