@@ -22,7 +22,7 @@ Required vars: volOppData(), searchParams
     </div>
   </div>
   <div class="crm-vol-half-responsive crm-vol-opp-search" ng-hide="hideSearch">
-    <h2>{{ts('Find Volunteer Opportunities')}}</h2>
+    <h2>{{ts('Find Volunteer Shifts')}}</h2>
     <form name="volOppSearchForm" crm-ui-id-scope>
       <div class="crm-block ui-tabs ui-widget ui-widget-content ui-corner-all">
         <div class="crm-group" crm-ui-id-scope>
@@ -128,14 +128,14 @@ Required vars: volOppData(), searchParams
 
   <!-- Shopping Cart -->
   <div class="crm-vol-half-responsive crm-vol-opp-cart" ng-class="{'floating_cart': cartIsFloating, 'contents_visible': showCartContents}">
-    <h2>{{ts('Your Selected Volunteer Opportunities')}}</h2>
+    <h2>{{ts('Your Selected Volunteer Shifts')}}</h2>
     <div class="crm-block ui-tabs ui-widget ui-widget-content ui-corner-all " ng-form="volOppCheckoutForm" crm-ui-id-scope>
       <div class="crm-vol-opp-cart-message-wrapper">
         <div class="crm-vol-opp-cart-large-indicator">
           <span>{{itemCountInCart}} {{ts('Commitments')}}</span>
         </div>
         <div class="crm-vol-opp-cart-message">
-          <span ng-show="itemCountInCart === 0">{{ts('Make a commitment by clicking the checkbox for the volunteer opportunity that interests you.')}}</span>
+          <span ng-show="itemCountInCart === 0">{{ts('Make a commitment by clicking the checkbox for the volunteer shift that interests you.')}}</span>
           <span ng-hide="itemCountInCart === 0">{{ts('Great! Make as many selections you like, then click \'Sign Up!\' to complete your registration.')}}</span>
         </div>
       </div>
@@ -195,7 +195,7 @@ Required vars: volOppData(), searchParams
     {{ts('No results found. Please try different search criteria.')}}
   </div>
   <div class="crm-vol-opp-results" ng-show="_.size(volOppData()) > 0">
-    <h2>{{ts('Available Volunteer Opportunities')}}</h2>
+    <h2>{{ts('Available Volunteer Shifts')}}</h2>
     <p class="description">
       {{ts('For additional project or role detail, click the corresponding detail icon in the table below.')}}
       <span class="icon ui-icon-comment"></span>

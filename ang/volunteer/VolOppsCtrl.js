@@ -88,10 +88,10 @@
       var help = '';
 
       if (!$scope.hideSearch) {
-        help += ts("Use this search form to find the volunteer opportunity near you that best matches with your personal skill set, interests, and time availability.");
+        help += ts("Use this search form to find the volunteer shift near you that best matches with your personal skill set, interests, and time availability.");
       }
 
-      help += ' ' + ts('Click the checkbox for each volunteer opportunity you wish to add to your schedule, then click the "Sign Up!" button to supply your contact information and complete your registration.');
+      help += ' ' + ts('Click the checkbox for each volunteer shift you wish to add to your schedule, then click the "Sign Up!" button to supply your contact information and complete your registration.');
 
       return help;
     };
