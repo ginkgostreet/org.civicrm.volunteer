@@ -27,13 +27,7 @@
       </div>
 
       <div class="crm-vol-appeal_description" crm-ui-field="{name: 'AppealForm.appeal_description', title: ts('Appeal Description')}">
-        <p>
-          <span class="crm-button crm-icon-button crm-vol-button crm-vol-preview-appeal_description crm-vol-appeal-preview-appeal_description" ng-click="previewDescription()">
-            <span class="crm-button-icon ui-icon-comment"> </span>
-            <span class="crm-button-text">{{ts('Preview Description')}}</span>
-          </span>
-        </p>
-        <div id=crm-vol-form-textarea-wrapper>
+        <div>
           <textarea crm-ui-richtext class="big crm-form-textarea" crm-ui-id="AppealForm.appeal_description" ng-model="appeal.appeal_description" ng-required="true"></textarea>
         </div>
       </div>
