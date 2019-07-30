@@ -428,10 +428,6 @@
       cancelCallback();
     };
 
-    $scope.previewDescription = function() {
-      CRM.alert($scope.appeal.appeal_description, $scope.appeal.title, 'info', {expires: 0});
-    };
-
     //Handle Refresh requests
     CRM.$("body").on("volunteerProjectRefresh", function() {
       $route.reload();
