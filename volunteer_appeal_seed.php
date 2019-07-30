@@ -176,7 +176,7 @@ foreach ($project_details_array as $key => $project) {
             }
             // By default active appeal is "1".
             $is_appeal_active = 1;
-            $show_project_information = 1;
+            $show_project_information = 0;
 
             // Prepare appeal data in array.
             $appeal_data = array(
