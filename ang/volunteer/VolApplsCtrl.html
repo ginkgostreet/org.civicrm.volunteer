@@ -7,12 +7,12 @@
     <div class="crm-block ui-tabs ui-widget ui-widget-content ui-corner-all">
       <div class="crm-group">
         <div class="pull-left search-box">
-          <input type="text" name="searchAppeal" ng-model="search" placeholder="{{ ts('Search Appeal') }}" ng-model-options='{ debounce: 1000 }'
+          <input type="text" name="searchAppeal" ng-model="search" placeholder="{{ ts('Search') }}" ng-model-options='{ debounce: 1000 }'
              ng-change='searchRes()'/>
           <i class="fa fa-search"></i>
         </div>
         <div class="pull-left m-5">
-          <div class="volunteer_appeal_result_count_message">{{totalRec}} {{ ts('Appeals') }}</div>
+          <div class="volunteer_appeal_result_count_message">{{totalRec}} {{ ts('Opportunities') }}</div>
           <div class="advance_filter_wrapper">
             <button ng-click="openModal()"><i class="fa fa-filter" aria-hidden="true"></i></button>
           </div>
