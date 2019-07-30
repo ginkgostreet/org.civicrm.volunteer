@@ -1,5 +1,8 @@
 <?php
 
+define('PROJECT_SKILL_GROUP_ID', 8);
+define('APPEAL_SKILL_GROUP_ID', 14);
+
 echo (" Start Script for Create Appeal  . . . ");
 
 /**
@@ -11,12 +14,10 @@ require_once DRUPAL_ROOT . '/includes/bootstrap.inc';
 drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
 civicrm_initialize();
-//$project_skill_group_id = 2;
-$project_skill_group_id = 8;
 
 $result = civicrm_api3('CustomGroup', 'get', [
   'sequential' => 1,
-  'id' => $project_skill_group_id,
+  'id' => PROJECT_SKILL_GROUP_ID,
 ]);
 $group_name = "";
 $configuration = array();
@@ -69,13 +70,12 @@ function create_custom_field($title, $options, $custom_field_data){
   $text_length = isset($custom_field_data['text_length']) ? $custom_field_data['text_length'] : "";
   $html_type = $custom_field_data['html_type'];
   $option_group_id = $custom_field_data['option_group_id'];
-  //$appeal_skill_group_id = 5;
-  $appeal_skill_group_id = 14;
+  
   $label = $custom_field_data['label'];
   $name = $custom_field_data['name'];
   
   $params = array(
-      'custom_group_id' => $appeal_skill_group_id,
+      'custom_group_id' => APPEAL_SKILL_GROUP_ID,
       'name' => $name,
       'label' => $label,
       'data_type' => $data_type,
