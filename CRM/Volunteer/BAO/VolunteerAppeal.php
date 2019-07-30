@@ -158,8 +158,12 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $fetchedAppeal = new CRM_Volunteer_BAO_VolunteerAppeal();  
       $daoClone = clone $dao; 
       $fetchedAppeal->copyValues($daoClone);  
+      if($fetchedAppeal->image == "null" || !$fetchedAppeal->image) {
+        $fetchedAppeal->image = "appeal-default-logo-sq.png";
+      }
       $result[(int) $dao->id] = $fetchedAppeal;
     }
+
   
     $dao->free();
    
@@ -428,6 +432,9 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $appeal['id'] = $dao->id;
       $appeal['project_id'] = $dao->project_id;
       $appeal['title'] = $dao->title;
+      if($dao->image == "null" || !$dao->image) {
+        $dao->image = "appeal-default-logo-sq.png";
+      }
       $appeal['image'] = $dao->image;
       $appeal['appeal_teaser'] = $dao->appeal_teaser;
       $appeal['appeal_description'] = htmlspecialchars_decode($dao->appeal_description);
