@@ -138,6 +138,7 @@
     $scope.locationBlocks[0] = "Create a new Location";
     $scope.locBlock = {};
     appeal.is_appeal_active = (appeal.is_appeal_active == "1");
+    appeal.show_project_information = (appeal.show_project_information == "1");
     appeal.display_volunteer_shift = (appeal.display_volunteer_shift == "1");
     appeal.hide_appeal_volunteer_button = (appeal.hide_appeal_volunteer_button == "1");
     $scope.custom_fieldset_group = custom_fieldset_volunteer.values;
@@ -154,6 +155,9 @@
         appeal.location_done_anywhere = false;
       }
       delete appeal.contact_id;
+      if(appeal.image == "appeal-default-logo-sq.png") {
+        appeal.image = "";
+      }
       appeal.old_image = appeal.image;
 
       /*
@@ -291,10 +295,6 @@
         CRM.alert(ts("Title is a required field"), "Required");
         valid = false;
       }
-      if(!$scope.appeal.image) {
-        CRM.alert(ts("Appeal Image is a required field"), "Required");
-        valid = false;
-      }
       if(!$scope.appeal.appeal_description) {
         CRM.alert(ts("Appeal Description is a required field"), "Required");
         valid = false;
@@ -385,6 +385,11 @@
         appeal.hide_appeal_volunteer_button = 0;
       } else {
         appeal.hide_appeal_volunteer_button = 1;
+      }
+      if(!appeal.show_project_information) {
+        appeal.show_project_information = 0;
+      } else {
+        appeal.show_project_information = 1;
       }
       return crmApi('VolunteerAppeal', 'create', $scope.appeal).then(
         function(success) {

@@ -19,7 +19,7 @@
         <input class="big crm-form-text" crm-ui-id="AppealForm.title" ng-model="appeal.title" ng-required="true" />
       </div>
       <div class="crm-vol-image" crm-ui-field="{name: 'AppealForm.image', title: ts('Image')}">
-        <input type="file" class="big crm-form-image" crm-ui-id="AppealForm.image" ng-model="appeal.image" onchange="angular.element(this).scope().uploadFile(event)" ng-required="true" />
+        <input type="file" class="big crm-form-image" crm-ui-id="AppealForm.image" ng-model="appeal.image" onchange="angular.element(this).scope().uploadFile(event)" />
         <span>{{appeal.image?(appeal.image):"" }}</span>
       </div>
       <div class="crm-vol-appeal_teaser" crm-ui-field="{name: 'AppealForm.appeal_teaser', title: ts('Appeal Teaser')}">
@@ -137,7 +137,10 @@
       </div>
       <div class="crm-vol-hide_appeal_volunteer_button" crm-ui-field="{name: 'AppealForm.hide_appeal_volunteer_button', title: ts('Hide Volunteer Button')}">
         <input ng-checked="appeal.hide_appeal_volunteer_button==1" type="checkbox" crm-ui-id="AppealForm.hide_appeal_volunteer_button" ng-model="appeal.hide_appeal_volunteer_button" />
-        <span class="display_volunteer_note">{{ ts('Checking this box hides this Opportunity's "Volunteer" button on the appeal detail view. Useful when Display Volunteer Shift is enabled and you wish for volunteers to signup for specific shifts.') }}</span>
+        <span class="display_volunteer_note">{{ ts("Checking this box hides this Opportunity's 'Volunteer' button on the appeal detail view. Useful when Display Volunteer Shift is enabled and you wish for volunteers to signup for specific shifts.") }}</span>
+      </div>
+      <div class="crm-vol-show_project_information" crm-ui-field="{name: 'AppealForm.show_project_information', title: ts('Show Project Information')}">
+        <input type="checkbox" crm-ui-id="AppealForm.show_project_information" ng-model="appeal.show_project_information" />
       </div>
     </fieldset>
 

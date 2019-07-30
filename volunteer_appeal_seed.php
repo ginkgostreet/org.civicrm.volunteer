@@ -61,7 +61,7 @@ foreach ($project_details_array as $key => $project) {
             }
             // By default active appeal is "1".
             $is_appeal_active = 1;
-            $show_project_information = 0;
+            $show_project_information = 1;
 
             // Prepare appeal data in array.
             $appeal_data = array(
@@ -71,6 +71,7 @@ foreach ($project_details_array as $key => $project) {
                 "loc_block_id" => $project['loc_block_id'],
                 "location_done_anywhere" => $location_done_anywhere,
                 "is_appeal_active" => $is_appeal_active,
+                "show_project_information" => $show_project_information,
                 "active_fromdate" => $active_fromdate,
                 "active_todate" => $active_todate,
                 "display_volunteer_shift" => $display_volunteer_shift,
