@@ -154,6 +154,9 @@
         appeal.location_done_anywhere = false;
       }
       delete appeal.contact_id;
+      if(appeal.image == "appeal-default-logo-sq.png") {
+        appeal.image = "";
+      }
       appeal.old_image = appeal.image;
 
       /*
@@ -289,10 +292,6 @@
       
       if(!$scope.appeal.title) {
         CRM.alert(ts("Title is a required field"), "Required");
-        valid = false;
-      }
-      if(!$scope.appeal.image) {
-        CRM.alert(ts("Appeal Image is a required field"), "Required");
         valid = false;
       }
       if(!$scope.appeal.appeal_description) {
