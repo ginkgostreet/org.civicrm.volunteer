@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `civicrm_volunteer_appeal` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Unique Volunteer Appeal ID',
   `project_id` int(11) UNSIGNED NOT NULL COMMENT 'Foreign key to the Volunteer Project for this record',
   `title` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'The title of the Volunteer Appeal',
-  `image` varchar(255) CHARACTER SET latin1 NOT NULL COMMENT 'The Image of the Volunteer Appeal.',
+  `image` varchar(255) CHARACTER SET latin1 DEFAULT NULL COMMENT 'The Image of the Volunteer Appeal.',
   `appeal_teaser` text CHARACTER SET latin1 COMMENT 'Appeal Teaser',
   `appeal_description` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Full description of the Volunteer Appeal. Text and HTML allowed.',
   `loc_block_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'FK to Location Block ID',

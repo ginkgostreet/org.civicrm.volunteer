@@ -19,7 +19,7 @@
         <input class="big crm-form-text" crm-ui-id="AppealForm.title" ng-model="appeal.title" ng-required="true" />
       </div>
       <div class="crm-vol-image" crm-ui-field="{name: 'AppealForm.image', title: ts('Image')}">
-        <input type="file" class="big crm-form-image" crm-ui-id="AppealForm.image" ng-model="appeal.image" onchange="angular.element(this).scope().uploadFile(event)" ng-required="true" />
+        <input type="file" class="big crm-form-image" crm-ui-id="AppealForm.image" ng-model="appeal.image" onchange="angular.element(this).scope().uploadFile(event)" />
         <span>{{appeal.image?(appeal.image):"" }}</span>
       </div>
       <div class="crm-vol-appeal_teaser" crm-ui-field="{name: 'AppealForm.appeal_teaser', title: ts('Appeal Teaser')}">
