@@ -138,6 +138,7 @@
     $scope.locationBlocks[0] = "Create a new Location";
     $scope.locBlock = {};
     appeal.is_appeal_active = (appeal.is_appeal_active == "1");
+    appeal.show_project_information = (appeal.show_project_information == "1");
     appeal.display_volunteer_shift = (appeal.display_volunteer_shift == "1");
     appeal.hide_appeal_volunteer_button = (appeal.hide_appeal_volunteer_button == "1");
     $scope.custom_fieldset_group = custom_fieldset_volunteer.values;
@@ -385,6 +386,11 @@
         appeal.hide_appeal_volunteer_button = 0;
       } else {
         appeal.hide_appeal_volunteer_button = 1;
+      }
+      if(!appeal.show_project_information) {
+        appeal.show_project_information = 0;
+      } else {
+        appeal.show_project_information = 1;
       }
       return crmApi('VolunteerAppeal', 'create', $scope.appeal).then(
         function(success) {

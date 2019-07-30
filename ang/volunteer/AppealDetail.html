@@ -56,8 +56,8 @@
 			   	</div>
 			   <div class="p-l-15">			   	  
                   <br /><br />
-                  <h2 ng-if="appeal.project.description != 'null'" class="m-t-0">{{appeal.project.title}}</h2>
-                  <p ng-if="appeal.project.description != 'null'" ng-bind-html="appeal.project.description"></p>
+                  <h2 ng-if="appeal.project.description != 'null' && appeal.show_project_information == 1" class="m-t-0">{{appeal.project.title}}</h2>
+                  <p ng-if="appeal.project.description != 'null' && appeal.show_project_information == 1" ng-bind-html="appeal.project.description"></p>
                   <div class="beneficiary-details" ng-repeat="beneficiary in appeal.project.beneficiaries">
                   	<div class="beneficiary-details__image">
                   		<img src={{beneficiary.image_URL}}>

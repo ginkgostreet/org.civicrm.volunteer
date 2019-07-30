@@ -120,6 +120,13 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
   public $hide_appeal_volunteer_button;
 
   /**
+   * Show Project Information of Appeal Detail Page or not.
+   *
+   * @var int
+   */
+  public $show_project_information;
+
+  /**
    * Class constructor.
    */
   public function __construct() {
@@ -291,6 +298,16 @@ class CRM_Volunteer_DAO_VolunteerAppeal extends CRM_Core_DAO {
           'type' => CRM_Utils_Type::T_INT,
           'title' => CRM_Volunteer_ExtensionUtil::ts('Hide Volunteer Appeal Button or not.'),
           'description' => CRM_Volunteer_ExtensionUtil::ts('Hide Volunteer Appeal Button or not. "1" means Hide and "0" means Not Hide.'),
+          'table_name' => 'civicrm_volunteer_appeal',
+          'entity' => 'VolunteerAppeal',
+          'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',
+          'localizable' => 0,
+        ],
+        'show_project_information' => [
+          'name' => 'show_project_information',
+          'type' => CRM_Utils_Type::T_INT,
+          'title' => CRM_Volunteer_ExtensionUtil::ts('Show Project Information.'),
+          'description' => CRM_Volunteer_ExtensionUtil::ts('Show Project Information of Appeal Detail Page or not.'),
           'table_name' => 'civicrm_volunteer_appeal',
           'entity' => 'VolunteerAppeal',
           'bao' => 'CRM_Volunteer_DAO_VolunteerAppeal',

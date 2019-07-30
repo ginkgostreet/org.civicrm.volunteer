@@ -437,6 +437,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $appeal['active_todate'] = $dao->active_todate;
       $appeal['display_volunteer_shift'] = $dao->display_volunteer_shift;
       $appeal['hide_appeal_volunteer_button'] = $dao->hide_appeal_volunteer_button;
+      $appeal['show_project_information'] = $dao->show_project_information;
       $appeal['beneficiary_display_name'] = $dao->beneficiary_display_name;
       $appeal['need_id'] = $dao->need_id;
       if($params["orderby"] == "upcoming_appeal") {

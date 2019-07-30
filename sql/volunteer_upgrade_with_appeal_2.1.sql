@@ -23,3 +23,5 @@ CREATE TABLE IF NOT EXISTS `civicrm_volunteer_appeal` (
     REFERENCES `civicrm_loc_block`(`id`)
     ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
+
+ALTER TABLE `civicrm_volunteer_appeal` ADD `show_project_information` INT(1) NULL DEFAULT NULL AFTER `is_appeal_active`;

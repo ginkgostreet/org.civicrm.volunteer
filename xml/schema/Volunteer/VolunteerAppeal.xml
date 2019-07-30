@@ -119,4 +119,11 @@
     <length>1</length>
     <comment>Hide Volunteer Appeal Button or not. "1" means Hide and "0" means Not Hide.</comment>
   </field>
+  <field>
+    <name>show_project_information</name>
+    <title>Show Project Information of Appeal Detail Page or not.</title>
+    <type>int</type>
+    <length>1</length>
+    <comment>Show Project Information of Appeal Detail Page or not. "1" means show and "0" means Hide.</comment>
+  </field>
 </table>
