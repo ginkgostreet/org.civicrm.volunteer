@@ -12,9 +12,9 @@
   <div class="help" ng-show="supporting_data.volunteer_general_appeal_settings_help_text"
        ng-bind-html="supporting_data.volunteer_general_appeal_settings_help_text"></div>
   <form id="DynamicValueAssignedHere" class="crm-form-block manage_appeal_form" name="AppealForm" crm-ui-id-scope>
-    <h3>{{appeal.action}} {{ts(" Appeal for")}} {{project.title}}</h3>
+    <h3>{{appeal.action}} {{ts(" Opportunity for")}} {{project.title}}</h3>
     <fieldset class="crm-vol-appeal-settings" crm-ui-id-scope>
-      <legend>{{ts("Appeal Settings")}}</legend>
+      <legend>{{ts("Opportunity Settings")}}</legend>
       <div class="crm-vol-title" crm-ui-field="{name: 'AppealForm.title', title: ts('Title')}">
         <input class="big crm-form-text" crm-ui-id="AppealForm.title" ng-model="appeal.title" ng-required="true" />
       </div>
@@ -22,11 +22,11 @@
         <input type="file" class="big crm-form-image" crm-ui-id="AppealForm.image" ng-model="appeal.image" onchange="angular.element(this).scope().uploadFile(event)" />
         <span>{{appeal.image?(appeal.image):"" }}</span>
       </div>
-      <div class="crm-vol-appeal_teaser" crm-ui-field="{name: 'AppealForm.appeal_teaser', title: ts('Appeal Teaser')}">
+      <div class="crm-vol-appeal_teaser" crm-ui-field="{name: 'AppealForm.appeal_teaser', title: ts('Opportunity Teaser')}">
         <textarea class="big crm-form-textarea" crm-ui-id="AppealForm.appeal_teaser" ng-model="appeal.appeal_teaser" ></textarea>
       </div>
 
-      <div class="crm-vol-appeal_description" crm-ui-field="{name: 'AppealForm.appeal_description', title: ts('Appeal Description')}">
+      <div class="crm-vol-appeal_description" crm-ui-field="{name: 'AppealForm.appeal_description', title: ts('Opportunity Description')}">
         <div>
           <textarea crm-ui-richtext class="big crm-form-textarea" crm-ui-id="AppealForm.appeal_description" ng-model="appeal.appeal_description" ng-required="true"></textarea>
         </div>
