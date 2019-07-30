@@ -296,11 +296,11 @@
         valid = false;
       }
       if(!$scope.appeal.appeal_description) {
-        CRM.alert(ts("Appeal Description is a required field"), "Required");
+        CRM.alert(ts("Opportunity Description is a required field"), "Required");
         valid = false;
       }
       if($scope.locBlockIsDirty && !$scope.appeal.loc_block_id && !appeal.location_done_anywhere) {
-        CRM.alert(ts("Appeal Location is a required field"), "Required");
+        CRM.alert(ts("Opportunity Location is a required field"), "Required");
         valid = false;  
       }
       
