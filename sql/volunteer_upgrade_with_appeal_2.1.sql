@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `civicrm_volunteer_appeal` (
   `loc_block_id` int(10) UNSIGNED DEFAULT NULL COMMENT 'FK to Location Block ID',
   `location_done_anywhere` int(1) NOT NULL COMMENT 'Location Done Anywhere "1" Means Location Done Anywhere True and "0" Means not true.',
   `is_appeal_active` int(1) NOT NULL COMMENT 'Volunteer Appeal is Active or not. "1" Means "Active" and "0" Means Not Active.',
+  `show_project_information` INT(1) NULL DEFAULT NULL COMMENT 'Should Project information be shown on Appeals',
   `active_fromdate` date DEFAULT NULL COMMENT 'Active From Date of Appeal',
   `active_todate` date DEFAULT NULL COMMENT 'Active To Date of Appeal',
   `display_volunteer_shift` int(1) NOT NULL COMMENT 'Display Volunteer Shift or not.',
@@ -23,5 +24,3 @@ CREATE TABLE IF NOT EXISTS `civicrm_volunteer_appeal` (
     REFERENCES `civicrm_loc_block`(`id`)
     ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=1;
-
-ALTER TABLE `civicrm_volunteer_appeal` ADD `show_project_information` INT(1) NULL DEFAULT NULL AFTER `is_appeal_active`;
