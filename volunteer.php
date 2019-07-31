@@ -109,9 +109,18 @@ function volunteer_civicrm_navigationMenu(&$menu) {
   ));
 
   _volunteer_civix_insert_navigation_menu($menu, 'volunteer_volunteers', array(
-    'label' => E::ts('Search for Volunteer Opportunities'),
+    'label' => E::ts('Search for Volunteer Shifts'),
     'name' => 'volunteer_opp_search',
     'url' => 'civicrm/vol/#/volunteer/opportunities',
+    'permission' => NULL,
+    'operator' => NULL,
+    'separator' => 0,
+  ));
+
+  _volunteer_civix_insert_navigation_menu($menu, 'volunteer_volunteers', array(
+    'label' => E::ts('Search for Volunteer Opportunities'),
+    'name' => 'volunteer_appeal_search',
+    'url' => 'civicrm/vol/#/volunteer/appeals',
     'permission' => NULL,
     'operator' => NULL,
     'separator' => 0,
