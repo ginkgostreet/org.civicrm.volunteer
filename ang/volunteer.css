@@ -477,3 +477,6 @@ body {font-family: "Lato", sans-serif;}
 .reset_filter {
   display: inline-block;
 }
+#select2-drop {
+  z-index: 99999;
+}
