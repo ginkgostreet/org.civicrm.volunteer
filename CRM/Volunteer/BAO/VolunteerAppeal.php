@@ -17,9 +17,11 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
   public static function create(array $params) {
     // Get appeal ID.
     $appealId = CRM_Utils_Array::value('id', $params);
+    $projectId = CRM_Utils_Array::value('project_id', $params);
+
     $op = empty($appealId) ? CRM_Core_Action::ADD : CRM_Core_Action::UPDATE;
 
-    if (!empty($params['check_permissions']) && !CRM_Volunteer_Permission::checkProjectPerms($op, $appealId)) {
+    if (!empty($params['check_permissions']) && !CRM_Volunteer_Permission::checkProjectPerms($op, $projectId)) {
       CRM_Utils_System::permissionDenied();
 
       // FIXME: If we don't return here, the script keeps executing. This is not
