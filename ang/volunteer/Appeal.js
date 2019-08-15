@@ -130,7 +130,7 @@
         var cancelCallback = function (projectId) {
           $location.path("/volunteer/project_appeals/"+$scope.appeal.project_id);
         };
-        $scope.saveAndNextLabel = ts('Save and Add Another Appeal');
+        $scope.saveAndNextLabel = ts('Save and Add Another');
     }
     $scope.project = project;
     $scope.countries = countries;
@@ -423,8 +423,7 @@
       doSave().then(function(appealId) {
         if (appealId) {
           crmUiAlert({text: ts('Changes saved successfully'), title: ts('Saved'), type: 'success'});
-          $route.reload();
-          //saveAndNextCallback(appealId);
+          $location.path("/volunteer/manage_appeal/" + $scope.appeal.project_id + "/0");
         }
       });
     };
