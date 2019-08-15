@@ -99,10 +99,15 @@
      */
     setFormDefaults = function() {
       if(appeal.id == 0) {
-        // In Create Appeal form Appeal location value should be project location.
+        // When creating: location value defaults to project location.
         appeal.loc_block_id = project.loc_block_id;
         // Is Appeal Active Checkbox by default set as 1.
         appeal.is_appeal_active = 1;
+
+        today = new Date();
+        future = new Date(today.getFullYear(), today.getMonth() + 3, today.getDate());
+        appeal.active_fromdate = today.getFullYear() + "-" + today.getMonth() + "-" +today.getDate();
+        appeal.active_todate = future.getFullYear() + "-" + future.getMonth() + "-" + future.getDate();
       }
       // Get project Id from url.
       appeal.project_id = $route.current.params.projectId;
