@@ -147,10 +147,7 @@
           $location.path("/volunteer/manage");
         };
         var saveAndNextCallback = function (projectId) {
-          volBackbone.load().then(function () {
-            CRM.volunteerPopup(ts('Define Volunteer Shifts'), 'Define', projectId);
-            $location.path("/volunteer/manage");
-          });
+          $location.path("/volunteer/project_appeals/" + projectId );
         };
         $scope.saveAndNextLabel = ts('Continue');
     }
