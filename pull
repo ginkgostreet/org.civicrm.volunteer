@@ -1,0 +1,1 @@
+sudo rsync -rvu --exclude '.git' /var/www/varl/htdocs/sites/default/files/civicrm/ext/org.civicrm.volunteer/ /var/www/varl/ext/civivolunteer/
