@@ -70,7 +70,7 @@
     * Set appeal status like is active or not.
     *
     **/
-    $scope.updateAppeal = function ($event, id) {
+    $scope.updateAppeal = function ($event, id, project_id) {
       var checkbox = $event.target;
       var appeal = {};
       appeal.id = id;
@@ -79,6 +79,7 @@
       } else {
         appeal.is_appeal_active = 0;
       }
+      appeal.project_id = project_id;
       var appealId = crmApi('VolunteerAppeal', 'create', appeal).then(
         function(success) {
           return success.values.id;
