@@ -39,7 +39,7 @@
               <span class="crm-vol-manage-appeal-todate">{{ appeal.active_todate }}</span>
             </td>
             <td class="crm-vol-manage-appeal">
-              <input ng-checked="appeal.is_appeal_active==1" class="is_appeal_active" type="checkbox"   ng-click="updateAppeal($event, appeal.id)" />
+              <input ng-checked="appeal.is_appeal_active==1" class="is_appeal_active" type="checkbox"   ng-click="updateAppeal($event, appeal.id, projectId)" />
             </td>
             <td class="crm-vol-manage-appeal">
               <a class="appeal_url" href="#/volunteer/appeal/{{ appeal.id }}">View</a>
