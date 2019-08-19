@@ -13,14 +13,14 @@ drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 civicrm_initialize();
 
 // Get disting project ids for creating appeal for that project.
-$get_projects_query = db_query("SELECT DISTINCT project_id FROM leaderce_varldev_civicrm.civicrm_volunteer_need WHERE is_active =1 AND project_id IS NOT NULL AND (DATE_ADD(start_time, INTERVAL duration MINUTE) > NOW() OR is_flexible =1 OR duration IS NULL)");
+$get_projects_query = db_query("SELECT DISTINCT project_id FROM civicrm_volunteer_need WHERE is_active =1 AND project_id IS NOT NULL AND (DATE_ADD(start_time, INTERVAL duration MINUTE) > NOW() OR is_flexible =1 OR duration IS NULL)");
 $project_records = $get_projects_query->fetchAll(PDO::FETCH_ASSOC);
 
 // Prepare project details array.
 $project_details_array = array();
 foreach($project_records as $project) {
     // Get project details based on project id.
-    $project_detail_query = db_query("SELECT * FROM leaderce_varldev_civicrm.civicrm_volunteer_project WHERE id = ".$project['project_id']);
+    $project_detail_query = db_query("SELECT * FROM civicrm_volunteer_project WHERE id = ".$project['project_id']);
     $project_details = (array) $project_detail_query->fetchObject();
     if($project_details['is_active'] == "1") {
         $project_details_array[] = $project_details;
@@ -29,7 +29,7 @@ foreach($project_records as $project) {
 // Check needs of that project and create relevant appeal based on that need for that project.
 foreach ($project_details_array as $key => $project) {
     // Get needs of project.
-    $get_projects_needs_query = db_query("SELECT * FROM leaderce_varldev_civicrm.civicrm_volunteer_need WHERE is_active =1 AND project_id = ".$project['id']." AND (DATE_ADD(start_time, INTERVAL duration MINUTE) > NOW() OR is_flexible =1 OR duration IS NULL)");
+    $get_projects_needs_query = db_query("SELECT * FROM civicrm_volunteer_need WHERE is_active =1 AND project_id = ".$project['id']." AND (DATE_ADD(start_time, INTERVAL duration MINUTE) > NOW() OR is_flexible =1 OR duration IS NULL)");
     $get_projects_needs = $get_projects_needs_query->fetchAll(PDO::FETCH_ASSOC);
     // If need is set create relevant appeal.
     if(isset($get_projects_needs) && !empty($get_projects_needs)) {
@@ -80,7 +80,7 @@ foreach ($project_details_array as $key => $project) {
                 "appeal_teaser" => NULL
             );
             // Create appeal in database.
-            $create_appeal = db_insert("leaderce_varldev_civicrm.civicrm_volunteer_appeal")->fields($appeal_data)->execute();
+            $create_appeal = db_insert("civicrm_volunteer_appeal")->fields($appeal_data)->execute();
             $appealId = Database::getConnection()->lastInsertId();
             echo "<pre>";
             echo "==========================";
