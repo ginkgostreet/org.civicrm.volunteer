@@ -45,8 +45,11 @@
     $scope.custom_fieldset_volunteer = custom_fieldset_volunteer.values;
 
     //Get appeal data with search text and/or pagination
-    getAppeals = function (advancedFilter,filterObj, firstTime=false) {
+    getAppeals = function (advancedFilter,filterObj, firstTime) {
       CRM.$('#crm-main-content-wrapper').block();
+      // this line will check if the argument is undefined, null, or false
+      // if so set it to false, otherwise set it to it's original value
+      var firstTime = firstTime || false;
       let params={};
       if($window.localStorage.getItem("search_params") && firstTime == true) {
         params = JSON.parse($window.localStorage.getItem("search_params"));
