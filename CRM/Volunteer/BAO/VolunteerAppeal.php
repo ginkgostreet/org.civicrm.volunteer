@@ -358,7 +358,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
           $where .= " And (DATE_FORMAT(advance_need.start_time,'%Y-%m-%d')>='".$params["advanced_search"]["fromdate"]."')";
         }
         if($params["advanced_search"]["todate"]) {
-          $where .= " And (DATE_FORMAT(advance_need.todate,'%Y-%m-%d')<='".$params["advanced_search"]["todate"]."')";
+          $where .= " And (DATE_FORMAT(advance_need.end_time,'%Y-%m-%d')<='".$params["advanced_search"]["todate"]."')";
         }
       }
 
