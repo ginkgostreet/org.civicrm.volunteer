@@ -309,7 +309,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     $show_beneficiary_at_front = 1;
     $seperator = CRM_CORE_DAO::VALUE_SEPARATOR;
 
-    $select = " SELECT appeal.*, addr.street_address, addr.city, addr.postal_code";
+    $select = " SELECT (select id from civicrm_volunteer_need where civicrm_volunteer_need.is_flexible = 1 and civicrm_volunteer_need.project_id=p.id) as need_flexi_id, appeal.*, addr.street_address, addr.city, addr.postal_code";
     $select .= " , GROUP_CONCAT(DISTINCT need.id ) as need_id";//,mdt.need_start_time
     $from = " FROM civicrm_volunteer_appeal AS appeal";
     $join = " LEFT JOIN civicrm_volunteer_project AS p ON (p.id = appeal.project_id) ";
@@ -334,8 +334,27 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     if(isset($params["advanced_search"])) {
       // If start date and end date filter passed on advance search.
       if($params["advanced_search"]["fromdate"] && $params["advanced_search"]["todate"]) {
-        $where .= " And p.id In (select project_id from civicrm_volunteer_need AS need_advance where need_advance.is_flexible = 0 And DATE_FORMAT(need_advance.start_time,'%Y-%m-%d')>='".$params["advanced_search"]["fromdate"]."' and  DATE_FORMAT(need_advance.end_time,'%Y-%m-%d') <= '".$params["advanced_search"]["todate"]."')";
+        $select .= " , GROUP_CONCAT(DISTINCT advance_need.id ) as need_shift_id";
+        $join .= " LEFT JOIN civicrm_volunteer_need as advance_need ON (advance_need.project_id = p.id) And advance_need.is_active = 1 And advance_need.visibility_id = 1 and advance_need.is_flexible=0";
+
+        $start_time = $params["advanced_search"]["fromdate"];
+        $end_time = $params["advanced_search"]["todate"];
+        $where .= " AND (
+          (
+            (advance_need.end_time IS NULL AND DATE_FORMAT(advance_need.start_time,'%Y-%m-%d')>='".$start_time."')  OR (DATE_FORMAT(advance_need.start_time,'%Y-%m-%d')>='".$start_time."' and  DATE_FORMAT(advance_need.end_time,'%Y-%m-%d')<='".$end_time."')
+          ) 
+        )";
+      } else { // one but not the other supplied:
+        $select .= " , GROUP_CONCAT(DISTINCT advance_need.id ) as need_shift_id";
+        $join .= " LEFT JOIN civicrm_volunteer_need as advance_need ON (advance_need.project_id = p.id) And advance_need.is_active = 1 And advance_need.visibility_id = 1 and advance_need.is_flexible=0";
+        if($params["advanced_search"]["fromdate"]) {
+          $where .= " And (DATE_FORMAT(advance_need.start_time,'%Y-%m-%d')>='".$params["advanced_search"]["fromdate"]."')";
+        }
+        if($params["advanced_search"]["todate"]) {
+          $where .= " And (DATE_FORMAT(advance_need.todate,'%Y-%m-%d')<='".$params["advanced_search"]["todate"]."')";
+        }
       }
+
       // If show appeals done anywhere passed on advance search.
       if(isset($params["advanced_search"]["show_appeals_done_anywhere"]) && $params["advanced_search"]["show_appeals_done_anywhere"] == true ) {
         $where .= " And appeal.location_done_anywhere = 1 ";
@@ -348,7 +367,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
         }
       }
       // If custom field pass from advance search filter.
-      if(isset($params["advanced_search"]["appealCustomFieldData"])) {
+      if(isset($params["advanced_search"]["appealCustomFieldData"]) && !empty($params["advanced_search"]["appealCustomFieldData"])) {
         // Get all custom field database tables which are assoicated with Volunteer Appeal.
         $sql_query = "SELECT cg.table_name, cg.id as groupID, cg.is_multiple, cf.column_name, cf.id as fieldID, cf.data_type as fieldDataType FROM   civicrm_custom_group cg, civicrm_custom_field cf WHERE  cf.custom_group_id = cg.id AND    cg.is_active = 1 AND    cf.is_active = 1 AND  cg.extends IN ( 'VolunteerAppeal' )";
         $dao10 = CRM_Core_DAO::executeQuery($sql_query);
