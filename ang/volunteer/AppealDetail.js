@@ -32,18 +32,14 @@
     $scope.locAny= parseInt(appeal.location_done_anywhere); 
     $scope.showVolunteer=parseInt(appeal.hide_appeal_volunteer_button); 
     $scope.redirectTo=function(projectId) {  
-      $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/opportunities?project="+projectId;
+      $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/opportunities?project="+projectId+"&hideSearch=1";
     }
     // Redirect Back to Search Appeal Page.
     $scope.backToSearchAppeal=function() {
       $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/appeals";
     }
     $scope.volSignup= function(needId,projectId) {
-      if(needId) {
-        $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/volunteer/signup?reset=1&needs[]="+needId+"&dest=list";
-      }else {
-        $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/opportunities?project="+projectId+"&hideSearch=1";
-      }
+      $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/volunteer/signup?reset=1&needs[]="+needId+"&dest=list";
     }
   });
 })(angular, CRM.$, CRM._);

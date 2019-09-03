@@ -195,16 +195,11 @@
       $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/appeal/"+appealId;
     }
 
-    $scope.volSignup= function(needId,projectId,display_volunteer_shift) {
-      if(display_volunteer_shift == "1") {
+    $scope.volSignup= function(need_flexi_id,projectId,hide_appeal_volunteer_button) {
+      if(hide_appeal_volunteer_button == "1") {
         $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/opportunities?project="+projectId+"&hideSearch=1";
       } else {
-        if(needId) {
-          $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/volunteer/signup?reset=1&needs[]="+needId+"&dest=list";
-        }
-        else {
-          CRM.alert(ts('There are not any shifts for this project.'));
-        }
+        $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/volunteer/signup?reset=1&needs[]="+need_flexi_id+"&dest=list";
       }
     }
 
