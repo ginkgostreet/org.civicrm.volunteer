@@ -26,7 +26,7 @@
 
   angular.module('volunteer').controller('VolunteerAppealDetail', function ($scope,crmApi,projectAppealsData,$window) {
     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
-    $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/persist/contribute/appeal/thumb/";
+    $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/persist/contribute/appeal/medium/";
     $scope.appeal = appeal;
     $scope.showShift = parseInt(appeal.display_volunteer_shift);
     $scope.locAny= parseInt(appeal.location_done_anywhere); 
