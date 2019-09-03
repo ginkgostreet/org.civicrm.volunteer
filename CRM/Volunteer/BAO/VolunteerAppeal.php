@@ -221,7 +221,6 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     $flexibleNeed = civicrm_api('volunteer_need', 'getvalue', array(
       'is_active' => 1,
       'is_flexible' => 1,
-      'visibility_id' => 1,
       'project_id' => $api['project_id'],
       'return' => 'id',
       'version' => 3,
@@ -446,6 +445,8 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $appeal['show_project_information'] = $dao->show_project_information;
       $appeal['beneficiary_display_name'] = $dao->beneficiary_display_name;
       $appeal['need_id'] = $dao->need_id;
+      $appeal['need_shift_id'] = $dao->need_shift_id;
+      $appeal['need_flexi_id'] = $dao->need_flexi_id;
       if($params["orderby"] == "upcoming_appeal") {
         $appeal['need_start_time'] = $dao->need_start_time;
       }
