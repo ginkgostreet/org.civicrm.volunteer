@@ -43,6 +43,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     $upload_appeal_directory = $config->imageUploadDir.'appeal/';
     $upload_appeal_main_directory = $config->imageUploadDir.'appeal/main/';
     $upload_appeal_thumb_directory = $config->imageUploadDir.'appeal/thumb/';
+    $upload_appeal_medium_directory = $config->imageUploadDir.'appeal/medium/';
     // If appeal folder not exist, create appeal folder on civicrm.files folder.
     if (!file_exists($upload_appeal_directory)) {
       mkdir($upload_appeal_directory, 0777, TRUE);
@@ -54,6 +55,10 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     // If thumb image folder not exist, create thumb folder under appeal folder on civicrm.files folder.
     if (!file_exists($upload_appeal_thumb_directory)) {
       mkdir($upload_appeal_thumb_directory, 0777, TRUE);
+    }
+    // If medium image folder not exist, create medium folder under appeal folder on civicrm.files folder.
+    if (!file_exists($upload_appeal_medium_directory)) {
+      mkdir($upload_appeal_medium_directory, 0777, TRUE);
     }
     // If new image is updated then resize that image and move that into folder.
     if(isset($params['image_data'])) {
@@ -69,6 +74,9 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $imgSmall = image_load($source_path);
       image_resize($imgSmall, 150, 150);
       image_save($imgSmall, $destination_path);
+      $destination_path_for_detail_image = $upload_appeal_medium_directory . $current_time."_".$params['image'];
+      image_resize($imgSmall, 300, 300);
+      image_save($imgSmall, $destination_path_for_detail_image);
     }
     // If image is not updated on edit page, save old image name in database.
     if($params['image'] == $params['old_image']) {
