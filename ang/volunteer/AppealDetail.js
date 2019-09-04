@@ -25,6 +25,11 @@
   );
 
   angular.module('volunteer').controller('VolunteerAppealDetail', function ($scope,crmApi,projectAppealsData,$window) {
+    if (!$window.location.origin) {
+      $window.location.origin = $window.location.protocol + "//" 
+        + $window.location.hostname 
+        + ($window.location.port ? ':' + $window.location.port : '');
+    }
     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
     $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/persist/contribute/appeal/medium/";
     $scope.appeal = appeal;
