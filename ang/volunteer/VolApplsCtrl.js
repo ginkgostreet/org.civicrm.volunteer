@@ -15,7 +15,7 @@
     });
   });
 
-  angular.module('volunteer').controller('VolApplsCtrl', function ($route, $scope,crmApi,$window, custom_fieldset_volunteer) {
+  angular.module('volunteer').controller('VolApplsCtrl', function ($route, $scope,crmApi,$window, custom_fieldset_volunteer, $location) {
     if (!$window.location.origin) {
       $window.location.origin = $window.location.protocol + "//" 
         + $window.location.hostname 
@@ -33,6 +33,8 @@
     $scope.sortby=$scope.order=null;
     $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/persist/contribute/appeal/thumb/";
     $scope.activeGrid = "grid_view";
+    $scope.beneficiary_name = [];
+    $scope.custom_field_display = [];
 
     //Change reult view
     $scope.changeview = function(tpl, type){
@@ -111,6 +113,53 @@
         // Pass custom field data from advance search to API.
         params.advanced_search.appealCustomFieldData = $scope.appealCustomFieldData;
       }
+      var current_parms = $route.current.params;
+      if (current_parms.beneficiary && typeof current_parms.beneficiary === "string") {
+        params.beneficiary = current_parms.beneficiary;
+      }
+      if(params.beneficiary) {
+        var beneficiaryArray = params.beneficiary.split(",");
+        for(var i = 0; i < beneficiaryArray.length; i++) {
+          CRM.api3('Contact', 'get', {
+            "sequential": 1,
+            "id": beneficiaryArray[i]
+          }).then(function(result) {
+            if(result && result.values.length > 0) {
+              if(!!($scope.beneficiary_name.indexOf(result.values[0].display_name)+1) == false) {
+                $scope.beneficiary_name.push(result.values[0].display_name);
+              }
+            }
+          }, function(error) {
+            // oops
+            console.log(error);
+          });
+        }
+      }
+      if(params.advanced_search) {
+        for (var key in params.advanced_search.appealCustomFieldData) {
+          if (params.advanced_search.appealCustomFieldData.hasOwnProperty(key)) {
+            var customFieldArray = key.split("_");
+            CRM.api3('CustomField', 'get', {
+              "sequential": 1,
+              "id": customFieldArray[1]
+            }).then(function(result) {
+              var group_id = result.values[0].custom_group_id;
+              CRM.api3('CustomGroup', 'get', {
+                "sequential": 1,
+                "id": group_id
+              }).then(function(result) {
+                if(!!($scope.custom_field_display.indexOf(result.values[0].title)+1) == false) {
+                  $scope.custom_field_display.push(result.values[0].title);
+                }
+              }, function(error) {
+                // oops
+              });
+            }, function(error) {
+              // oops
+            });
+          }
+        }
+      }
       return crmApi('VolunteerAppeal', 'getsearchresult', params)
         .then(function (data) {
           let projectAppeals=[];
@@ -130,8 +179,8 @@
           params.sortOption = sortOption;
           params.location_finder_way = $scope.location_finder_way;
           params.advanced_search_option = $scope.advanced_search;
-
           $window.localStorage.setItem("search_params", JSON.stringify(params));
+          $scope.active_search = params;
         },function(error) {
           CRM.$('#crm-main-content-wrapper').unblock();
           if (error.is_error) {
@@ -171,7 +220,6 @@
 
     //Set sort by and order by according to value selected
     function checkAndSetSortValue() {
-      console.log($scope.sortValue.key);
       let sortby,orderby=null;
       if($scope.sortValue.key=="titleA"){
         sortby="title";
@@ -267,6 +315,7 @@
 
     $scope.resetFilter=function() {
       $window.localStorage.removeItem("search_params");
+      $location.search('beneficiary', null);
       $route.reload();
     }
 
