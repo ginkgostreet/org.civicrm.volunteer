@@ -111,6 +111,10 @@
         // Pass custom field data from advance search to API.
         params.advanced_search.appealCustomFieldData = $scope.appealCustomFieldData;
       }
+      var current_parms = $route.current.params;
+      if (current_parms.beneficiary && typeof current_parms.beneficiary === "string") {
+        params.beneficiary = current_parms.beneficiary;
+      }
       return crmApi('VolunteerAppeal', 'getsearchresult', params)
         .then(function (data) {
           let projectAppeals=[];

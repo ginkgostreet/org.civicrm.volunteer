@@ -327,7 +327,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $beneficiary_rel_no = CRM_Core_PseudoConstant::getKey("CRM_Volunteer_BAO_ProjectContact", 'relationship_type_id', 'volunteer_beneficiary');
       $join .= " LEFT JOIN civicrm_volunteer_project_contact AS pc ON (pc.project_id = p.id And pc.relationship_type_id='".$beneficiary_rel_no."') ";
       $join .= " LEFT JOIN civicrm_contact AS cc ON (cc.id = pc.contact_id) ";
-      $select .= " , GROUP_CONCAT(DISTINCT cc.display_name ) as beneficiary_display_name";
+      $select .= " , GROUP_CONCAT(DISTINCT cc.display_name ) as beneficiary_display_name, GROUP_CONCAT(DISTINCT cc.id ) as beneficiary_id";
     }
     // Appeal should be active, Current Date between appeal date and related project should be active.
     $where = " Where p.is_active = 1 And appeal.is_appeal_active = 1 And CURDATE() between appeal.active_fromdate and appeal.active_todate ";
@@ -336,6 +336,28 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $search_appeal = $params['search_appeal'];
       $search_appeal = trim($search_appeal);
       $where .= " And (appeal.title Like '%".$search_appeal."%' OR appeal.appeal_description Like '%".$search_appeal."%' OR cc.display_name LIKE '%".$search_appeal."%')";
+    }
+    $having = "";
+    // Handle beneficiary filter.
+    if($params['beneficiary']) {
+      $params['beneficiary'] = rtrim($params['beneficiary'], ',');
+      $beneficiary = explode(',',$params['beneficiary']);
+      if (sizeof($beneficiary) > 1)  {
+        $lastElement = end($beneficiary);
+        $having = " HAVING (";
+        foreach ($beneficiary as $key => $benificiery_id) {
+          if($benificiery_id) {
+            if($benificiery_id == $lastElement) {
+              $having .= " FIND_IN_SET(".$benificiery_id.", beneficiary_id)";
+            } else {
+              $having .= " FIND_IN_SET(".$benificiery_id.", beneficiary_id) OR";
+            }
+          }
+        }
+        $having .= ")";
+      } else {
+        $having = " HAVING FIND_IN_SET(".$beneficiary[0].", beneficiary_id)";
+      }
     }
     //Advance search parameter.
     if(isset($params["advanced_search"])) {
@@ -430,7 +452,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $order = $params["order"];
     }
     // prepare orderby query.
-    $orderby = " GROUP By appeal.id ORDER BY " . $orderByColumn . " " . $order;
+    $orderby = " GROUP By appeal.id ".$having." ORDER BY " . $orderByColumn . " " . $order;
     
     // Pagination Logic.
     $no_of_records_per_page = 10;//2;
