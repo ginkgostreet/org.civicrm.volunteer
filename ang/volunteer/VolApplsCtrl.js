@@ -33,7 +33,8 @@
     $scope.sortby=$scope.order=null;
     $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/persist/contribute/appeal/thumb/";
     $scope.activeGrid = "grid_view";
-    $scope.beneficiary_name = "";
+    $scope.beneficiary_name = [];
+    $scope.custom_field_display = [];
 
     //Change reult view
     $scope.changeview = function(tpl, type){
@@ -119,29 +120,42 @@
       if(params.beneficiary) {
         var beneficiaryArray = params.beneficiary.split(",");
         for(var i = 0; i < beneficiaryArray.length; i++) {
-          if (i != (beneficiaryArray.length - 1)) {
-            CRM.api3('Contact', 'get', {
-              "sequential": 1,
-              "id": beneficiaryArray[i]
-            }).then(function(result) {
-              if(result && result.values.length > 0) {
-                $scope.beneficiary_name += result.values[0].display_name + ", ";
+          CRM.api3('Contact', 'get', {
+            "sequential": 1,
+            "id": beneficiaryArray[i]
+          }).then(function(result) {
+            if(result && result.values.length > 0) {
+              if(!!($scope.beneficiary_name.indexOf(result.values[0].display_name)+1) == false) {
+                $scope.beneficiary_name.push(result.values[0].display_name);
               }
+            }
+          }, function(error) {
+            // oops
+            console.log(error);
+          });
+        }
+      }
+      if(params.advanced_search) {
+        for (var key in params.advanced_search.appealCustomFieldData) {
+          if (params.advanced_search.appealCustomFieldData.hasOwnProperty(key)) {
+            var customFieldArray = key.split("_");
+            CRM.api3('CustomField', 'get', {
+              "sequential": 1,
+              "id": customFieldArray[1]
+            }).then(function(result) {
+              var group_id = result.values[0].custom_group_id;
+              CRM.api3('CustomGroup', 'get', {
+                "sequential": 1,
+                "id": group_id
+              }).then(function(result) {
+                if(!!($scope.custom_field_display.indexOf(result.values[0].title)+1) == false) {
+                  $scope.custom_field_display.push(result.values[0].title);
+                }
+              }, function(error) {
+                // oops
+              });
             }, function(error) {
               // oops
-              console.log(error);
-            });
-          } else {
-            CRM.api3('Contact', 'get', {
-              "sequential": 1,
-              "id": beneficiaryArray[i]
-            }).then(function(result) {
-              if(result && result.values.length > 0) {
-                $scope.beneficiary_name += result.values[0].display_name;
-              }
-            }, function(error) {
-              // oops
-              console.log(error);
             });
           }
         }
@@ -206,7 +220,6 @@
 
     //Set sort by and order by according to value selected
     function checkAndSetSortValue() {
-      console.log($scope.sortValue.key);
       let sortby,orderby=null;
       if($scope.sortValue.key=="titleA"){
         sortby="title";

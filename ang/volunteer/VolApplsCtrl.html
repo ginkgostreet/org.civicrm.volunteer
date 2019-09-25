@@ -26,7 +26,10 @@
         </div>
       </div>
       <div class="beneficiary_wrapper filter_data" ng-if="active_search.beneficiary!== undefined">
-         <span><b>Beneficiary : </b>{{ beneficiary_name }}</span>
+         <span><b>Beneficiary : </b>{{ beneficiary_name.join() }}</span>
+      </div>
+      <div class="custom_field_display_wrapper filter_data" ng-if="custom_field_display.length">
+         <span><b>Addition Filters : </b>{{ custom_field_display.join() }}</span>
       </div>
     </div>
   </div>
