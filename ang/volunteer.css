@@ -480,3 +480,20 @@ body {font-family: "Lato", sans-serif;}
 #select2-drop {
   z-index: 99999;
 }
+.active_filters {
+  font-size: 16px;
+  margin-bottom: 10px;
+  border: 1px solid #d3d3d3;
+  padding: 5px;
+  border-radius: 4px;
+}
+.active_filter_content {
+  margin-top: 10px;
+}
+.active_filter_heading {
+  text-decoration: underline;
+  font-size: 18px;
+}
+.filter_data {
+  margin-bottom: 4px;
+}
