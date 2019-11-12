@@ -10,31 +10,40 @@
           return crmApi('VolunteerAppeal', 'getCustomFieldsetWithMetaVolunteerAppeal', {
             controller: 'VolunteerAppeal'
           });
-        }
+        },
+        supporting_data: function(crmApi, $route) {
+          return crmApi('VolunteerUtil', 'getsupportingdata', {
+            controller: 'VolunteerAppealDetail',
+            appeal_id: $route.current.params.appealId
+          });
+        },
       }
     });
   });
 
-  angular.module('volunteer').controller('VolApplsCtrl', function ($route, $scope,crmApi,$window, custom_fieldset_volunteer, $location) {
+  angular.module('volunteer').controller('VolApplsCtrl', function ($route, $scope, crmApi, $window, custom_fieldset_volunteer, supporting_data, $location) {
+
     if (!$window.location.origin) {
       $window.location.origin = $window.location.protocol + "//" 
         + $window.location.hostname 
         + ($window.location.port ? ':' + $window.location.port : '');
     }
+    
     var ts = $scope.ts = CRM.ts('org.civicrm.volunteer');
+    
     $scope.search="";
     $scope.currentTemplate = "~/volunteer/AppealGrid.html"; //default view is grid view
     $scope.totalRec;
     $scope.currentPage = 1;
     $scope.pageSize = 10;
     $scope.appealCustomFieldData = {};
-    $scope.options=[{key:"dateE",val:"Upcoming"},{key:"dateS",val:ts('Newest Opportunities')},{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}];
+    $scope.options = [{key:"dateE",val:"Upcoming"},{key:"dateS",val:ts('Newest Opportunities')},{key:"titleA",val:"Title A-Z"},{key:"titleD",val:"Title Z-A"},{key:"benfcrA",val:"Project Beneficiary A-Z"},{key:"benfcrD",val:"Project Beneficiary Z-A"}];
     $scope.sortValue = $scope.options[0];
-    $scope.sortby=$scope.order=null;
-    $scope.basepath=$window.location.origin+Drupal.settings.basePath+"sites/default/files/civicrm/persist/contribute/appeal/thumb/";
+    $scope.sortby=$scope.order = null;
     $scope.activeGrid = "grid_view";
     $scope.beneficiary_name = [];
     $scope.custom_field_display = [];
+    $scope.supporting_data = supporting_data.values;
 
     //Change reult view
     $scope.changeview = function(tpl, type){
@@ -245,14 +254,15 @@
     }
 
     $scope.redirectTo=function(appealId) {
-      $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/appeal/"+appealId;
+      $location.path("/volunteer/appeal/"+appealId);
     }
 
     $scope.volSignup= function(need_flexi_id,projectId,hide_appeal_volunteer_button) {
       if(hide_appeal_volunteer_button == "1") {
-        $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/vol/#/volunteer/opportunities?project="+projectId+"&hideSearch=1";
+        // TODO
+        $window.location.href = CRM.url("civicrm/vol/#/volunteer/opportunities", "project="+projectId+"&hideSearch=1");
       } else {
-        $window.location.href = $window.location.origin+Drupal.settings.basePath+"civicrm/volunteer/signup?reset=1&needs[]="+need_flexi_id+"&dest=list";
+        $window.location.href =CRM.url("civicrm/volunteer/signup", "reset=1&needs[]="+need_flexi_id+"&dest=list");
       }
     }
 
