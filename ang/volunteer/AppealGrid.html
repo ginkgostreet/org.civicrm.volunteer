@@ -2,10 +2,10 @@
    <div class="grid2x2">
       <div class="box" ng-repeat="appeal in appeals track by $index" role="row">
          <div>
-            <div class="pull-left w-30 appeal-details__image">
+            <div ng-if="appeal.image" class="pull-left w-30 appeal-details__image">
                <img src={{supporting_data.image_upload_url+"appeal/thumb/"+appeal.image}} alt="Opportunity Image">
             </div>
-            <div class="pull-right w-70">
+            <div class="pull-right {{appeal.image ? w-70 : ''}}">
                <div class="p-l-15">
                   <h2 class="m-t-0">{{ appeal.title }}</h2>
                   <em> {{appeal.beneficiary_display_name}}<em>
