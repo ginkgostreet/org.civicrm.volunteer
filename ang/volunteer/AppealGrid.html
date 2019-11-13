@@ -3,7 +3,7 @@
       <div class="box" ng-repeat="appeal in appeals track by $index" role="row">
          <div>
             <div ng-if="appeal.image" class="pull-left w-30 appeal-details__image">
-               <img src={{supporting_data.image_upload_url+"appeal/thumb/"+appeal.image}} alt="Opportunity Image">
+               <img ng-src={{supporting_data.image_upload_url+"appeal/thumb/"+appeal.image}} alt="Opportunity Image">
             </div>
             <div class="pull-right {{appeal.image ? 'w-70' : ''}}">
                <div class="p-l-15">

@@ -13,7 +13,7 @@
       <tr ng-repeat="appeal in appeals track by $index" role="row">
 
          <td class="crm-vol-manage-toggle appeal-details__image">
-            <span ng-if="appeal.image"><img src={{supporting_data.image_upload_url+"appeal/thumb/"+appeal.image}} alt="Opportunity Image"></span>
+            <span ng-if="appeal.image"><img ng-src={{supporting_data.image_upload_url+"appeal/thumb/"+appeal.image}} alt="Opportunity Image"></span>
          </td>
          <td class="crm-vol-manage-project">
             <span class="crm-vol-manage-project-title">{{ appeal.title }}</span>
