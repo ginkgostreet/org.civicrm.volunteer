@@ -204,6 +204,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     $upload_appeal_main_directory = $config->imageUploadDir.'appeal/main/';
     $upload_appeal_medium_directory = $config->imageUploadDir.'appeal/medium/';
     $upload_appeal_thumb_directory = $config->imageUploadDir.'appeal/thumb/';
+    $default_image_name = "appeal-default-logo-sq.png";
 
     $dao = self::executeQuery($query->toSQL()); 
     while ($dao->fetch()) {
@@ -212,11 +213,11 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $fetchedAppeal->copyValues($daoClone);
       if($fetchedAppeal->image == "null" || !$fetchedAppeal->image) {
         // check if the default image exists before we set the image property to it
-        if (file_exists($upload_appeal_main_directory . $fetchedAppeal->image)
-          && file_exists($upload_appeal_medium_directory . $fetchedAppeal->image)
-          && file_exists($upload_appeal_thumb_directory . $fetchedAppeal->image)
+        if (file_exists($upload_appeal_main_directory . $default_image_name)
+          && file_exists($upload_appeal_medium_directory . $default_image_name)
+          && file_exists($upload_appeal_thumb_directory . $default_image_name)
         ) {        
-          $fetchedAppeal->image = "appeal-default-logo-sq.png";
+          $fetchedAppeal->image = $default_image_name;
         } else {
           $fetchedAppeal->image = null;
         }
@@ -533,6 +534,7 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     $upload_appeal_main_directory = $config->imageUploadDir.'appeal/main/';
     $upload_appeal_medium_directory = $config->imageUploadDir.'appeal/medium/';
     $upload_appeal_thumb_directory = $config->imageUploadDir.'appeal/thumb/';
+    $default_image_name = "appeal-default-logo-sq.png";
 
     // Prepare appeal details array with proper format.
     while ($dao->fetch()) {
@@ -541,11 +543,11 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       $appeal['title'] = $dao->title;
       if($dao->image == "null" || !$dao->image) {
         // check if the default image exists before we set the image property to it
-        if (file_exists($upload_appeal_main_directory . $fetchedAppeal->image)
-          && file_exists($upload_appeal_medium_directory . $fetchedAppeal->image)
-          && file_exists($upload_appeal_thumb_directory . $fetchedAppeal->image)
+        if (file_exists($upload_appeal_main_directory . $default_image_name)
+          && file_exists($upload_appeal_medium_directory . $default_image_name)
+          && file_exists($upload_appeal_thumb_directory . $default_image_name)
         ) {        
-          $fetchedAppeal->image = "appeal-default-logo-sq.png";
+          $fetchedAppeal->image = $default_image_name;
         } else {
           $fetchedAppeal->image = null;
         }
