@@ -6,10 +6,11 @@
     </p>
   </div>
 
-  <p class="description">
+<!-- Disable misleading information. Sometime ago, we must have lost the icon to display the Project Description for an opportunity. -->
+  <!-- p class="description">
     {ts domain='org.civicrm.volunteer'}For additional project or role detail, click the corresponding detail icon in the table below.{/ts}
     <span class="icon ui-icon-comment"></span>
-  </p>
+  </p -->
 
   <div class="crm-volunteer-signup-summary">
     <table>
