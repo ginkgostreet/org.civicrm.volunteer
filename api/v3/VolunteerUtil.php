@@ -148,6 +148,7 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
   $results = array();
 
   $controller = CRM_Utils_Array::value('controller', $params);
+  
   if ($controller === 'VolunteerProject') {
     $relTypes = civicrm_api3('OptionValue', 'get', array(
       'option_group_id' => CRM_Volunteer_BAO_ProjectContact::RELATIONSHIP_OPTION_GROUP,
@@ -188,6 +189,7 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
   if ($controller === 'VolOppsCtrl') {
     $results['roles'] = CRM_Core_OptionGroup::values('volunteer_role', FALSE, FALSE, TRUE);
   }
+
   // Manage supporting data for VolunteerAppeal.
   if($controller === 'VolunteerAppeal') {
     $results['appeal_custom_field_groups'] = array();
@@ -254,6 +256,9 @@ function civicrm_api3_volunteer_util_getsupportingdata($params) {
   $results['profile_audience_types'] = CRM_Volunteer_BAO_Project::getProjectProfileAudienceTypes();
 
   $results['volunteer_status'] = CRM_Activity_BAO_Activity::buildOptions('status_id', 'validate');
+
+  $config = CRM_Core_Config::singleton();
+  $results['image_upload_url'] = $config->imageUploadURL;
 
   return civicrm_api3_create_success($results, "VolunteerUtil", "getsupportingdata", $params);
 }

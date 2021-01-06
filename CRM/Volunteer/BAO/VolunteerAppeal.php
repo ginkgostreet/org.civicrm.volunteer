@@ -71,12 +71,51 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       // Resize Image with 150*150 and save into destination folder. 
       $source_path = $upload_appeal_main_directory . $current_time."_".$params['image'];
       $destination_path = $upload_appeal_thumb_directory . $current_time."_".$params['image'];
-      $imgSmall = image_load($source_path);
-      image_resize($imgSmall, 150, 150);
-      image_save($imgSmall, $destination_path);
       $destination_path_for_detail_image = $upload_appeal_medium_directory . $current_time."_".$params['image'];
-      image_resize($imgSmall, 300, 300);
-      image_save($imgSmall, $destination_path_for_detail_image);
+
+      if (class_exists('Imagick')) { // Imagick resizing if available
+
+        $imgSmall = new Imagick($source_path);
+        $imgProps = $imgSmall->getImageGeometry();
+        $width = $imgProps['width'];
+        $height = $imgProps['height'];
+        $imgSmallDim = 150;
+        if ($width > $height) {
+            $newHeight = $imgSmallDim;
+            $newWidth = ($imgSmallDim  / $height) * $width;
+        } else {
+            $newWidth = $imgSmallDim ;
+            $newHeight = ($imgSmallDim  / $width) * $height;
+        }
+        $imgSmall->resizeImage($newWidth, $newHeight, Imagick::FILTER_CATROM, 1, true);
+        $imgSmall->cropImage($imgSmallDim, $imgSmallDim, floor(abs($newWidth-$imgSmallDim) / 2), floor(abs($newHeight-$imgSmallDim) / 2));
+        $imgSmall->writeImage($destination_path);
+
+        $imgMedium = new Imagick($source_path);
+        $imgProps = $imgMedium->getImageGeometry();
+        $width = $imgProps['width'];
+        $height = $imgProps['height'];
+        $imgMediumDim = 300;
+        if ($width > $height) {
+            $newHeight = $imgMediumDim;
+            $newWidth = ($imgMediumDim  / $height) * $width;
+        } else {
+            $newWidth = $imgMediumDim ;
+            $newHeight = ($imgMediumDim  / $width) * $height;
+        }
+        $imgMedium->resizeImage($newWidth, $newHeight, Imagick::FILTER_CATROM, 1, true);
+        $imgMedium->cropImage($imgMediumDim, $imgMediumDim, floor(abs($newWidth-$imgMediumDim) / 2), floor(abs($newHeight-$imgMediumDim) / 2));
+        $imgMedium->writeImage($destination_path_for_detail_image);
+
+      } else if (function_exists('image_load')) { // native Drupal resizing
+        $imgSmall = image_load($source_path);
+        image_resize($imgSmall, 150, 150);
+        image_save($imgSmall, $destination_path);
+        image_resize($imgSmall, 300, 300);
+        image_save($imgSmall, $destination_path_for_detail_image);
+      } else { // resizing not supported
+        CRM_Core_Error::debug_log_message('Image resizing not supported for Volunteer Appeal images', FALSE, 'org.civicrm.volunteer');
+      }
     }
     // If image is not updated on edit page, save old image name in database.
     if($params['image'] == $params['old_image']) {
@@ -160,13 +199,28 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
       }
     }
 
+    // Get the global configuration.
+    $config = CRM_Core_Config::singleton();
+    $upload_appeal_main_directory = $config->imageUploadDir.'appeal/main/';
+    $upload_appeal_medium_directory = $config->imageUploadDir.'appeal/medium/';
+    $upload_appeal_thumb_directory = $config->imageUploadDir.'appeal/thumb/';
+    $default_image_name = "appeal-default-logo-sq.png";
+
     $dao = self::executeQuery($query->toSQL()); 
     while ($dao->fetch()) {
       $fetchedAppeal = new CRM_Volunteer_BAO_VolunteerAppeal();  
       $daoClone = clone $dao; 
-      $fetchedAppeal->copyValues($daoClone);  
+      $fetchedAppeal->copyValues($daoClone);
       if($fetchedAppeal->image == "null" || !$fetchedAppeal->image) {
-        $fetchedAppeal->image = "appeal-default-logo-sq.png";
+        // check if the default image exists before we set the image property to it
+        if (file_exists($upload_appeal_main_directory . $default_image_name)
+          && file_exists($upload_appeal_medium_directory . $default_image_name)
+          && file_exists($upload_appeal_thumb_directory . $default_image_name)
+        ) {        
+          $fetchedAppeal->image = $default_image_name;
+        } else {
+          $fetchedAppeal->image = null;
+        }
       }
       $result[(int) $dao->id] = $fetchedAppeal;
     }
@@ -474,13 +528,29 @@ class CRM_Volunteer_BAO_VolunteerAppeal extends CRM_Volunteer_DAO_VolunteerAppea
     $appeals = array();
     $appeals['appeal'] = array();
     $appeal = [];
+
+    // Get the global configuration.
+    $config = CRM_Core_Config::singleton();
+    $upload_appeal_main_directory = $config->imageUploadDir.'appeal/main/';
+    $upload_appeal_medium_directory = $config->imageUploadDir.'appeal/medium/';
+    $upload_appeal_thumb_directory = $config->imageUploadDir.'appeal/thumb/';
+    $default_image_name = "appeal-default-logo-sq.png";
+
     // Prepare appeal details array with proper format.
     while ($dao->fetch()) {
       $appeal['id'] = $dao->id;
       $appeal['project_id'] = $dao->project_id;
       $appeal['title'] = $dao->title;
       if($dao->image == "null" || !$dao->image) {
-        $dao->image = "appeal-default-logo-sq.png";
+        // check if the default image exists before we set the image property to it
+        if (file_exists($upload_appeal_main_directory . $default_image_name)
+          && file_exists($upload_appeal_medium_directory . $default_image_name)
+          && file_exists($upload_appeal_thumb_directory . $default_image_name)
+        ) {        
+          $fetchedAppeal->image = $default_image_name;
+        } else {
+          $fetchedAppeal->image = null;
+        }
       }
       $appeal['image'] = $dao->image;
       $appeal['appeal_teaser'] = $dao->appeal_teaser;

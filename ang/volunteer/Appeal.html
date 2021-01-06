@@ -20,7 +20,7 @@
       </div>
       <div class="crm-vol-image" crm-ui-field="{name: 'AppealForm.image', title: ts('Image')}">
         <input type="file" class="big crm-form-image" crm-ui-id="AppealForm.image" ng-model="appeal.image" onchange="angular.element(this).scope().uploadFile(event)" />
-        <span>{{appeal.image?(appeal.image):"" }}</span>
+        <span ng-if="appeal.image"><img ng-src={{supporting_data.image_upload_url+"appeal/thumb/"+appeal.image}} alt="Opportunity Image"></span>
       </div>
       <div class="crm-vol-appeal_teaser" crm-ui-field="{name: 'AppealForm.appeal_teaser', title: ts('Opportunity Teaser')}">
         <textarea class="big crm-form-textarea" crm-ui-id="AppealForm.appeal_teaser" ng-model="appeal.appeal_teaser" ></textarea>

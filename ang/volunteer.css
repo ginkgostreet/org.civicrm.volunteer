@@ -226,6 +226,7 @@ span.crm-button-text {
   margin-right: 20px;
 }
 
+.appeal-details__image img,
 .beneficiary-details__image img {
   max-width: 100%;
   height: auto;
@@ -435,14 +436,14 @@ body {font-family: "Lato", sans-serif;}
 }
 
 .sortorder:after {
-  content: '\25b2';   // BLACK UP-POINTING TRIANGLE
+  content: '\25b2';   /* BLACK UP-POINTING TRIANGLE */
 }
 .sortorder.reverse:after {
-  content: '\25bc';   // BLACK DOWN-POINTING TRIANGLE
+  content: '\25bc';   /* BLACK DOWN-POINTING TRIANGLE */
 }
 
 .sortorder.reverseExpiredTable:after {
-  content: '\25bc';   // BLACK DOWN-POINTING TRIANGLE
+  content: '\25bc';   /* BLACK DOWN-POINTING TRIANGLE */
 }
 .delete_appeal, .edit_appeal {
   cursor: pointer;

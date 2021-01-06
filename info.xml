@@ -25,5 +25,6 @@
   </urls>
   <requires>
     <ext>org.civicrm.angularprofiles</ext>
+    <ext>org.civicrm.fieldmetadata</ext>
   </requires>
 </extension>
